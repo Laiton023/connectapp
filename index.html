@@ -1,1 +1,129 @@
 
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ConnectApp</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0d0f14; color: #e8eaf2; font-family: 'Poppins', sans-serif; }
+    header { background: linear-gradient(135deg, #5b6ef5, #f56b6b); padding: 20px; text-align: center; }
+    header h1 { font-size: 28px; font-weight: 700; color: white; }
+    header p { color: rgba(255,255,255,0.8); font-size: 14px; }
+    nav { background: #161920; display: flex; justify-content: center; gap: 30px; padding: 14px; border-bottom: 1px solid #2a2f42; position: sticky; top: 0; z-index: 100; }
+    nav a { color: #6b7280; text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 16px; border-radius: 20px; transition: all 0.2s; }
+    nav a:hover { background: #5b6ef5; color: white; }
+    main, #perfil, #chatDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
+    textarea { width: 100%; background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 12px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 14px; height: 90px; resize: none; outline: none; }
+    textarea:focus { border-color: #5b6ef5; }
+    button { background: #5b6ef5; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; margin-right: 6px; transition: all 0.2s; }
+    button:hover { background: #4a5de8; transform: translateY(-1px); }
+    .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
+    #perfil { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 24px; text-align: center; }
+    #fotoPerfil { border: 3px solid #5b6ef5; }
+    input[type="text"] { background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 8px; padding: 10px 14px; font-family: 'Poppins', sans-serif; font-size: 14px; width: 75%; outline: none; }
+    footer { text-align: center; padding: 20px; color: #6b7280; font-size: 13px; margin-top: 30px; }
+    #status { text-align: center; color: #4ecb8d; font-size: 13px; max-width: 600px; margin: 8px auto; padding: 0 16px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌐 ConnectApp</h1>
+    <p>Bem-vindo, Laiton!</p>
+  </header>
+  <nav>
+    <a href="#" onclick="mostrarFeed()">Feed</a>
+    <a href="#" onclick="verPerfil()">Perfil</a>
+    <a href="#" onclick="verChat()">Chat</a>
+  </nav>
+  <div id="status"></div>
+  <main id="feedDiv">
+    <h2 style="margin-bottom:16px;">Feed</h2>
+    <textarea id="caixaTexto" placeholder="O que você está pensando?"></textarea>
+    <br>
+    <button onclick="publicar()">Publicar</button>
+    <div id="posts"></div>
+  </main>
+  <div id="perfil" style="display:none">
+    <h2>👤 Meu Perfil</h2>
+    <img id="fotoPerfil" src="https://via.placeholder.com/100" style="border-radius:50%; width:100px; height:100px; margin-top:16px;">
+    <br><br>
+    <input type="file" accept="image/*" onchange="trocarFoto(event)">
+    <br><br>
+    <p><strong>Nome:</strong> Laiton</p>
+    <p><strong>Bio:</strong> Programador em formação! 🚀</p>
+  </div>
+  <div id="chatDiv" style="display:none; max-width:600px; margin:24px auto; padding:0 16px;">
+    <h2>💬 Chat</h2>
+    <div id="mensagens" style="height:200px; overflow-y:auto; background:#0d0f14; padding:10px; border-radius:10px; margin-top:12px;"></div>
+    <br>
+    <input id="inputMsg" type="text" placeholder="Digite uma mensagem...">
+    <button onclick="enviarMsg()">Enviar</button>
+  </div>
+  <footer><p>Feito por Laiton 🚀</p></footer>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+    const firebaseConfig = {
+      apiKey: "AIzaSyCoACMoICD9HvY-qkmlebrVl23qjJIsqzE",
+      authDomain: "connectapp-f32f7.firebaseapp.com",
+      projectId: "connectapp-f32f7",
+      storageBucket: "connectapp-f32f7.firebasestorage.app",
+      messagingSenderId: "731492243198",
+      appId: "1:731492243198:web:a51d5ff6b6ec3eeb38b7af"
+    };
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    function setStatus(msg) {
+      document.getElementById("status").textContent = msg;
+      setTimeout(() => document.getElementById("status").textContent = "", 3000);
+    }
+    async function carregarPosts() {
+      const postsDiv = document.getElementById("posts");
+      postsDiv.innerHTML = "<p style='color:#6b7280; text-align:center; margin-top:16px;'>Carregando...</p>";
+      try {
+        const q = query(collection(db, "posts"), orderBy("data", "desc"));
+        const snap = await getDocs(q);
+        postsDiv.innerHTML = "";
+        snap.forEach((d) => {
+          const p = d.data();
+          const div = document.createElement("div");
+          div.className = "post-card";
+          div.innerHTML = `<strong>${p.autor}</strong> · <span style="color:#6b7280;font-size:12px;">${p.hora}</span><p style="margin:10px 0;color:#c8cad8;">${p.texto}</p><button onclick="curtir(this)">❤️ Curtir</button><button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>`;
+          postsDiv.appendChild(div);
+        });
+        if (snap.empty) postsDiv.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum post ainda!</p>";
+      } catch(e) { postsDiv.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
+    }
+    window.publicar = async function() {
+      const caixa = document.getElementById("caixaTexto");
+      const texto = caixa.value.trim();
+      if (!texto) { alert("Escreva algo!"); return; }
+      try {
+        const hora = new Date().toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"});
+        await addDoc(collection(db, "posts"), { texto, autor: "Laiton", hora, data: serverTimestamp() });
+        caixa.value = "";
+        setStatus("✅ Post publicado!");
+        carregarPosts();
+      } catch(e) { setStatus("❌ Erro ao publicar."); }
+    }
+    window.deletarPost = async function(id, botao) {
+      try { await deleteDoc(doc(db, "posts", id)); botao.parentElement.remove(); setStatus("🗑️ Deletado!"); }
+      catch(e) { setStatus("❌ Erro ao deletar."); }
+    }
+    window.curtir = function(botao) {
+      let c = parseInt(botao.getAttribute("data-curtidas") || 0) + 1;
+      botao.setAttribute("data-curtidas", c);
+      botao.textContent = "❤️ Curtir (" + c + ")";
+    }
+    window.verPerfil = function() { document.getElementById("feedDiv").style.display="none"; document.getElementById("chatDiv").style.display="none"; document.getElementById("perfil").style.display="block"; }
+    window.mostrarFeed = function() { document.getElementById("feedDiv").style.display="block"; document.getElementById("chatDiv").style.display="none"; document.getElementById("perfil").style.display="none"; }
+    window.trocarFoto = function(e) { const r=new FileReader(); r.onload=function(x){document.getElementById("fotoPerfil").src=x.target.result;}; r.readAsDataURL(e.target.files[0]); }
+    window.verChat = function() { document.getElementById("feedDiv").style.display="none"; document.getElementById("perfil").style.display="none"; document.getElementById("chatDiv").style.display="block"; }
+    window.enviarMsg = function() { const i=document.getElementById("inputMsg"); if(!i.value) return; const m=document.getElementById("mensagens"); const p=document.createElement("p"); p.innerHTML="<strong>Você:</strong> "+i.value; p.style.marginBottom="8px"; m.appendChild(p); i.value=""; m.scrollTop=m.scrollHeight; }
+    carregarPosts();
+  </script>
+</body>
+</html>
