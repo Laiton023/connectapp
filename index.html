@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -91,7 +90,13 @@
           const p = d.data();
           const div = document.createElement("div");
           div.className = "post-card";
-          div.innerHTML = `<strong>${p.autor}</strong> · <span style="color:#6b7280;font-size:12px;">${p.hora}</span><p style="margin:10px 0;color:#c8cad8;">${p.texto}</p><button onclick="curtir(this)">❤️ Curtir</button><button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>`;
+          div.innerHTML = `
+            <strong>${p.autor}</strong> · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
+            <p style="margin:10px 0;color:#c8cad8;">${p.texto}</p>
+            <button onclick="curtir(this)">❤️ Curtir</button>
+            <button>💬 Comentar</button>
+            <button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>
+          `;
           postsDiv.appendChild(div);
         });
         if (snap.empty) postsDiv.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum post ainda!</p>";
