@@ -11,7 +11,7 @@
     header { background: linear-gradient(135deg, #5b6ef5, #f56b6b); padding: 20px; text-align: center; }
     header h1 { font-size: 28px; font-weight: 700; color: white; }
     header p { color: rgba(255,255,255,0.8); font-size: 14px; }
-    nav { background: #161920; display: flex; justify-content: center; gap: 30px; padding: 14px; border-bottom: 1px solid #2a2f42; position: sticky; top: 0; z-index: 100; }
+    nav { background: #161920; display: flex; justify-content: center; gap: 20px; padding: 14px; border-bottom: 1px solid #2a2f42; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; }
     nav a { color: #6b7280; text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 16px; border-radius: 20px; transition: all 0.2s; }
     nav a:hover { background: #5b6ef5; color: white; }
     main, #perfil, #chatDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
@@ -20,6 +20,9 @@
     button { background: #5b6ef5; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; margin-right: 6px; transition: all 0.2s; }
     button:hover { background: #4a5de8; transform: translateY(-1px); }
     .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
+    .comentarios-box { margin-top: 12px; border-top: 1px solid #2a2f42; padding-top: 12px; display: none; }
+    .comentario-item { background: #0d0f14; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; font-size: 13px; }
+    .comentario-input { width: 100%; background: #0d0f14; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 8px; padding: 10px; font-family: 'Poppins', sans-serif; font-size: 13px; outline: none; margin-top: 8px; }
     #perfil { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 24px; text-align: center; }
     input[type="text"] { background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 8px; padding: 10px 14px; font-family: 'Poppins', sans-serif; font-size: 14px; width: 75%; outline: none; }
     footer { text-align: center; padding: 20px; color: #6b7280; font-size: 13px; margin-top: 30px; }
@@ -125,11 +128,56 @@
           const p = d.data();
           const div = document.createElement("div");
           div.className = "post-card";
-          div.innerHTML = `<strong>${p.autor}</strong> · <span style="color:#6b7280;font-size:12px;">${p.hora}</span><p style="margin:10px 0;color:#c8cad8;">${p.texto}</p><button onclick="curtir(this)">❤️ Curtir</button><button>💬 Comentar</button><button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>`;
+          div.id = "post-" + d.id;
+          div.innerHTML = `
+            <strong>${p.autor}</strong> · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
+            <p style="margin:10px 0;color:#c8cad8;">${p.texto}</p>
+            <button onclick="curtir(this)">❤️ Curtir</button>
+            <button onclick="toggleComentarios('${d.id}')">💬 Comentar</button>
+            <button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>
+            <div class="comentarios-box" id="coms-${d.id}">
+              <div id="lista-coms-${d.id}"></div>
+              <input class="comentario-input" id="input-com-${d.id}" placeholder="Escreva um comentário...">
+              <button onclick="enviarComentario('${d.id}')">Enviar</button>
+            </div>
+          `;
           postsDiv.appendChild(div);
+          carregarComentarios(d.id);
         });
         if (snap.empty) postsDiv.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum post ainda!</p>";
       } catch(e) { postsDiv.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
+    }
+    async function carregarComentarios(postId) {
+      const lista = document.getElementById("lista-coms-" + postId);
+      if (!lista) return;
+      try {
+        const q = query(collection(db, "posts", postId, "comentarios"), orderBy("data", "asc"));
+        const snap = await getDocs(q);
+        lista.innerHTML = "";
+        snap.forEach((d) => {
+          const c = d.data();
+          const div = document.createElement("div");
+          div.className = "comentario-item";
+          div.innerHTML = `<strong>${c.autor}:</strong> ${c.texto}`;
+          lista.appendChild(div);
+        });
+      } catch(e) {}
+    }
+    window.toggleComentarios = function(postId) {
+      const box = document.getElementById("coms-" + postId);
+      box.style.display = box.style.display === "block" ? "none" : "block";
+    }
+    window.enviarComentario = async function(postId) {
+      const input = document.getElementById("input-com-" + postId);
+      const texto = input.value.trim();
+      if (!texto) return;
+      try {
+        await addDoc(collection(db, "posts", postId, "comentarios"), {
+          texto, autor: nomeUsuario, data: serverTimestamp()
+        });
+        input.value = "";
+        carregarComentarios(postId);
+      } catch(e) {}
     }
     window.publicar = async function() {
       const caixa = document.getElementById("caixaTexto");
@@ -159,4 +207,4 @@
     window.enviarMsg = function() { const i=document.getElementById("inputMsg"); if(!i.value) return; const m=document.getElementById("mensagens"); const p=document.createElement("p"); p.innerHTML="<strong>"+nomeUsuario+":</strong> "+i.value; p.style.marginBottom="8px"; m.appendChild(p); i.value=""; m.scrollTop=m.scrollHeight; }
   </script>
 </body>
-        </html>
+</html>
