@@ -21,21 +21,36 @@
     button:hover { background: #4a5de8; transform: translateY(-1px); }
     .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
     #perfil { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 24px; text-align: center; }
-    #fotoPerfil { border: 3px solid #5b6ef5; }
     input[type="text"] { background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 8px; padding: 10px 14px; font-family: 'Poppins', sans-serif; font-size: 14px; width: 75%; outline: none; }
     footer { text-align: center; padding: 20px; color: #6b7280; font-size: 13px; margin-top: 30px; }
     #status { text-align: center; color: #4ecb8d; font-size: 13px; max-width: 600px; margin: 8px auto; padding: 0 16px; }
+    #loginTela { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0d0f14; display: flex; align-items: center; justify-content: center; z-index: 999; }
+    .login-box { background: #1e2230; border: 1px solid #2a2f42; border-radius: 20px; padding: 40px 30px; text-align: center; width: 90%; max-width: 400px; }
+    .login-box h2 { font-size: 24px; margin-bottom: 8px; color: #5b6ef5; }
+    .login-box p { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
+    .login-box input { width: 100%; background: #0d0f14; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 10px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 16px; outline: none; margin-bottom: 16px; }
+    .login-box input:focus { border-color: #5b6ef5; }
+    .login-box button { width: 100%; padding: 14px; font-size: 16px; border-radius: 10px; }
   </style>
 </head>
 <body>
+  <div id="loginTela">
+    <div class="login-box">
+      <h2>🌐 ConnectApp</h2>
+      <p>Entre com seu nome para começar!</p>
+      <input type="text" id="inputNome" placeholder="Seu nome..." maxlength="20">
+      <button onclick="entrar()">Entrar 🚀</button>
+    </div>
+  </div>
   <header>
     <h1>🌐 ConnectApp</h1>
-    <p>Bem-vindo, Laiton!</p>
+    <p id="bemVindo">Bem-vindo!</p>
   </header>
   <nav>
     <a href="#" onclick="mostrarFeed()">Feed</a>
     <a href="#" onclick="verPerfil()">Perfil</a>
     <a href="#" onclick="verChat()">Chat</a>
+    <a href="#" onclick="sair()" style="color:#f56b6b;">Sair</a>
   </nav>
   <div id="status"></div>
   <main id="feedDiv">
@@ -51,8 +66,8 @@
     <br><br>
     <input type="file" accept="image/*" onchange="trocarFoto(event)">
     <br><br>
-    <p><strong>Nome:</strong> Laiton</p>
-    <p><strong>Bio:</strong> Programador em formação! 🚀</p>
+    <p id="nomePerfilTexto"><strong>Nome:</strong> </p>
+    <p><strong>Bio:</strong> Utilizador do ConnectApp! 🚀</p>
   </div>
   <div id="chatDiv" style="display:none; max-width:600px; margin:24px auto; padding:0 16px;">
     <h2>💬 Chat</h2>
@@ -75,13 +90,33 @@
     };
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    let nomeUsuario = localStorage.getItem("nomeUsuario") || "";
+    if (nomeUsuario) {
+      document.getElementById("loginTela").style.display = "none";
+      document.getElementById("bemVindo").textContent = "Bem-vindo, " + nomeUsuario + "!";
+      document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nomeUsuario;
+      carregarPosts();
+    }
+    window.entrar = function() {
+      const nome = document.getElementById("inputNome").value.trim();
+      if (!nome) { alert("Digite seu nome!"); return; }
+      nomeUsuario = nome;
+      localStorage.setItem("nomeUsuario", nome);
+      document.getElementById("loginTela").style.display = "none";
+      document.getElementById("bemVindo").textContent = "Bem-vindo, " + nome + "!";
+      document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nome;
+      carregarPosts();
+    }
+    window.sair = function() {
+      if (confirm("Quer sair?")) { localStorage.removeItem("nomeUsuario"); location.reload(); }
+    }
     function setStatus(msg) {
       document.getElementById("status").textContent = msg;
       setTimeout(() => document.getElementById("status").textContent = "", 3000);
     }
     async function carregarPosts() {
       const postsDiv = document.getElementById("posts");
-      postsDiv.innerHTML = "<p style='color:#6b7280; text-align:center; margin-top:16px;'>Carregando...</p>";
+      postsDiv.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
       try {
         const q = query(collection(db, "posts"), orderBy("data", "desc"));
         const snap = await getDocs(q);
@@ -90,13 +125,7 @@
           const p = d.data();
           const div = document.createElement("div");
           div.className = "post-card";
-          div.innerHTML = `
-            <strong>${p.autor}</strong> · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
-            <p style="margin:10px 0;color:#c8cad8;">${p.texto}</p>
-            <button onclick="curtir(this)">❤️ Curtir</button>
-            <button>💬 Comentar</button>
-            <button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>
-          `;
+          div.innerHTML = `<strong>${p.autor}</strong> · <span style="color:#6b7280;font-size:12px;">${p.hora}</span><p style="margin:10px 0;color:#c8cad8;">${p.texto}</p><button onclick="curtir(this)">❤️ Curtir</button><button>💬 Comentar</button><button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>`;
           postsDiv.appendChild(div);
         });
         if (snap.empty) postsDiv.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum post ainda!</p>";
@@ -108,7 +137,7 @@
       if (!texto) { alert("Escreva algo!"); return; }
       try {
         const hora = new Date().toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"});
-        await addDoc(collection(db, "posts"), { texto, autor: "Laiton", hora, data: serverTimestamp() });
+        await addDoc(collection(db, "posts"), { texto, autor: nomeUsuario, hora, data: serverTimestamp() });
         caixa.value = "";
         setStatus("✅ Post publicado!");
         carregarPosts();
@@ -127,8 +156,7 @@
     window.mostrarFeed = function() { document.getElementById("feedDiv").style.display="block"; document.getElementById("chatDiv").style.display="none"; document.getElementById("perfil").style.display="none"; }
     window.trocarFoto = function(e) { const r=new FileReader(); r.onload=function(x){document.getElementById("fotoPerfil").src=x.target.result;}; r.readAsDataURL(e.target.files[0]); }
     window.verChat = function() { document.getElementById("feedDiv").style.display="none"; document.getElementById("perfil").style.display="none"; document.getElementById("chatDiv").style.display="block"; }
-    window.enviarMsg = function() { const i=document.getElementById("inputMsg"); if(!i.value) return; const m=document.getElementById("mensagens"); const p=document.createElement("p"); p.innerHTML="<strong>Você:</strong> "+i.value; p.style.marginBottom="8px"; m.appendChild(p); i.value=""; m.scrollTop=m.scrollHeight; }
-    carregarPosts();
+    window.enviarMsg = function() { const i=document.getElementById("inputMsg"); if(!i.value) return; const m=document.getElementById("mensagens"); const p=document.createElement("p"); p.innerHTML="<strong>"+nomeUsuario+":</strong> "+i.value; p.style.marginBottom="8px"; m.appendChild(p); i.value=""; m.scrollTop=m.scrollHeight; }
   </script>
 </body>
-</html>
+        </html>
