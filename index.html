@@ -13,8 +13,9 @@
     header p { color: rgba(255,255,255,0.8); font-size: 14px; }
     #onlineBar { background: #161920; text-align: center; padding: 6px; font-size: 13px; color: #4ecb8d; border-bottom: 1px solid #2a2f42; }
     nav { background: #161920; display: flex; justify-content: center; gap: 20px; padding: 14px; border-bottom: 1px solid #2a2f42; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; }
-    nav a { color: #6b7280; text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 16px; border-radius: 20px; transition: all 0.2s; }
+    nav a { color: #6b7280; text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 16px; border-radius: 20px; transition: all 0.2s; position: relative; }
     nav a:hover { background: #5b6ef5; color: white; }
+    .notif-dot { position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; background: #f56b6b; border-radius: 50%; display: none; }
     main, #perfil, #chatDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
     textarea { width: 100%; background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 12px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 14px; height: 90px; resize: none; outline: none; }
     textarea:focus { border-color: #5b6ef5; }
@@ -62,7 +63,7 @@
   <nav>
     <a href="#" onclick="mostrarFeed()">Feed</a>
     <a href="#" onclick="verPerfil()">Perfil</a>
-    <a href="#" onclick="verChat()">💬 Chat</a>
+    <a href="#" onclick="verChat()" id="chatBtn">💬 Chat<span class="notif-dot" id="chatNotif"></span></a>
     <a href="#" onclick="sair()" style="color:#f56b6b;">Sair</a>
   </nav>
   <div id="status"></div>
@@ -93,7 +94,7 @@
   <footer><p>Feito por Laiton 🚀</p></footer>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp, onSnapshot, setDoc, deleteField, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
     const firebaseConfig = {
       apiKey: "AIzaSyCoACMoICD9HvY-qkmlebrVl23qjJIsqzE",
       authDomain: "connectapp-f32f7.firebaseapp.com",
@@ -106,6 +107,8 @@
     const db = getFirestore(app);
     let nomeUsuario = localStorage.getItem("nomeUsuario") || "";
     let sessionId = Math.random().toString(36).substr(2, 9);
+    let chatAberto = false;
+    let ultimaMsgVista = localStorage.getItem("ultimaMsgVista") || "";
 
     if (nomeUsuario) {
       document.getElementById("loginTela").style.display = "none";
@@ -113,21 +116,30 @@
       document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nomeUsuario;
       carregarPosts();
       registarOnline();
+      monitorarChat();
     }
 
-    // Registar utilizador online
     async function registarOnline() {
       try {
         await setDoc(doc(db, "online", sessionId), { nome: nomeUsuario, timestamp: serverTimestamp() });
-        // Remover quando sair
-        window.addEventListener("beforeunload", () => {
-          deleteDoc(doc(db, "online", sessionId));
-        });
-        // Contador em tempo real
+        window.addEventListener("beforeunload", () => { deleteDoc(doc(db, "online", sessionId)); });
         onSnapshot(collection(db, "online"), (snap) => {
           document.getElementById("onlineCount").textContent = snap.size;
         });
       } catch(e) {}
+    }
+
+    function monitorarChat() {
+      const q = query(collection(db, "chat"), orderBy("data", "desc"));
+      onSnapshot(q, (snap) => {
+        if (snap.empty) return;
+        const ultima = snap.docs[0];
+        const ultimaId = ultima.id;
+        const ultimaMsg = ultima.data();
+        if (!chatAberto && ultimaId !== ultimaMsgVista && ultimaMsg.autor !== nomeUsuario) {
+          document.getElementById("chatNotif").style.display = "block";
+        }
+      });
     }
 
     window.entrar = function() {
@@ -140,6 +152,7 @@
       document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nome;
       carregarPosts();
       registarOnline();
+      monitorarChat();
     }
     window.sair = function() {
       if (confirm("Quer sair?")) {
@@ -239,7 +252,15 @@
       document.getElementById("feedDiv").style.display="none";
       document.getElementById("perfil").style.display="none";
       document.getElementById("chatDiv").style.display="block";
+      document.getElementById("chatNotif").style.display="none";
+      chatAberto = true;
       iniciarChat();
+    }
+    window.mostrarFeed = function() {
+      document.getElementById("feedDiv").style.display="block";
+      document.getElementById("chatDiv").style.display="none";
+      document.getElementById("perfil").style.display="none";
+      chatAberto = false;
     }
     let chatIniciado = false;
     function iniciarChat() {
@@ -273,4 +294,4 @@
     });
   </script>
 </body>
-        </html>
+</html>
