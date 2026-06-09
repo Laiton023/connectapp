@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -12,6 +11,7 @@
     header { background: linear-gradient(135deg, #5b6ef5, #f56b6b); padding: 20px; text-align: center; }
     header h1 { font-size: 28px; font-weight: 700; color: white; }
     header p { color: rgba(255,255,255,0.8); font-size: 14px; }
+    #onlineBar { background: #161920; text-align: center; padding: 6px; font-size: 13px; color: #4ecb8d; border-bottom: 1px solid #2a2f42; }
     nav { background: #161920; display: flex; justify-content: center; gap: 20px; padding: 14px; border-bottom: 1px solid #2a2f42; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; }
     nav a { color: #6b7280; text-decoration: none; font-weight: 600; font-size: 14px; padding: 6px 16px; border-radius: 20px; transition: all 0.2s; }
     nav a:hover { background: #5b6ef5; color: white; }
@@ -35,9 +35,7 @@
     .login-box input { width: 100%; background: #0d0f14; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 10px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 16px; outline: none; margin-bottom: 16px; }
     .login-box input:focus { border-color: #5b6ef5; }
     .login-box button { width: 100%; padding: 14px; font-size: 16px; border-radius: 10px; }
-    /* CHAT */
     #chatDiv { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 20px; }
-    #chatDiv h2 { margin-bottom: 12px; }
     #mensagens { height: 300px; overflow-y: auto; background: #0d0f14; padding: 12px; border-radius: 10px; display: flex; flex-direction: column; gap: 8px; }
     .msg-item { padding: 8px 12px; border-radius: 10px; font-size: 13px; max-width: 80%; }
     .msg-minha { background: #5b6ef5; color: white; align-self: flex-end; }
@@ -60,6 +58,7 @@
     <h1>🌐 ConnectApp</h1>
     <p id="bemVindo">Bem-vindo!</p>
   </header>
+  <div id="onlineBar">🟢 <span id="onlineCount">0</span> pessoa(s) online agora</div>
   <nav>
     <a href="#" onclick="mostrarFeed()">Feed</a>
     <a href="#" onclick="verPerfil()">Perfil</a>
@@ -94,7 +93,7 @@
   <footer><p>Feito por Laiton 🚀</p></footer>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp, onSnapshot, setDoc, deleteField, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
     const firebaseConfig = {
       apiKey: "AIzaSyCoACMoICD9HvY-qkmlebrVl23qjJIsqzE",
       authDomain: "connectapp-f32f7.firebaseapp.com",
@@ -106,12 +105,31 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     let nomeUsuario = localStorage.getItem("nomeUsuario") || "";
+    let sessionId = Math.random().toString(36).substr(2, 9);
+
     if (nomeUsuario) {
       document.getElementById("loginTela").style.display = "none";
       document.getElementById("bemVindo").textContent = "Bem-vindo, " + nomeUsuario + "!";
       document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nomeUsuario;
       carregarPosts();
+      registarOnline();
     }
+
+    // Registar utilizador online
+    async function registarOnline() {
+      try {
+        await setDoc(doc(db, "online", sessionId), { nome: nomeUsuario, timestamp: serverTimestamp() });
+        // Remover quando sair
+        window.addEventListener("beforeunload", () => {
+          deleteDoc(doc(db, "online", sessionId));
+        });
+        // Contador em tempo real
+        onSnapshot(collection(db, "online"), (snap) => {
+          document.getElementById("onlineCount").textContent = snap.size;
+        });
+      } catch(e) {}
+    }
+
     window.entrar = function() {
       const nome = document.getElementById("inputNome").value.trim();
       if (!nome) { alert("Digite seu nome!"); return; }
@@ -121,9 +139,14 @@
       document.getElementById("bemVindo").textContent = "Bem-vindo, " + nome + "!";
       document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nome;
       carregarPosts();
+      registarOnline();
     }
     window.sair = function() {
-      if (confirm("Quer sair?")) { localStorage.removeItem("nomeUsuario"); location.reload(); }
+      if (confirm("Quer sair?")) {
+        deleteDoc(doc(db, "online", sessionId));
+        localStorage.removeItem("nomeUsuario");
+        location.reload();
+      }
     }
     function setStatus(msg) {
       document.getElementById("status").textContent = msg;
@@ -140,7 +163,6 @@
           const p = d.data();
           const div = document.createElement("div");
           div.className = "post-card";
-          div.id = "post-" + d.id;
           div.innerHTML = `
             <strong>${p.autor}</strong> · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
             <p style="margin:10px 0;color:#c8cad8;">${p.texto}</p>
@@ -213,8 +235,6 @@
     window.verPerfil = function() { document.getElementById("feedDiv").style.display="none"; document.getElementById("chatDiv").style.display="none"; document.getElementById("perfil").style.display="block"; }
     window.mostrarFeed = function() { document.getElementById("feedDiv").style.display="block"; document.getElementById("chatDiv").style.display="none"; document.getElementById("perfil").style.display="none"; }
     window.trocarFoto = function(e) { const r=new FileReader(); r.onload=function(x){document.getElementById("fotoPerfil").src=x.target.result;}; r.readAsDataURL(e.target.files[0]); }
-
-    // CHAT EM TEMPO REAL
     window.verChat = function() {
       document.getElementById("feedDiv").style.display="none";
       document.getElementById("perfil").style.display="none";
@@ -248,10 +268,9 @@
         i.value = "";
       } catch(e) {}
     }
-    // Enviar com Enter
     document.getElementById("inputMsg").addEventListener("keypress", function(e) {
       if (e.key === "Enter") window.enviarMsg();
     });
   </script>
 </body>
-</html>
+        </html>
