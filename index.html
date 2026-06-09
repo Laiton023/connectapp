@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -34,6 +35,16 @@
     .login-box input { width: 100%; background: #0d0f14; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 10px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 16px; outline: none; margin-bottom: 16px; }
     .login-box input:focus { border-color: #5b6ef5; }
     .login-box button { width: 100%; padding: 14px; font-size: 16px; border-radius: 10px; }
+    /* CHAT */
+    #chatDiv { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 20px; }
+    #chatDiv h2 { margin-bottom: 12px; }
+    #mensagens { height: 300px; overflow-y: auto; background: #0d0f14; padding: 12px; border-radius: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .msg-item { padding: 8px 12px; border-radius: 10px; font-size: 13px; max-width: 80%; }
+    .msg-minha { background: #5b6ef5; color: white; align-self: flex-end; }
+    .msg-outro { background: #2a2f42; color: #e8eaf2; align-self: flex-start; }
+    .chat-input-box { display: flex; gap: 8px; margin-top: 12px; }
+    .chat-input-box input { flex: 1; background: #0d0f14; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 8px; padding: 10px 14px; font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; width: auto; }
+    .chat-input-box button { margin-top: 0; }
   </style>
 </head>
 <body>
@@ -52,7 +63,7 @@
   <nav>
     <a href="#" onclick="mostrarFeed()">Feed</a>
     <a href="#" onclick="verPerfil()">Perfil</a>
-    <a href="#" onclick="verChat()">Chat</a>
+    <a href="#" onclick="verChat()">💬 Chat</a>
     <a href="#" onclick="sair()" style="color:#f56b6b;">Sair</a>
   </nav>
   <div id="status"></div>
@@ -72,17 +83,18 @@
     <p id="nomePerfilTexto"><strong>Nome:</strong> </p>
     <p><strong>Bio:</strong> Utilizador do ConnectApp! 🚀</p>
   </div>
-  <div id="chatDiv" style="display:none; max-width:600px; margin:24px auto; padding:0 16px;">
-    <h2>💬 Chat</h2>
-    <div id="mensagens" style="height:200px; overflow-y:auto; background:#0d0f14; padding:10px; border-radius:10px; margin-top:12px;"></div>
-    <br>
-    <input id="inputMsg" type="text" placeholder="Digite uma mensagem...">
-    <button onclick="enviarMsg()">Enviar</button>
+  <div id="chatDiv" style="display:none; max-width:600px; margin:24px auto; padding:20px 16px;">
+    <h2>💬 Chat em Tempo Real</h2>
+    <div id="mensagens"></div>
+    <div class="chat-input-box">
+      <input id="inputMsg" type="text" placeholder="Digite uma mensagem...">
+      <button onclick="enviarMsg()">Enviar</button>
+    </div>
   </div>
   <footer><p>Feito por Laiton 🚀</p></footer>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
     const firebaseConfig = {
       apiKey: "AIzaSyCoACMoICD9HvY-qkmlebrVl23qjJIsqzE",
       authDomain: "connectapp-f32f7.firebaseapp.com",
@@ -172,9 +184,7 @@
       const texto = input.value.trim();
       if (!texto) return;
       try {
-        await addDoc(collection(db, "posts", postId, "comentarios"), {
-          texto, autor: nomeUsuario, data: serverTimestamp()
-        });
+        await addDoc(collection(db, "posts", postId, "comentarios"), { texto, autor: nomeUsuario, data: serverTimestamp() });
         input.value = "";
         carregarComentarios(postId);
       } catch(e) {}
@@ -203,8 +213,45 @@
     window.verPerfil = function() { document.getElementById("feedDiv").style.display="none"; document.getElementById("chatDiv").style.display="none"; document.getElementById("perfil").style.display="block"; }
     window.mostrarFeed = function() { document.getElementById("feedDiv").style.display="block"; document.getElementById("chatDiv").style.display="none"; document.getElementById("perfil").style.display="none"; }
     window.trocarFoto = function(e) { const r=new FileReader(); r.onload=function(x){document.getElementById("fotoPerfil").src=x.target.result;}; r.readAsDataURL(e.target.files[0]); }
-    window.verChat = function() { document.getElementById("feedDiv").style.display="none"; document.getElementById("perfil").style.display="none"; document.getElementById("chatDiv").style.display="block"; }
-    window.enviarMsg = function() { const i=document.getElementById("inputMsg"); if(!i.value) return; const m=document.getElementById("mensagens"); const p=document.createElement("p"); p.innerHTML="<strong>"+nomeUsuario+":</strong> "+i.value; p.style.marginBottom="8px"; m.appendChild(p); i.value=""; m.scrollTop=m.scrollHeight; }
+
+    // CHAT EM TEMPO REAL
+    window.verChat = function() {
+      document.getElementById("feedDiv").style.display="none";
+      document.getElementById("perfil").style.display="none";
+      document.getElementById("chatDiv").style.display="block";
+      iniciarChat();
+    }
+    let chatIniciado = false;
+    function iniciarChat() {
+      if (chatIniciado) return;
+      chatIniciado = true;
+      const q = query(collection(db, "chat"), orderBy("data", "asc"));
+      onSnapshot(q, (snap) => {
+        const mensagens = document.getElementById("mensagens");
+        mensagens.innerHTML = "";
+        snap.forEach((d) => {
+          const m = d.data();
+          const div = document.createElement("div");
+          div.className = "msg-item " + (m.autor === nomeUsuario ? "msg-minha" : "msg-outro");
+          div.innerHTML = m.autor === nomeUsuario ? m.texto : `<strong>${m.autor}:</strong> ${m.texto}`;
+          mensagens.appendChild(div);
+        });
+        mensagens.scrollTop = mensagens.scrollHeight;
+      });
+    }
+    window.enviarMsg = async function() {
+      const i = document.getElementById("inputMsg");
+      const texto = i.value.trim();
+      if (!texto) return;
+      try {
+        await addDoc(collection(db, "chat"), { texto, autor: nomeUsuario, data: serverTimestamp() });
+        i.value = "";
+      } catch(e) {}
+    }
+    // Enviar com Enter
+    document.getElementById("inputMsg").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") window.enviarMsg();
+    });
   </script>
 </body>
 </html>
