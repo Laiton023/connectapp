@@ -29,6 +29,9 @@
     button:hover { background: #4a5de8; transform: translateY(-1px); }
     .btn-whatsapp { background: #25d366; }
     .btn-whatsapp:hover { background: #1da851; }
+    .btn-seguir { background: #f56b6b; }
+    .btn-seguir:hover { background: #e05555; }
+    .btn-seguindo { background: #2a2f42; }
     .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
     body.claro .post-card { background: #ffffff; border-color: #dde1ed; }
     .post-img { width: 100%; border-radius: 10px; margin: 10px 0; max-height: 300px; object-fit: cover; }
@@ -40,6 +43,10 @@
     body.claro .comentario-input { background: #f0f2f5; color: #1a1a2e; border-color: #c0c4d0; }
     #perfil { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 24px; text-align: center; }
     body.claro #perfil { background: #ffffff; border-color: #dde1ed; }
+    .perfil-stats { display: flex; justify-content: center; gap: 30px; margin: 16px 0; }
+    .perfil-stat { text-align: center; }
+    .perfil-stat strong { display: block; font-size: 22px; color: #5b6ef5; }
+    .perfil-stat span { font-size: 12px; color: #6b7280; }
     input[type="text"] { background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 8px; padding: 10px 14px; font-family: 'Poppins', sans-serif; font-size: 14px; width: 75%; outline: none; }
     body.claro input[type="text"] { background: #ffffff; color: #1a1a2e; border-color: #c0c4d0; }
     #pesquisaBox { width: 100%; background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 10px; padding: 12px 14px; font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; margin-bottom: 16px; }
@@ -115,6 +122,11 @@
     <br><br>
     <p id="nomePerfilTexto"><strong>Nome:</strong> </p>
     <p><strong>Bio:</strong> Utilizador do ConnectApp! 🚀</p>
+    <div class="perfil-stats">
+      <div class="perfil-stat"><strong id="numSeguidores">0</strong><span>Seguidores</span></div>
+      <div class="perfil-stat"><strong id="numSeguindo">0</strong><span>A seguir</span></div>
+      <div class="perfil-stat"><strong id="numPosts">0</strong><span>Posts</span></div>
+    </div>
   </div>
   <div id="chatDiv" style="display:none; max-width:600px; margin:24px auto; padding:20px 16px;">
     <h2>💬 Chat em Tempo Real</h2>
@@ -127,7 +139,7 @@
   <footer><p>Feito por Laiton 🚀</p></footer>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp, onSnapshot, setDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
     const firebaseConfig = {
       apiKey: "AIzaSyCoACMoICD9HvY-qkmlebrVl23qjJIsqzE",
       authDomain: "connectapp-f32f7.firebaseapp.com",
@@ -213,13 +225,46 @@
       setTimeout(() => document.getElementById("status").textContent = "", 3000);
     }
 
+    // SEGUIDORES
+    async function carregarEstatisticas() {
+      try {
+        const seguidoresSnap = await getDocs(collection(db, "utilizadores", nomeUsuario, "seguidores"));
+        const seguindoSnap = await getDocs(collection(db, "utilizadores", nomeUsuario, "seguindo"));
+        const postsSnap = await getDocs(query(collection(db, "posts")));
+        const meusPosts = postsSnap.docs.filter(d => d.data().autor === nomeUsuario);
+        document.getElementById("numSeguidores").textContent = seguidoresSnap.size;
+        document.getElementById("numSeguindo").textContent = seguindoSnap.size;
+        document.getElementById("numPosts").textContent = meusPosts.length;
+      } catch(e) {}
+    }
+
+    window.seguir = async function(autorPost, botao) {
+      if (autorPost === nomeUsuario) return;
+      try {
+        const jaSegue = await getDoc(doc(db, "utilizadores", autorPost, "seguidores", nomeUsuario));
+        if (jaSegue.exists()) {
+          await deleteDoc(doc(db, "utilizadores", autorPost, "seguidores", nomeUsuario));
+          await deleteDoc(doc(db, "utilizadores", nomeUsuario, "seguindo", autorPost));
+          botao.textContent = "➕ Seguir";
+          botao.className = "btn-seguir";
+        } else {
+          await setDoc(doc(db, "utilizadores", autorPost, "seguidores", nomeUsuario), { nome: nomeUsuario });
+          await setDoc(doc(db, "utilizadores", nomeUsuario, "seguindo", autorPost), { nome: autorPost });
+          botao.textContent = "✅ A seguir";
+          botao.className = "btn-seguindo";
+        }
+      } catch(e) {}
+    }
+
     function criarPostCard(d) {
       const p = d.data;
       const div = document.createElement("div");
       div.className = "post-card";
       const imgHtml = p.imagem ? `<img src="${p.imagem}" class="post-img">` : "";
+      const seguirBtn = p.autor !== nomeUsuario ? `<button class="btn-seguir" onclick="seguir('${p.autor}', this)">➕ Seguir</button>` : "";
       div.innerHTML = `
         <strong>${p.autor}</strong> · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
+        ${seguirBtn}
         <p style="margin:10px 0;color:#c8cad8;">${p.texto}</p>
         ${imgHtml}
         <button onclick="curtir(this)">❤️ Curtir</button>
@@ -338,7 +383,13 @@
       window.open(url, "_blank");
     }
 
-    window.verPerfil = function() { chatAberto=false; document.getElementById("feedDiv").style.display="none"; document.getElementById("chatDiv").style.display="none"; document.getElementById("perfil").style.display="block"; }
+    window.verPerfil = function() {
+      chatAberto=false;
+      document.getElementById("feedDiv").style.display="none";
+      document.getElementById("chatDiv").style.display="none";
+      document.getElementById("perfil").style.display="block";
+      carregarEstatisticas();
+    }
     window.mostrarFeed = function() { chatAberto=false; document.getElementById("feedDiv").style.display="block"; document.getElementById("chatDiv").style.display="none"; document.getElementById("perfil").style.display="none"; }
     window.trocarFoto = function(e) { const r=new FileReader(); r.onload=function(x){document.getElementById("fotoPerfil").src=x.target.result;}; r.readAsDataURL(e.target.files[0]); }
 
