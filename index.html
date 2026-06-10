@@ -27,6 +27,8 @@
     textarea:focus { border-color: #5b6ef5; }
     button { background: #5b6ef5; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; margin-right: 6px; transition: all 0.2s; }
     button:hover { background: #4a5de8; transform: translateY(-1px); }
+    .btn-whatsapp { background: #25d366; }
+    .btn-whatsapp:hover { background: #1da851; }
     .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
     body.claro .post-card { background: #ffffff; border-color: #dde1ed; }
     .comentarios-box { margin-top: 12px; border-top: 1px solid #2a2f42; padding-top: 12px; display: none; }
@@ -128,51 +130,36 @@
     let sessionId = Math.random().toString(36).substr(2, 9);
     let chatAberto = false;
     let modoClaro = localStorage.getItem("modoClaro") === "true";
-
-    // Aplicar modo salvo
-    if (modoClaro) {
-      document.body.classList.add("claro");
-      document.getElementById("modoBtn").textContent = "☀️ Claro";
-    }
-
+    if (modoClaro) { document.body.classList.add("claro"); document.getElementById("modoBtn").textContent = "☀️ Claro"; }
     window.toggleModo = function() {
       modoClaro = !modoClaro;
       document.body.classList.toggle("claro");
       document.getElementById("modoBtn").textContent = modoClaro ? "☀️ Claro" : "🌙 Escuro";
       localStorage.setItem("modoClaro", modoClaro);
     }
-
     if (nomeUsuario) {
       document.getElementById("loginTela").style.display = "none";
       document.getElementById("bemVindo").textContent = "Bem-vindo, " + nomeUsuario + "!";
       document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nomeUsuario;
-      carregarPosts();
-      registarOnline();
-      monitorarChat();
+      carregarPosts(); registarOnline(); monitorarChat();
     }
-
     async function registarOnline() {
       try {
         await setDoc(doc(db, "online", sessionId), { nome: nomeUsuario, timestamp: serverTimestamp() });
         window.addEventListener("beforeunload", () => { deleteDoc(doc(db, "online", sessionId)); });
-        onSnapshot(collection(db, "online"), (snap) => {
-          document.getElementById("onlineCount").textContent = snap.size;
-        });
+        onSnapshot(collection(db, "online"), (snap) => { document.getElementById("onlineCount").textContent = snap.size; });
       } catch(e) {}
     }
-
     function monitorarChat() {
       const q = query(collection(db, "chat"), orderBy("data", "desc"));
       onSnapshot(q, (snap) => {
         if (snap.empty) return;
-        const ultima = snap.docs[0];
-        const ultimaMsg = ultima.data();
+        const ultimaMsg = snap.docs[0].data();
         if (!chatAberto && ultimaMsg.autor !== nomeUsuario) {
           document.getElementById("chatNotif").style.display = "block";
         }
       });
     }
-
     window.entrar = function() {
       const nome = document.getElementById("inputNome").value.trim();
       if (!nome) { alert("Digite seu nome!"); return; }
@@ -181,16 +168,10 @@
       document.getElementById("loginTela").style.display = "none";
       document.getElementById("bemVindo").textContent = "Bem-vindo, " + nome + "!";
       document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nome;
-      carregarPosts();
-      registarOnline();
-      monitorarChat();
+      carregarPosts(); registarOnline(); monitorarChat();
     }
     window.sair = function() {
-      if (confirm("Quer sair?")) {
-        deleteDoc(doc(db, "online", sessionId));
-        localStorage.removeItem("nomeUsuario");
-        location.reload();
-      }
+      if (confirm("Quer sair?")) { deleteDoc(doc(db, "online", sessionId)); localStorage.removeItem("nomeUsuario"); location.reload(); }
     }
     function setStatus(msg) {
       document.getElementById("status").textContent = msg;
@@ -213,6 +194,7 @@
             <button onclick="curtir(this)">❤️ Curtir</button>
             <button onclick="toggleComentarios('${d.id}')">💬 Comentar</button>
             <button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>
+            <button class="btn-whatsapp" onclick="partilhar('${p.texto.replace(/'/g, "\\'")}')">📲 Partilhar</button>
             <div class="comentarios-box" id="coms-${d.id}">
               <div id="lista-coms-${d.id}"></div>
               <input class="comentario-input" id="input-com-${d.id}" placeholder="Escreva um comentário...">
@@ -251,8 +233,7 @@
       if (!texto) return;
       try {
         await addDoc(collection(db, "posts", postId, "comentarios"), { texto, autor: nomeUsuario, data: serverTimestamp() });
-        input.value = "";
-        carregarComentarios(postId);
+        input.value = ""; carregarComentarios(postId);
       } catch(e) {}
     }
     window.publicar = async function() {
@@ -262,9 +243,7 @@
       try {
         const hora = new Date().toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"});
         await addDoc(collection(db, "posts"), { texto, autor: nomeUsuario, hora, data: serverTimestamp() });
-        caixa.value = "";
-        setStatus("✅ Post publicado!");
-        carregarPosts();
+        caixa.value = ""; setStatus("✅ Post publicado!"); carregarPosts();
       } catch(e) { setStatus("❌ Erro ao publicar."); }
     }
     window.deletarPost = async function(id, botao) {
@@ -276,21 +255,21 @@
       botao.setAttribute("data-curtidas", c);
       botao.textContent = "❤️ Curtir (" + c + ")";
     }
+    window.partilhar = function(texto) {
+      const url = "https://wa.me/?text=" + encodeURIComponent(texto + "\n\n🌐 Via ConnectApp: https://laiton023.github.io/connectapp");
+      window.open(url, "_blank");
+    }
     window.verPerfil = function() { chatAberto=false; document.getElementById("feedDiv").style.display="none"; document.getElementById("chatDiv").style.display="none"; document.getElementById("perfil").style.display="block"; }
     window.mostrarFeed = function() { chatAberto=false; document.getElementById("feedDiv").style.display="block"; document.getElementById("chatDiv").style.display="none"; document.getElementById("perfil").style.display="none"; }
     window.trocarFoto = function(e) { const r=new FileReader(); r.onload=function(x){document.getElementById("fotoPerfil").src=x.target.result;}; r.readAsDataURL(e.target.files[0]); }
     window.verChat = function() {
-      document.getElementById("feedDiv").style.display="none";
-      document.getElementById("perfil").style.display="none";
-      document.getElementById("chatDiv").style.display="block";
-      document.getElementById("chatNotif").style.display="none";
-      chatAberto = true;
-      iniciarChat();
+      document.getElementById("feedDiv").style.display="none"; document.getElementById("perfil").style.display="none";
+      document.getElementById("chatDiv").style.display="block"; document.getElementById("chatNotif").style.display="none";
+      chatAberto = true; iniciarChat();
     }
     let chatIniciado = false;
     function iniciarChat() {
-      if (chatIniciado) return;
-      chatIniciado = true;
+      if (chatIniciado) return; chatIniciado = true;
       const q = query(collection(db, "chat"), orderBy("data", "asc"));
       onSnapshot(q, (snap) => {
         const mensagens = document.getElementById("mensagens");
@@ -309,10 +288,8 @@
       const i = document.getElementById("inputMsg");
       const texto = i.value.trim();
       if (!texto) return;
-      try {
-        await addDoc(collection(db, "chat"), { texto, autor: nomeUsuario, data: serverTimestamp() });
-        i.value = "";
-      } catch(e) {}
+      try { await addDoc(collection(db, "chat"), { texto, autor: nomeUsuario, data: serverTimestamp() }); i.value = ""; }
+      catch(e) {}
     }
     document.getElementById("inputMsg").addEventListener("keypress", function(e) {
       if (e.key === "Enter") window.enviarMsg();
