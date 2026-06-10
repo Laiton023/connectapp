@@ -31,6 +31,7 @@
     .btn-whatsapp:hover { background: #1da851; }
     .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
     body.claro .post-card { background: #ffffff; border-color: #dde1ed; }
+    .post-img { width: 100%; border-radius: 10px; margin: 10px 0; max-height: 300px; object-fit: cover; }
     .comentarios-box { margin-top: 12px; border-top: 1px solid #2a2f42; padding-top: 12px; display: none; }
     body.claro .comentarios-box { border-top-color: #dde1ed; }
     .comentario-item { background: #0d0f14; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; font-size: 13px; }
@@ -41,10 +42,12 @@
     body.claro #perfil { background: #ffffff; border-color: #dde1ed; }
     input[type="text"] { background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 8px; padding: 10px 14px; font-family: 'Poppins', sans-serif; font-size: 14px; width: 75%; outline: none; }
     body.claro input[type="text"] { background: #ffffff; color: #1a1a2e; border-color: #c0c4d0; }
-    /* PESQUISA */
     #pesquisaBox { width: 100%; background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 10px; padding: 12px 14px; font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; margin-bottom: 16px; }
     body.claro #pesquisaBox { background: #ffffff; color: #1a1a2e; border-color: #c0c4d0; }
     #pesquisaBox:focus { border-color: #5b6ef5; }
+    .img-preview { width: 100%; border-radius: 10px; margin-top: 10px; max-height: 200px; object-fit: cover; display: none; }
+    .img-label { display: inline-block; background: #2a2f42; color: #e8eaf2; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; margin-top: 8px; }
+    body.claro .img-label { background: #e0e3eb; color: #1a1a2e; }
     footer { text-align: center; padding: 20px; color: #6b7280; font-size: 13px; margin-top: 30px; }
     #status { text-align: center; color: #4ecb8d; font-size: 13px; max-width: 600px; margin: 8px auto; padding: 0 16px; }
     #loginTela { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0d0f14; display: flex; align-items: center; justify-content: center; z-index: 999; }
@@ -97,6 +100,10 @@
     <input type="text" id="pesquisaBox" placeholder="🔍 Pesquisar posts..." oninput="pesquisar()">
     <textarea id="caixaTexto" placeholder="O que você está pensando?"></textarea>
     <br>
+    <label class="img-label" for="inputImagem">🖼️ Adicionar imagem</label>
+    <input type="file" id="inputImagem" accept="image/*" style="display:none" onchange="previewImagem(event)">
+    <img id="imgPreview" class="img-preview">
+    <br>
     <button onclick="publicar()">Publicar</button>
     <div id="posts"></div>
   </main>
@@ -136,6 +143,7 @@
     let chatAberto = false;
     let modoClaro = localStorage.getItem("modoClaro") === "true";
     let todosPosts = [];
+    let imagemBase64 = "";
 
     if (modoClaro) { document.body.classList.add("claro"); document.getElementById("modoBtn").textContent = "☀️ Claro"; }
 
@@ -144,6 +152,19 @@
       document.body.classList.toggle("claro");
       document.getElementById("modoBtn").textContent = modoClaro ? "☀️ Claro" : "🌙 Escuro";
       localStorage.setItem("modoClaro", modoClaro);
+    }
+
+    window.previewImagem = function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(x) {
+        imagemBase64 = x.target.result;
+        const preview = document.getElementById("imgPreview");
+        preview.src = imagemBase64;
+        preview.style.display = "block";
+      };
+      reader.readAsDataURL(file);
     }
 
     if (nomeUsuario) {
@@ -196,11 +217,11 @@
       const p = d.data;
       const div = document.createElement("div");
       div.className = "post-card";
-      div.setAttribute("data-texto", p.texto.toLowerCase());
-      div.setAttribute("data-autor", p.autor.toLowerCase());
+      const imgHtml = p.imagem ? `<img src="${p.imagem}" class="post-img">` : "";
       div.innerHTML = `
         <strong>${p.autor}</strong> · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
         <p style="margin:10px 0;color:#c8cad8;">${p.texto}</p>
+        ${imgHtml}
         <button onclick="curtir(this)">❤️ Curtir</button>
         <button onclick="toggleComentarios('${d.id}')">💬 Comentar</button>
         <button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>
@@ -285,11 +306,19 @@
     window.publicar = async function() {
       const caixa = document.getElementById("caixaTexto");
       const texto = caixa.value.trim();
-      if (!texto) { alert("Escreva algo!"); return; }
+      if (!texto && !imagemBase64) { alert("Escreva algo ou escolha uma imagem!"); return; }
       try {
         const hora = new Date().toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"});
-        await addDoc(collection(db, "posts"), { texto, autor: nomeUsuario, hora, data: serverTimestamp() });
-        caixa.value = ""; setStatus("✅ Post publicado!"); carregarPosts();
+        const postData = { texto: texto || "", autor: nomeUsuario, hora, data: serverTimestamp() };
+        if (imagemBase64) postData.imagem = imagemBase64;
+        await addDoc(collection(db, "posts"), postData);
+        caixa.value = "";
+        imagemBase64 = "";
+        document.getElementById("imgPreview").style.display = "none";
+        document.getElementById("imgPreview").src = "";
+        document.getElementById("inputImagem").value = "";
+        setStatus("✅ Post publicado!");
+        carregarPosts();
       } catch(e) { setStatus("❌ Erro ao publicar."); }
     }
 
