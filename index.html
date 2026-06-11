@@ -32,9 +32,13 @@
     .btn-seguir { background: #f56b6b; }
     .btn-seguir:hover { background: #e05555; }
     .btn-seguindo { background: #2a2f42; }
+    .btn-editar { background: #f0a500; }
+    .btn-editar:hover { background: #d4900a; }
     .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
     body.claro .post-card { background: #ffffff; border-color: #dde1ed; }
     .post-img { width: 100%; border-radius: 10px; margin: 10px 0; max-height: 300px; object-fit: cover; }
+    .edit-box { display: none; margin-top: 10px; }
+    .edit-box textarea { height: 70px; margin-bottom: 6px; }
     .comentarios-box { margin-top: 12px; border-top: 1px solid #2a2f42; padding-top: 12px; display: none; }
     body.claro .comentarios-box { border-top-color: #dde1ed; }
     .comentario-item { background: #0d0f14; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; font-size: 13px; }
@@ -139,7 +143,7 @@
   <footer><p>Feito por Laiton 🚀</p></footer>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp, onSnapshot, setDoc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
     const firebaseConfig = {
       apiKey: "AIzaSyCoACMoICD9HvY-qkmlebrVl23qjJIsqzE",
       authDomain: "connectapp-f32f7.firebaseapp.com",
@@ -225,7 +229,6 @@
       setTimeout(() => document.getElementById("status").textContent = "", 3000);
     }
 
-    // SEGUIDORES
     async function carregarEstatisticas() {
       try {
         const seguidoresSnap = await getDocs(collection(db, "utilizadores", nomeUsuario, "seguidores"));
@@ -256,21 +259,50 @@
       } catch(e) {}
     }
 
+    window.toggleEditar = function(postId, textoAtual) {
+      const editBox = document.getElementById("edit-" + postId);
+      const textoEl = document.getElementById("texto-" + postId);
+      if (editBox.style.display === "block") {
+        editBox.style.display = "none";
+      } else {
+        editBox.style.display = "block";
+        document.getElementById("editInput-" + postId).value = textoAtual;
+      }
+    }
+
+    window.guardarEdicao = async function(postId) {
+      const novoTexto = document.getElementById("editInput-" + postId).value.trim();
+      if (!novoTexto) return;
+      try {
+        await updateDoc(doc(db, "posts", postId), { texto: novoTexto });
+        document.getElementById("texto-" + postId).textContent = novoTexto;
+        document.getElementById("edit-" + postId).style.display = "none";
+        setStatus("✅ Post editado!");
+      } catch(e) { setStatus("❌ Erro ao editar."); }
+    }
+
     function criarPostCard(d) {
       const p = d.data;
       const div = document.createElement("div");
       div.className = "post-card";
       const imgHtml = p.imagem ? `<img src="${p.imagem}" class="post-img">` : "";
       const seguirBtn = p.autor !== nomeUsuario ? `<button class="btn-seguir" onclick="seguir('${p.autor}', this)">➕ Seguir</button>` : "";
+      const editarBtn = p.autor === nomeUsuario ? `<button class="btn-editar" onclick="toggleEditar('${d.id}', this.closest('.post-card').querySelector('.post-texto').textContent)">✏️ Editar</button>` : "";
       div.innerHTML = `
         <strong>${p.autor}</strong> · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
         ${seguirBtn}
-        <p style="margin:10px 0;color:#c8cad8;">${p.texto}</p>
+        <p class="post-texto" id="texto-${d.id}" style="margin:10px 0;color:#c8cad8;">${p.texto}</p>
         ${imgHtml}
         <button onclick="curtir(this)">❤️ Curtir</button>
         <button onclick="toggleComentarios('${d.id}')">💬 Comentar</button>
+        ${editarBtn}
         <button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>
         <button class="btn-whatsapp" onclick="partilhar('${p.texto.replace(/'/g, "\\'")}')">📲 Partilhar</button>
+        <div class="edit-box" id="edit-${d.id}">
+          <textarea id="editInput-${d.id}">${p.texto}</textarea>
+          <button onclick="guardarEdicao('${d.id}')">💾 Guardar</button>
+          <button onclick="toggleEditar('${d.id}')" style="background:#6b7280;">Cancelar</button>
+        </div>
         <div class="comentarios-box" id="coms-${d.id}">
           <div id="lista-coms-${d.id}"></div>
           <input class="comentario-input" id="input-com-${d.id}" placeholder="Escreva um comentário...">
