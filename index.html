@@ -39,7 +39,6 @@
     .post-img { width: 100%; border-radius: 10px; margin: 10px 0; max-height: 300px; object-fit: cover; }
     .edit-box { display: none; margin-top: 10px; }
     .edit-box textarea { height: 70px; margin-bottom: 6px; }
-    /* REACOES */
     .reacoes-bar { display: flex; gap: 4px; flex-wrap: wrap; margin: 10px 0; }
     .reacao-btn { background: #0d0f14; border: 1px solid #2a2f42; color: #e8eaf2; padding: 6px 10px; border-radius: 20px; font-size: 13px; cursor: pointer; margin: 0; transition: all 0.2s; }
     body.claro .reacao-btn { background: #f0f2f5; border-color: #c0c4d0; color: #1a1a2e; }
@@ -58,6 +57,12 @@
     .perfil-stat { text-align: center; }
     .perfil-stat strong { display: block; font-size: 22px; color: #5b6ef5; }
     .perfil-stat span { font-size: 12px; color: #6b7280; }
+    .notificacoes-box { text-align: left; margin-top: 20px; border-top: 1px solid #2a2f42; padding-top: 16px; }
+    body.claro .notificacoes-box { border-top-color: #dde1ed; }
+    .notificacoes-box h3 { font-size: 15px; margin-bottom: 10px; }
+    .notif-item { background: #0d0f14; border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; font-size: 13px; display: flex; align-items: center; gap: 10px; }
+    body.claro .notif-item { background: #f0f2f5; color: #1a1a2e; }
+    .notif-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #5b6ef5, #f56b6b); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
     input[type="text"] { background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 8px; padding: 10px 14px; font-family: 'Poppins', sans-serif; font-size: 14px; width: 75%; outline: none; }
     body.claro input[type="text"] { background: #ffffff; color: #1a1a2e; border-color: #c0c4d0; }
     #pesquisaBox { width: 100%; background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 10px; padding: 12px 14px; font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; margin-bottom: 16px; }
@@ -127,7 +132,7 @@
   <nav>
     <a href="#" onclick="mostrarFeed()">Feed</a>
     <a href="#" onclick="verUtilizadores()">👥 Users</a>
-    <a href="#" onclick="verPerfil()">Perfil</a>
+    <a href="#" onclick="verPerfil()">Perfil<span class="notif-dot" id="perfilNotif"></span></a>
     <a href="#" onclick="verChat()" id="chatBtn">💬 Chat<span class="notif-dot" id="chatNotif"></span></a>
     <a href="#" onclick="sair()" style="color:#f56b6b;">Sair</a>
     <button id="modoBtn" onclick="toggleModo()">🌙 Escuro</button>
@@ -179,6 +184,10 @@
       <div class="perfil-stat"><strong id="numSeguindo">0</strong><span>A seguir</span></div>
       <div class="perfil-stat"><strong id="numPosts">0</strong><span>Posts</span></div>
     </div>
+    <div class="notificacoes-box">
+      <h3>🔔 Notificações</h3>
+      <div id="listaNotificacoes"></div>
+    </div>
   </div>
   <div id="chatDiv" style="display:none; max-width:600px; margin:24px auto; padding:20px 16px;">
     <h2>💬 Chat em Tempo Real</h2>
@@ -191,7 +200,7 @@
   <footer><p>Feito por Laiton 🚀</p></footer>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp, onSnapshot, setDoc, getDoc, updateDoc, increment } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp, onSnapshot, setDoc, getDoc, updateDoc, increment, where, limit } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
     const firebaseConfig = {
       apiKey: "AIzaSyCoACMoICD9HvY-qkmlebrVl23qjJIsqzE",
       authDomain: "connectapp-f32f7.firebaseapp.com",
@@ -281,7 +290,7 @@
       document.getElementById("loginTela").style.display = "none";
       document.getElementById("bemVindo").textContent = "Bem-vindo, " + nomeUsuario + "!";
       document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nomeUsuario;
-      carregarPosts(); registarOnline(); monitorarChat(); registarUtilizador(); carregarStories();
+      carregarPosts(); registarOnline(); monitorarChat(); registarUtilizador(); carregarStories(); monitorarNotificacoes();
     }
 
     async function registarUtilizador() {
@@ -305,6 +314,33 @@
       });
     }
 
+    function monitorarNotificacoes() {
+      const q = query(collection(db, "notificacoes"), where("paraQuem", "==", nomeUsuario), where("lida", "==", false));
+      onSnapshot(q, (snap) => {
+        document.getElementById("perfilNotif").style.display = snap.size > 0 ? "block" : "none";
+      });
+    }
+
+    async function carregarNotificacoes() {
+      const lista = document.getElementById("listaNotificacoes");
+      lista.innerHTML = "<p style='color:#6b7280;'>Carregando...</p>";
+      try {
+        const q = query(collection(db, "notificacoes"), where("paraQuem", "==", nomeUsuario), orderBy("data", "desc"), limit(20));
+        const snap = await getDocs(q);
+        lista.innerHTML = "";
+        snap.forEach((d) => {
+          const n = d.data();
+          const div = document.createElement("div");
+          div.className = "notif-item";
+          div.innerHTML = `<div class="notif-avatar">${n.deQuem[0].toUpperCase()}</div><div><strong>${n.deQuem}</strong> começou a seguir-te! 🎉</div>`;
+          lista.appendChild(div);
+          if (!n.lida) updateDoc(doc(db, "notificacoes", d.id), { lida: true });
+        });
+        if (snap.empty) lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Sem notificações ainda.</p>";
+        document.getElementById("perfilNotif").style.display = "none";
+      } catch(e) {}
+    }
+
     window.entrar = function() {
       const nome = document.getElementById("inputNome").value.trim();
       if (!nome) { alert("Digite seu nome!"); return; }
@@ -313,7 +349,7 @@
       document.getElementById("loginTela").style.display = "none";
       document.getElementById("bemVindo").textContent = "Bem-vindo, " + nome + "!";
       document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nome;
-      carregarPosts(); registarOnline(); monitorarChat(); registarUtilizador(); carregarStories();
+      carregarPosts(); registarOnline(); monitorarChat(); registarUtilizador(); carregarStories(); monitorarNotificacoes();
     }
 
     window.sair = function() {
@@ -371,6 +407,7 @@
           await setDoc(doc(db, "utilizadores", autorPost, "seguidores", nomeUsuario), { nome: nomeUsuario });
           await setDoc(doc(db, "utilizadores", nomeUsuario, "seguindo", autorPost), { nome: autorPost });
           botao.textContent = "✅ A seguir"; botao.className = "btn-seguindo";
+          await addDoc(collection(db, "notificacoes"), { paraQuem: autorPost, deQuem: nomeUsuario, tipo: "seguidor", lida: false, data: serverTimestamp() });
         }
       } catch(e) {}
     }
@@ -391,17 +428,14 @@
       } catch(e) { setStatus("❌ Erro ao editar."); }
     }
 
-    // REACOES
     window.reagir = async function(postId, emoji) {
       const chave = "reacao_" + postId;
       const anterior = localStorage.getItem(chave);
       try {
         const ref = doc(db, "posts", postId);
-        const updates = {};
         if (anterior === emoji) {
-          updates["reacoes." + emoji] = increment(-1);
+          await updateDoc(ref, { ["reacoes." + emoji]: increment(-1) });
           localStorage.removeItem(chave);
-          await updateDoc(ref, updates);
           atualizarContagem(postId, emoji, -1);
           marcarAtiva(postId, null);
         } else {
@@ -571,6 +605,7 @@
       document.getElementById("utilizadoresDiv").style.display="none";
       document.getElementById("perfil").style.display="block";
       carregarEstatisticas();
+      carregarNotificacoes();
     }
 
     window.mostrarFeed = function() {
