@@ -14,14 +14,14 @@
     header p { color: rgba(255,255,255,0.8); font-size: 14px; }
     #onlineBar { background: #161920; text-align: center; padding: 6px; font-size: 13px; color: #4ecb8d; border-bottom: 1px solid #2a2f42; }
     body.claro #onlineBar { background: #e0e3eb; color: #2d7a4f; border-bottom: 1px solid #c0c4d0; }
-    nav { background: #161920; display: flex; justify-content: center; gap: 12px; padding: 14px; border-bottom: 1px solid #2a2f42; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; align-items: center; }
+    nav { background: #161920; display: flex; justify-content: center; gap: 10px; padding: 14px; border-bottom: 1px solid #2a2f42; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; align-items: center; }
     body.claro nav { background: #ffffff; border-bottom: 1px solid #dde1ed; }
     nav a { color: #6b7280; text-decoration: none; font-weight: 600; font-size: 13px; padding: 6px 12px; border-radius: 20px; transition: all 0.2s; position: relative; }
     nav a:hover { background: #5b6ef5; color: white; }
     .notif-dot { position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; background: #f56b6b; border-radius: 50%; display: none; }
     #modoBtn { background: none; border: 1px solid #2a2f42; border-radius: 20px; padding: 6px 14px; color: #e8eaf2; font-family: 'Poppins', sans-serif; font-size: 13px; cursor: pointer; margin-top: 0; }
     body.claro #modoBtn { border-color: #c0c4d0; color: #1a1a2e; }
-    main, #perfil, #chatDiv, #utilizadoresDiv, #gruposDiv, #grupoDetalheDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
+    main, #perfil, #chatDiv, #utilizadoresDiv, #gruposDiv, #grupoDetalheDiv, #mensagensListaDiv, #dmConversaDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
     textarea { width: 100%; background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 12px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 14px; height: 90px; resize: none; outline: none; }
     body.claro textarea { background: #ffffff; color: #1a1a2e; border-color: #c0c4d0; }
     textarea:focus { border-color: #5b6ef5; }
@@ -34,6 +34,7 @@
     .btn-seguindo { background: #2a2f42; }
     .btn-editar { background: #f0a500; }
     .btn-editar:hover { background: #d4900a; }
+    .btn-mensagem { background: #2a2f42; }
     .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
     body.claro .post-card { background: #ffffff; border-color: #dde1ed; }
     .post-img { width: 100%; border-radius: 10px; margin: 10px 0; max-height: 300px; object-fit: cover; }
@@ -72,12 +73,14 @@
     .img-preview { width: 100%; border-radius: 10px; margin-top: 10px; max-height: 200px; object-fit: cover; display: none; }
     .img-label { display: inline-block; background: #2a2f42; color: #e8eaf2; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; margin-top: 8px; }
     body.claro .img-label { background: #e0e3eb; color: #1a1a2e; }
-    .utilizador-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 16px; margin-top: 12px; display: flex; align-items: center; justify-content: space-between; }
+    .utilizador-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 16px; margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
     body.claro .utilizador-card { background: #ffffff; border-color: #dde1ed; }
-    .utilizador-info { display: flex; align-items: center; gap: 12px; }
-    .utilizador-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #5b6ef5, #f56b6b); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: white; }
+    .utilizador-info { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .utilizador-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #5b6ef5, #f56b6b); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: white; flex-shrink: 0; }
     .utilizador-nome { font-weight: 600; font-size: 14px; }
-    .utilizador-bio { font-size: 12px; color: #6b7280; }
+    .utilizador-bio { font-size: 12px; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
+    .utilizador-acoes { display: flex; gap: 6px; flex-shrink: 0; }
+    .utilizador-acoes button { margin: 0; }
     #gruposDiv input[type="text"], #gruposDiv textarea { width: 100%; margin-bottom: 8px; }
     .grupo-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 16px; margin-top: 12px; }
     body.claro .grupo-card { background: #ffffff; border-color: #dde1ed; }
@@ -87,6 +90,8 @@
     .post-grupo { background: #0d0f14; border-radius: 10px; padding: 10px 14px; margin-top: 10px; font-size: 13px; }
     body.claro .post-grupo { background: #f0f2f5; color: #1a1a2e; }
     .post-grupo .pg-info { color: #6b7280; font-size: 11px; margin-top: 4px; }
+    #dmMensagens { height: 350px; overflow-y: auto; background: #0d0f14; padding: 12px; border-radius: 10px; display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+    body.claro #dmMensagens { background: #f0f2f5; }
     #storiesBar { max-width: 600px; margin: 16px auto 0; padding: 0 16px; }
     .stories-container { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
     .stories-container::-webkit-scrollbar { height: 4px; }
@@ -144,6 +149,7 @@
     <a href="#" onclick="mostrarFeed()">Feed</a>
     <a href="#" onclick="verUtilizadores()">👥 Users</a>
     <a href="#" onclick="verGrupos()">🏘️ Grupos</a>
+    <a href="#" onclick="verMensagens()">✉️ Msgs<span class="notif-dot" id="dmNotif"></span></a>
     <a href="#" onclick="verPerfil()">Perfil<span class="notif-dot" id="perfilNotif"></span></a>
     <a href="#" onclick="verChat()" id="chatBtn">💬 Chat<span class="notif-dot" id="chatNotif"></span></a>
     <a href="#" onclick="sair()" style="color:#f56b6b;">Sair</a>
@@ -206,6 +212,21 @@
     <div id="postsGrupo"></div>
   </div>
 
+  <div id="mensagensListaDiv" style="display:none">
+    <h2 style="margin-bottom:16px;">✉️ Mensagens</h2>
+    <div id="listaDMs"></div>
+  </div>
+
+  <div id="dmConversaDiv" style="display:none">
+    <button onclick="verMensagens()" style="background:#6b7280;">⬅ Voltar</button>
+    <h2 id="dmNomeTitulo" style="margin:12px 0;"></h2>
+    <div id="dmMensagens"></div>
+    <div class="chat-input-box">
+      <input id="inputDM" type="text" placeholder="Escreva uma mensagem...">
+      <button onclick="enviarDM()">Enviar</button>
+    </div>
+  </div>
+
   <div id="perfil" style="display:none">
     <h2>👤 Meu Perfil</h2>
     <img id="fotoPerfil" src="https://via.placeholder.com/100" style="border-radius:50%; width:100px; height:100px; margin-top:16px;">
@@ -256,6 +277,9 @@
     let imagemBase64 = "";
     let grupoAtualId = null;
     let verificados = {};
+    let dmAtualId = null;
+    let dmOutroUsuario = null;
+    let dmUnsubscribe = null;
     const EMOJIS_REACAO = ["👍","❤️","😂","😮","😢","🔥"];
     const THRESHOLD_VERIFICACAO = 5;
 
@@ -271,6 +295,8 @@
     function badgeFor(nome) {
       return verificados[nome] ? ' <span class="badge-verificado" title="Conta verificada">✅</span>' : '';
     }
+
+    function dmId(a, b) { return [a, b].sort().join("__"); }
 
     async function carregarVerificados() {
       try {
@@ -343,7 +369,7 @@
       document.getElementById("loginTela").style.display = "none";
       document.getElementById("bemVindo").textContent = "Bem-vindo, " + nomeUsuario + "!";
       document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nomeUsuario;
-      carregarPosts(); registarOnline(); monitorarChat(); registarUtilizador(); carregarStories(); monitorarNotificacoes();
+      carregarPosts(); registarOnline(); monitorarChat(); registarUtilizador(); carregarStories(); monitorarNotificacoes(); monitorarDMs();
     }
 
     async function registarUtilizador() {
@@ -371,6 +397,13 @@
       const q = query(collection(db, "notificacoes"), where("paraQuem", "==", nomeUsuario), where("lida", "==", false));
       onSnapshot(q, (snap) => {
         document.getElementById("perfilNotif").style.display = snap.size > 0 ? "block" : "none";
+      });
+    }
+
+    function monitorarDMs() {
+      const q = query(collection(db, "notificacoesDM"), where("paraQuem", "==", nomeUsuario), where("lida", "==", false));
+      onSnapshot(q, (snap) => {
+        document.getElementById("dmNotif").style.display = snap.size > 0 ? "block" : "none";
       });
     }
 
@@ -402,7 +435,7 @@
       document.getElementById("loginTela").style.display = "none";
       document.getElementById("bemVindo").textContent = "Bem-vindo, " + nome + "!";
       document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nome;
-      carregarPosts(); registarOnline(); monitorarChat(); registarUtilizador(); carregarStories(); monitorarNotificacoes();
+      carregarPosts(); registarOnline(); monitorarChat(); registarUtilizador(); carregarStories(); monitorarNotificacoes(); monitorarDMs();
     }
 
     window.sair = function() {
@@ -452,7 +485,7 @@
           if (u.nome === nomeUsuario) return;
           const div = document.createElement("div");
           div.className = "utilizador-card";
-          div.innerHTML = `<div class="utilizador-info"><div class="utilizador-avatar">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio || "Utilizador do ConnectApp"}</div></div></div><button class="btn-seguir" onclick="seguir('${u.nome}', this)">➕ Seguir</button>`;
+          div.innerHTML = `<div class="utilizador-info"><div class="utilizador-avatar">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio || "Utilizador do ConnectApp"}</div></div></div><div class="utilizador-acoes"><button class="btn-mensagem" onclick="abrirDM('${u.nome}')">✉️</button><button class="btn-seguir" onclick="seguir('${u.nome}', this)">➕ Seguir</button></div>`;
           lista.appendChild(div);
         });
         if (lista.children.length === 0) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum utilizador ainda!</p>";
@@ -570,6 +603,74 @@
       } catch(e) {}
     }
 
+    // MENSAGENS PRIVADAS
+    window.verMensagens = async function() {
+      escondertodas();
+      document.getElementById("mensagensListaDiv").style.display = "block";
+      const lista = document.getElementById("listaDMs");
+      lista.innerHTML = "<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
+      try {
+        await carregarVerificados();
+        const snap = await getDocs(query(collection(db, "dms"), where("participantes", "array-contains", nomeUsuario)));
+        let conversas = [];
+        snap.forEach(d => conversas.push({ id: d.id, ...d.data() }));
+        conversas.sort((a,b) => (b.ultimaData?.toMillis?.() || 0) - (a.ultimaData?.toMillis?.() || 0));
+        lista.innerHTML = "";
+        conversas.forEach(c => {
+          const outro = (c.participantes || []).find(p => p !== nomeUsuario);
+          if (!outro) return;
+          const div = document.createElement("div");
+          div.className = "utilizador-card";
+          div.innerHTML = `<div class="utilizador-info"><div class="utilizador-avatar">${outro[0].toUpperCase()}</div><div><div class="utilizador-nome">${outro}${badgeFor(outro)}</div><div class="utilizador-bio">${(c.ultimaMsg||"").substring(0,40)}</div></div></div><button onclick="abrirDM('${outro}')">Abrir</button>`;
+          lista.appendChild(div);
+        });
+        if (lista.children.length === 0) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem conversas. Vai a 👥 Users e toca em ✉️ para começar!</p>";
+      } catch(e) { lista.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
+    }
+
+    window.abrirDM = async function(outroNome) {
+      escondertodas();
+      document.getElementById("dmConversaDiv").style.display = "block";
+      dmOutroUsuario = outroNome;
+      dmAtualId = dmId(nomeUsuario, outroNome);
+      document.getElementById("dmNomeTitulo").innerHTML = "✉️ " + outroNome + badgeFor(outroNome);
+      const mensagensDiv = document.getElementById("dmMensagens");
+      mensagensDiv.innerHTML = "<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
+
+      try {
+        const q = query(collection(db, "notificacoesDM"), where("paraQuem","==",nomeUsuario), where("deQuem","==",outroNome), where("lida","==",false));
+        const snap = await getDocs(q);
+        snap.forEach(d => updateDoc(doc(db,"notificacoesDM", d.id), {lida: true}));
+      } catch(e) {}
+
+      if (dmUnsubscribe) dmUnsubscribe();
+      const q2 = query(collection(db, "dms", dmAtualId, "mensagens"), orderBy("data","asc"));
+      dmUnsubscribe = onSnapshot(q2, (snap) => {
+        mensagensDiv.innerHTML = "";
+        snap.forEach(d => {
+          const m = d.data();
+          const div = document.createElement("div");
+          div.className = "msg-item " + (m.autor === nomeUsuario ? "msg-minha" : "msg-outro");
+          div.textContent = m.texto;
+          mensagensDiv.appendChild(div);
+        });
+        if (snap.empty) mensagensDiv.innerHTML = "<p style='color:#6b7280;text-align:center;'>Diz olá! 👋</p>";
+        mensagensDiv.scrollTop = mensagensDiv.scrollHeight;
+      });
+    }
+
+    window.enviarDM = async function() {
+      const input = document.getElementById("inputDM");
+      const texto = input.value.trim();
+      if (!texto || !dmAtualId) return;
+      try {
+        await addDoc(collection(db, "dms", dmAtualId, "mensagens"), { texto, autor: nomeUsuario, data: serverTimestamp() });
+        await setDoc(doc(db, "dms", dmAtualId), { participantes: [nomeUsuario, dmOutroUsuario], ultimaMsg: texto, ultimaData: serverTimestamp() }, { merge: true });
+        await addDoc(collection(db, "notificacoesDM"), { paraQuem: dmOutroUsuario, deQuem: nomeUsuario, lida: false, data: serverTimestamp(), mensagem: texto.substring(0,40) });
+        input.value = "";
+      } catch(e) {}
+    }
+
     function escondertodas() {
       chatAberto=false;
       document.getElementById("feedDiv").style.display="none";
@@ -577,6 +678,8 @@
       document.getElementById("utilizadoresDiv").style.display="none";
       document.getElementById("gruposDiv").style.display="none";
       document.getElementById("grupoDetalheDiv").style.display="none";
+      document.getElementById("mensagensListaDiv").style.display="none";
+      document.getElementById("dmConversaDiv").style.display="none";
       document.getElementById("perfil").style.display="none";
     }
 
@@ -838,6 +941,9 @@
 
     document.getElementById("inputMsg").addEventListener("keypress", function(e) {
       if (e.key === "Enter") window.enviarMsg();
+    });
+    document.getElementById("inputDM").addEventListener("keypress", function(e) {
+      if (e.key === "Enter") window.enviarDM();
     });
   </script>
 </body>
