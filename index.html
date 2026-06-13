@@ -41,6 +41,17 @@
     .edit-box { display: none; margin-top: 10px; }
     .edit-box textarea { height: 70px; margin-bottom: 6px; }
     .badge-verificado { font-size: 12px; vertical-align: middle; margin-left: 2px; }
+    .hashtag { color: #5b6ef5; font-weight: 600; cursor: pointer; }
+    .hashtag:hover { text-decoration: underline; }
+    #trendingBar { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 14px; margin-bottom: 16px; }
+    body.claro #trendingBar { background: #ffffff; border-color: #dde1ed; }
+    .trending-titulo { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+    .trending-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .hashtag-chip { background: #0d0f14; border: 1px solid #2a2f42; color: #5b6ef5; padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 600; margin: 0; }
+    body.claro .hashtag-chip { background: #f0f2f5; border-color: #c0c4d0; }
+    .hashtag-chip:hover { background: #5b6ef5; color: white; }
+    .hashtag-chip small { color: #6b7280; font-weight: 400; }
+    .hashtag-chip:hover small { color: rgba(255,255,255,0.8); }
     .reacoes-bar { display: flex; gap: 4px; flex-wrap: wrap; margin: 10px 0; }
     .reacao-btn { background: #0d0f14; border: 1px solid #2a2f42; color: #e8eaf2; padding: 6px 10px; border-radius: 20px; font-size: 13px; cursor: pointer; margin: 0; transition: all 0.2s; }
     body.claro .reacao-btn { background: #f0f2f5; border-color: #c0c4d0; color: #1a1a2e; }
@@ -175,8 +186,9 @@
 
   <main id="feedDiv">
     <h2 style="margin-bottom:16px;">Feed</h2>
+    <div id="trendingBar" style="display:none;"></div>
     <input type="text" id="pesquisaBox" placeholder="🔍 Pesquisar posts..." oninput="pesquisar()">
-    <textarea id="caixaTexto" placeholder="O que você está pensando?"></textarea>
+    <textarea id="caixaTexto" placeholder="O que você está pensando? Usa #hashtags!"></textarea>
     <br>
     <label class="img-label" for="inputImagem">🖼️ Adicionar imagem</label>
     <input type="file" id="inputImagem" accept="image/*" style="display:none" onchange="previewImagem(event)">
@@ -294,6 +306,43 @@
 
     function badgeFor(nome) {
       return verificados[nome] ? ' <span class="badge-verificado" title="Conta verificada">✅</span>' : '';
+    }
+
+    function formatarTexto(texto) {
+      return (texto || "").replace(/#(\w+)/g, '<span class="hashtag" onclick="filtrarHashtag(\'$1\')">#$1</span>');
+    }
+
+    window.filtrarHashtag = function(tag) {
+      const box = document.getElementById("pesquisaBox");
+      box.value = "#" + tag;
+      pesquisar();
+      box.scrollIntoView({behavior:"smooth"});
+    }
+
+    function calcularTrending() {
+      const contagem = {};
+      todosPosts.forEach(d => {
+        const texto = d.data.texto || "";
+        const matches = texto.match(/#(\w+)/g) || [];
+        const vistos = new Set();
+        matches.forEach(m => {
+          const tag = m.substring(1).toLowerCase();
+          if (vistos.has(tag)) return;
+          vistos.add(tag);
+          contagem[tag] = (contagem[tag] || 0) + 1;
+        });
+      });
+      return Object.entries(contagem).sort((a,b) => b[1]-a[1]).slice(0,8);
+    }
+
+    function renderTrending() {
+      const trending = calcularTrending();
+      const div = document.getElementById("trendingBar");
+      if (trending.length === 0) { div.style.display = "none"; return; }
+      div.style.display = "block";
+      div.innerHTML = "<div class='trending-titulo'>🔥 Trending</div><div class='trending-tags'>" +
+        trending.map(([tag,count]) => `<button class="hashtag-chip" onclick="filtrarHashtag('${tag}')">#${tag} <small>${count}</small></button>`).join("") +
+        "</div>";
     }
 
     function dmId(a, b) { return [a, b].sort().join("__"); }
@@ -596,14 +645,13 @@
           const p = d.data();
           const item = document.createElement("div");
           item.className = "post-grupo";
-          item.innerHTML = `<strong>${p.autor}</strong>${badgeFor(p.autor)}<div>${p.texto}</div><div class="pg-info">${p.hora}</div>`;
+          item.innerHTML = `<strong>${p.autor}</strong>${badgeFor(p.autor)}<div>${formatarTexto(p.texto)}</div><div class="pg-info">${p.hora}</div>`;
           div.appendChild(item);
         });
         if (snap.empty) div.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem publicações neste grupo.</p>";
       } catch(e) {}
     }
 
-    // MENSAGENS PRIVADAS
     window.verMensagens = async function() {
       escondertodas();
       document.getElementById("mensagensListaDiv").style.display = "block";
@@ -715,8 +763,11 @@
       if (!novoTexto) return;
       try {
         await updateDoc(doc(db, "posts", postId), { texto: novoTexto });
-        document.getElementById("texto-" + postId).textContent = novoTexto;
+        document.getElementById("texto-" + postId).innerHTML = formatarTexto(novoTexto);
         document.getElementById("edit-" + postId).style.display = "none";
+        const idx = todosPosts.findIndex(p => p.id === postId);
+        if (idx !== -1) todosPosts[idx].data.texto = novoTexto;
+        renderTrending();
         setStatus("✅ Post editado!");
       } catch(e) { setStatus("❌ Erro ao editar."); }
     }
@@ -779,7 +830,7 @@
       div.innerHTML = `
         <strong>${p.autor}</strong>${badgeFor(p.autor)} · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
         ${seguirBtn}
-        <p class="post-texto" id="texto-${d.id}" style="margin:10px 0;color:#c8cad8;">${p.texto}</p>
+        <p class="post-texto" id="texto-${d.id}" style="margin:10px 0;color:#c8cad8;">${formatarTexto(p.texto)}</p>
         ${imgHtml}
         ${criarReacoesBar(d.id, p.reacoes)}
         <button onclick="toggleComentarios('${d.id}')">💬 Comentar</button>
@@ -809,6 +860,7 @@
         const snap = await getDocs(q);
         todosPosts = [];
         snap.forEach((d) => { todosPosts.push({ id: d.id, data: d.data() }); });
+        renderTrending();
         renderPosts(todosPosts);
       } catch(e) { postsDiv.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
     }
