@@ -14,14 +14,14 @@
     header p { color: rgba(255,255,255,0.8); font-size: 14px; }
     #onlineBar { background: #161920; text-align: center; padding: 6px; font-size: 13px; color: #4ecb8d; border-bottom: 1px solid #2a2f42; }
     body.claro #onlineBar { background: #e0e3eb; color: #2d7a4f; border-bottom: 1px solid #c0c4d0; }
-    nav { background: #161920; display: flex; justify-content: center; gap: 15px; padding: 14px; border-bottom: 1px solid #2a2f42; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; align-items: center; }
+    nav { background: #161920; display: flex; justify-content: center; gap: 12px; padding: 14px; border-bottom: 1px solid #2a2f42; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; align-items: center; }
     body.claro nav { background: #ffffff; border-bottom: 1px solid #dde1ed; }
     nav a { color: #6b7280; text-decoration: none; font-weight: 600; font-size: 13px; padding: 6px 12px; border-radius: 20px; transition: all 0.2s; position: relative; }
     nav a:hover { background: #5b6ef5; color: white; }
     .notif-dot { position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; background: #f56b6b; border-radius: 50%; display: none; }
     #modoBtn { background: none; border: 1px solid #2a2f42; border-radius: 20px; padding: 6px 14px; color: #e8eaf2; font-family: 'Poppins', sans-serif; font-size: 13px; cursor: pointer; margin-top: 0; }
     body.claro #modoBtn { border-color: #c0c4d0; color: #1a1a2e; }
-    main, #perfil, #chatDiv, #utilizadoresDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
+    main, #perfil, #chatDiv, #utilizadoresDiv, #gruposDiv, #grupoDetalheDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
     textarea { width: 100%; background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 12px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 14px; height: 90px; resize: none; outline: none; }
     body.claro textarea { background: #ffffff; color: #1a1a2e; border-color: #c0c4d0; }
     textarea:focus { border-color: #5b6ef5; }
@@ -76,6 +76,15 @@
     .utilizador-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #5b6ef5, #f56b6b); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: white; }
     .utilizador-nome { font-weight: 600; font-size: 14px; }
     .utilizador-bio { font-size: 12px; color: #6b7280; }
+    #gruposDiv input[type="text"], #gruposDiv textarea { width: 100%; margin-bottom: 8px; }
+    .grupo-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 16px; margin-top: 12px; }
+    body.claro .grupo-card { background: #ffffff; border-color: #dde1ed; }
+    .grupo-card h3 { font-size: 15px; margin-bottom: 4px; }
+    .grupo-card p { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
+    .grupo-icone { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #5b6ef5, #f56b6b); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 8px; }
+    .post-grupo { background: #0d0f14; border-radius: 10px; padding: 10px 14px; margin-top: 10px; font-size: 13px; }
+    body.claro .post-grupo { background: #f0f2f5; color: #1a1a2e; }
+    .post-grupo .pg-info { color: #6b7280; font-size: 11px; margin-top: 4px; }
     #storiesBar { max-width: 600px; margin: 16px auto 0; padding: 0 16px; }
     .stories-container { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
     .stories-container::-webkit-scrollbar { height: 4px; }
@@ -132,6 +141,7 @@
   <nav>
     <a href="#" onclick="mostrarFeed()">Feed</a>
     <a href="#" onclick="verUtilizadores()">👥 Users</a>
+    <a href="#" onclick="verGrupos()">🏘️ Grupos</a>
     <a href="#" onclick="verPerfil()">Perfil<span class="notif-dot" id="perfilNotif"></span></a>
     <a href="#" onclick="verChat()" id="chatBtn">💬 Chat<span class="notif-dot" id="chatNotif"></span></a>
     <a href="#" onclick="sair()" style="color:#f56b6b;">Sair</a>
@@ -167,10 +177,33 @@
     <button onclick="publicar()">Publicar</button>
     <div id="posts"></div>
   </main>
+
   <div id="utilizadoresDiv" style="display:none">
     <h2 style="margin-bottom:16px;">👥 Utilizadores</h2>
     <div id="listaUtilizadores"></div>
   </div>
+
+  <div id="gruposDiv" style="display:none">
+    <h2 style="margin-bottom:16px;">🏘️ Grupos</h2>
+    <input type="text" id="nomeGrupoInput" placeholder="Nome do grupo...">
+    <textarea id="descGrupoInput" placeholder="Descrição do grupo..." style="height:60px;"></textarea>
+    <button onclick="criarGrupo()">➕ Criar Grupo</button>
+    <div id="listaGrupos"></div>
+  </div>
+
+  <div id="grupoDetalheDiv" style="display:none">
+    <button onclick="verGrupos()" style="background:#6b7280;">⬅ Voltar aos Grupos</button>
+    <h2 id="grupoNomeTitulo" style="margin:12px 0 4px;"></h2>
+    <p id="grupoDescTexto" style="color:#6b7280;font-size:13px;margin-bottom:8px;"></p>
+    <p style="font-size:13px;color:#6b7280;margin-bottom:8px;"><span id="grupoMembrosCount">0</span> membro(s)</p>
+    <button id="btnEntrarGrupo" class="btn-seguir" onclick="toggleMembroGrupo()">➕ Entrar no grupo</button>
+    <div id="grupoPostBox" style="display:none;margin-top:12px;">
+      <textarea id="caixaTextoGrupo" placeholder="Escreva algo para o grupo..."></textarea>
+      <button onclick="publicarNoGrupo()">Publicar no grupo</button>
+    </div>
+    <div id="postsGrupo"></div>
+  </div>
+
   <div id="perfil" style="display:none">
     <h2>👤 Meu Perfil</h2>
     <img id="fotoPerfil" src="https://via.placeholder.com/100" style="border-radius:50%; width:100px; height:100px; margin-top:16px;">
@@ -189,6 +222,7 @@
       <div id="listaNotificacoes"></div>
     </div>
   </div>
+
   <div id="chatDiv" style="display:none; max-width:600px; margin:24px auto; padding:20px 16px;">
     <h2>💬 Chat em Tempo Real</h2>
     <div id="mensagens"></div>
@@ -217,6 +251,7 @@
     let modoClaro = localStorage.getItem("modoClaro") === "true";
     let todosPosts = [];
     let imagemBase64 = "";
+    let grupoAtualId = null;
     const EMOJIS_REACAO = ["👍","❤️","😂","😮","😢","🔥"];
 
     if (modoClaro) { document.body.classList.add("claro"); document.getElementById("modoBtn").textContent = "☀️ Claro"; }
@@ -374,9 +409,7 @@
     }
 
     window.verUtilizadores = async function() {
-      document.getElementById("feedDiv").style.display="none";
-      document.getElementById("chatDiv").style.display="none";
-      document.getElementById("perfil").style.display="none";
+      escondertodas();
       document.getElementById("utilizadoresDiv").style.display="block";
       const lista = document.getElementById("listaUtilizadores");
       lista.innerHTML = "<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
@@ -393,6 +426,126 @@
         });
         if (lista.children.length === 0) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum utilizador ainda!</p>";
       } catch(e) {}
+    }
+
+    window.verGrupos = async function() {
+      escondertodas();
+      document.getElementById("gruposDiv").style.display="block";
+      const lista = document.getElementById("listaGrupos");
+      lista.innerHTML = "<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
+      try {
+        const snap = await getDocs(query(collection(db, "grupos"), orderBy("data", "desc")));
+        lista.innerHTML = "";
+        for (const d of snap.docs) {
+          const g = d.data();
+          const membrosSnap = await getDocs(collection(db, "grupos", d.id, "membros"));
+          const div = document.createElement("div");
+          div.className = "grupo-card";
+          div.innerHTML = `
+            <div class="grupo-icone">🏘️</div>
+            <h3>${g.nome}</h3>
+            <p>${g.descricao || "Sem descrição"} · ${membrosSnap.size} membro(s)</p>
+            <button onclick="abrirGrupo('${d.id}')">Abrir grupo</button>
+          `;
+          lista.appendChild(div);
+        }
+        if (lista.children.length === 0) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum grupo ainda. Cria o primeiro!</p>";
+      } catch(e) { lista.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
+    }
+
+    window.criarGrupo = async function() {
+      const nome = document.getElementById("nomeGrupoInput").value.trim();
+      const descricao = document.getElementById("descGrupoInput").value.trim();
+      if (!nome) { alert("Escreve um nome para o grupo!"); return; }
+      try {
+        const ref = await addDoc(collection(db, "grupos"), { nome, descricao, criador: nomeUsuario, data: serverTimestamp() });
+        await setDoc(doc(db, "grupos", ref.id, "membros", nomeUsuario), { nome: nomeUsuario });
+        document.getElementById("nomeGrupoInput").value = "";
+        document.getElementById("descGrupoInput").value = "";
+        setStatus("✅ Grupo criado!");
+        verGrupos();
+      } catch(e) { setStatus("❌ Erro ao criar grupo."); }
+    }
+
+    window.abrirGrupo = async function(grupoId) {
+      escondertodas();
+      document.getElementById("grupoDetalheDiv").style.display="block";
+      grupoAtualId = grupoId;
+      try {
+        const grupoSnap = await getDoc(doc(db, "grupos", grupoId));
+        const g = grupoSnap.data();
+        document.getElementById("grupoNomeTitulo").textContent = "🏘️ " + g.nome;
+        document.getElementById("grupoDescTexto").textContent = g.descricao || "Sem descrição";
+        const membrosSnap = await getDocs(collection(db, "grupos", grupoId, "membros"));
+        document.getElementById("grupoMembrosCount").textContent = membrosSnap.size;
+        const souMembro = await getDoc(doc(db, "grupos", grupoId, "membros", nomeUsuario));
+        const btn = document.getElementById("btnEntrarGrupo");
+        const postBox = document.getElementById("grupoPostBox");
+        if (souMembro.exists()) {
+          btn.textContent = "✅ Sair do grupo";
+          btn.className = "btn-seguindo";
+          postBox.style.display = "block";
+        } else {
+          btn.textContent = "➕ Entrar no grupo";
+          btn.className = "btn-seguir";
+          postBox.style.display = "none";
+        }
+        carregarPostsGrupo(grupoId);
+      } catch(e) {}
+    }
+
+    window.toggleMembroGrupo = async function() {
+      if (!grupoAtualId) return;
+      try {
+        const ref = doc(db, "grupos", grupoAtualId, "membros", nomeUsuario);
+        const souMembro = await getDoc(ref);
+        if (souMembro.exists()) {
+          await deleteDoc(ref);
+        } else {
+          await setDoc(ref, { nome: nomeUsuario });
+        }
+        abrirGrupo(grupoAtualId);
+      } catch(e) {}
+    }
+
+    window.publicarNoGrupo = async function() {
+      if (!grupoAtualId) return;
+      const caixa = document.getElementById("caixaTextoGrupo");
+      const texto = caixa.value.trim();
+      if (!texto) return;
+      try {
+        const hora = new Date().toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"});
+        await addDoc(collection(db, "grupos", grupoAtualId, "posts"), { texto, autor: nomeUsuario, hora, data: serverTimestamp() });
+        caixa.value = "";
+        carregarPostsGrupo(grupoAtualId);
+      } catch(e) {}
+    }
+
+    async function carregarPostsGrupo(grupoId) {
+      const div = document.getElementById("postsGrupo");
+      div.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
+      try {
+        const snap = await getDocs(query(collection(db, "grupos", grupoId, "posts"), orderBy("data", "desc")));
+        div.innerHTML = "";
+        snap.forEach((d) => {
+          const p = d.data();
+          const item = document.createElement("div");
+          item.className = "post-grupo";
+          item.innerHTML = `<strong>${p.autor}</strong><div>${p.texto}</div><div class="pg-info">${p.hora}</div>`;
+          div.appendChild(item);
+        });
+        if (snap.empty) div.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem publicações neste grupo.</p>";
+      } catch(e) {}
+    }
+
+    function escondertodas() {
+      chatAberto=false;
+      document.getElementById("feedDiv").style.display="none";
+      document.getElementById("chatDiv").style.display="none";
+      document.getElementById("utilizadoresDiv").style.display="none";
+      document.getElementById("gruposDiv").style.display="none";
+      document.getElementById("grupoDetalheDiv").style.display="none";
+      document.getElementById("perfil").style.display="none";
     }
 
     window.seguir = async function(autorPost, botao) {
@@ -599,29 +752,21 @@
     }
 
     window.verPerfil = function() {
-      chatAberto=false;
-      document.getElementById("feedDiv").style.display="none";
-      document.getElementById("chatDiv").style.display="none";
-      document.getElementById("utilizadoresDiv").style.display="none";
+      escondertodas();
       document.getElementById("perfil").style.display="block";
       carregarEstatisticas();
       carregarNotificacoes();
     }
 
     window.mostrarFeed = function() {
-      chatAberto=false;
+      escondertodas();
       document.getElementById("feedDiv").style.display="block";
-      document.getElementById("chatDiv").style.display="none";
-      document.getElementById("perfil").style.display="none";
-      document.getElementById("utilizadoresDiv").style.display="none";
     }
 
     window.trocarFoto = function(e) { const r=new FileReader(); r.onload=function(x){document.getElementById("fotoPerfil").src=x.target.result;}; r.readAsDataURL(e.target.files[0]); }
 
     window.verChat = function() {
-      document.getElementById("feedDiv").style.display="none";
-      document.getElementById("perfil").style.display="none";
-      document.getElementById("utilizadoresDiv").style.display="none";
+      escondertodas();
       document.getElementById("chatDiv").style.display="block";
       document.getElementById("chatNotif").style.display="none";
       chatAberto = true; iniciarChat();
