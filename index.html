@@ -39,6 +39,7 @@
     .post-img { width: 100%; border-radius: 10px; margin: 10px 0; max-height: 300px; object-fit: cover; }
     .edit-box { display: none; margin-top: 10px; }
     .edit-box textarea { height: 70px; margin-bottom: 6px; }
+    .badge-verificado { font-size: 12px; vertical-align: middle; margin-left: 2px; }
     .reacoes-bar { display: flex; gap: 4px; flex-wrap: wrap; margin: 10px 0; }
     .reacao-btn { background: #0d0f14; border: 1px solid #2a2f42; color: #e8eaf2; padding: 6px 10px; border-radius: 20px; font-size: 13px; cursor: pointer; margin: 0; transition: all 0.2s; }
     body.claro .reacao-btn { background: #f0f2f5; border-color: #c0c4d0; color: #1a1a2e; }
@@ -57,6 +58,7 @@
     .perfil-stat { text-align: center; }
     .perfil-stat strong { display: block; font-size: 22px; color: #5b6ef5; }
     .perfil-stat span { font-size: 12px; color: #6b7280; }
+    #statusVerificado { margin-top: 6px; font-size: 13px; color: #6b7280; }
     .notificacoes-box { text-align: left; margin-top: 20px; border-top: 1px solid #2a2f42; padding-top: 16px; }
     body.claro .notificacoes-box { border-top-color: #dde1ed; }
     .notificacoes-box h3 { font-size: 15px; margin-bottom: 10px; }
@@ -212,6 +214,7 @@
     <br><br>
     <p id="nomePerfilTexto"><strong>Nome:</strong> </p>
     <p><strong>Bio:</strong> Utilizador do ConnectApp! 🚀</p>
+    <div id="statusVerificado"></div>
     <div class="perfil-stats">
       <div class="perfil-stat"><strong id="numSeguidores">0</strong><span>Seguidores</span></div>
       <div class="perfil-stat"><strong id="numSeguindo">0</strong><span>A seguir</span></div>
@@ -252,7 +255,9 @@
     let todosPosts = [];
     let imagemBase64 = "";
     let grupoAtualId = null;
+    let verificados = {};
     const EMOJIS_REACAO = ["👍","❤️","😂","😮","😢","🔥"];
+    const THRESHOLD_VERIFICACAO = 5;
 
     if (modoClaro) { document.body.classList.add("claro"); document.getElementById("modoBtn").textContent = "☀️ Claro"; }
 
@@ -261,6 +266,19 @@
       document.body.classList.toggle("claro");
       document.getElementById("modoBtn").textContent = modoClaro ? "☀️ Claro" : "🌙 Escuro";
       localStorage.setItem("modoClaro", modoClaro);
+    }
+
+    function badgeFor(nome) {
+      return verificados[nome] ? ' <span class="badge-verificado" title="Conta verificada">✅</span>' : '';
+    }
+
+    async function carregarVerificados() {
+      try {
+        const snap = await getDocs(collection(db, "utilizadores"));
+        const novo = {};
+        snap.forEach(d => { const u = d.data(); novo[u.nome] = !!u.verificado; });
+        verificados = novo;
+      } catch(e) {}
     }
 
     window.previewImagem = function(e) {
@@ -367,7 +385,7 @@
           const n = d.data();
           const div = document.createElement("div");
           div.className = "notif-item";
-          div.innerHTML = `<div class="notif-avatar">${n.deQuem[0].toUpperCase()}</div><div><strong>${n.deQuem}</strong> começou a seguir-te! 🎉</div>`;
+          div.innerHTML = `<div class="notif-avatar">${n.deQuem[0].toUpperCase()}</div><div><strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} começou a seguir-te! 🎉</div>`;
           lista.appendChild(div);
           if (!n.lida) updateDoc(doc(db, "notificacoes", d.id), { lida: true });
         });
@@ -405,6 +423,18 @@
         document.getElementById("numSeguidores").textContent = seguidoresSnap.size;
         document.getElementById("numSeguindo").textContent = seguindoSnap.size;
         document.getElementById("numPosts").textContent = meusPosts.length;
+
+        const verificado = seguidoresSnap.size >= THRESHOLD_VERIFICACAO;
+        await setDoc(doc(db, "utilizadores", nomeUsuario), { verificado }, { merge: true });
+        verificados[nomeUsuario] = verificado;
+        document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nomeUsuario + badgeFor(nomeUsuario);
+        const statusEl = document.getElementById("statusVerificado");
+        if (verificado) {
+          statusEl.innerHTML = "✅ <strong>Conta verificada!</strong>";
+        } else {
+          const faltam = THRESHOLD_VERIFICACAO - seguidoresSnap.size;
+          statusEl.innerHTML = `🔒 Faltam ${faltam} seguidor(es) para a tua conta ficar verificada (${seguidoresSnap.size}/${THRESHOLD_VERIFICACAO})`;
+        }
       } catch(e) {}
     }
 
@@ -414,6 +444,7 @@
       const lista = document.getElementById("listaUtilizadores");
       lista.innerHTML = "<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
       try {
+        await carregarVerificados();
         const snap = await getDocs(collection(db, "utilizadores"));
         lista.innerHTML = "";
         snap.forEach((d) => {
@@ -421,7 +452,7 @@
           if (u.nome === nomeUsuario) return;
           const div = document.createElement("div");
           div.className = "utilizador-card";
-          div.innerHTML = `<div class="utilizador-info"><div class="utilizador-avatar">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome">${u.nome}</div><div class="utilizador-bio">${u.bio || "Utilizador do ConnectApp"}</div></div></div><button class="btn-seguir" onclick="seguir('${u.nome}', this)">➕ Seguir</button>`;
+          div.innerHTML = `<div class="utilizador-info"><div class="utilizador-avatar">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio || "Utilizador do ConnectApp"}</div></div></div><button class="btn-seguir" onclick="seguir('${u.nome}', this)">➕ Seguir</button>`;
           lista.appendChild(div);
         });
         if (lista.children.length === 0) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum utilizador ainda!</p>";
@@ -525,13 +556,14 @@
       const div = document.getElementById("postsGrupo");
       div.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
       try {
+        await carregarVerificados();
         const snap = await getDocs(query(collection(db, "grupos", grupoId, "posts"), orderBy("data", "desc")));
         div.innerHTML = "";
         snap.forEach((d) => {
           const p = d.data();
           const item = document.createElement("div");
           item.className = "post-grupo";
-          item.innerHTML = `<strong>${p.autor}</strong><div>${p.texto}</div><div class="pg-info">${p.hora}</div>`;
+          item.innerHTML = `<strong>${p.autor}</strong>${badgeFor(p.autor)}<div>${p.texto}</div><div class="pg-info">${p.hora}</div>`;
           div.appendChild(item);
         });
         if (snap.empty) div.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem publicações neste grupo.</p>";
@@ -562,6 +594,11 @@
           botao.textContent = "✅ A seguir"; botao.className = "btn-seguindo";
           await addDoc(collection(db, "notificacoes"), { paraQuem: autorPost, deQuem: nomeUsuario, tipo: "seguidor", lida: false, data: serverTimestamp() });
         }
+        const seguidoresAtorSnap = await getDocs(collection(db, "utilizadores", autorPost, "seguidores"));
+        const verificado = seguidoresAtorSnap.size >= THRESHOLD_VERIFICACAO;
+        await setDoc(doc(db, "utilizadores", autorPost), { verificado }, { merge: true });
+        verificados[autorPost] = verificado;
+        renderPosts(todosPosts);
       } catch(e) {}
     }
 
@@ -637,7 +674,7 @@
       const seguirBtn = p.autor !== nomeUsuario ? `<button class="btn-seguir" onclick="seguir('${p.autor}', this)">➕ Seguir</button>` : "";
       const editarBtn = p.autor === nomeUsuario ? `<button class="btn-editar" onclick="toggleEditar('${d.id}')">✏️ Editar</button>` : "";
       div.innerHTML = `
-        <strong>${p.autor}</strong> · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
+        <strong>${p.autor}</strong>${badgeFor(p.autor)} · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
         ${seguirBtn}
         <p class="post-texto" id="texto-${d.id}" style="margin:10px 0;color:#c8cad8;">${p.texto}</p>
         ${imgHtml}
@@ -664,6 +701,7 @@
       const postsDiv = document.getElementById("posts");
       postsDiv.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
       try {
+        await carregarVerificados();
         const q = query(collection(db, "posts"), orderBy("data", "desc"));
         const snap = await getDocs(q);
         todosPosts = [];
@@ -701,7 +739,7 @@
           const c = d.data();
           const div = document.createElement("div");
           div.className = "comentario-item";
-          div.innerHTML = `<strong>${c.autor}:</strong> ${c.texto}`;
+          div.innerHTML = `<strong>${c.autor}</strong>${badgeFor(c.autor)}: ${c.texto}`;
           lista.appendChild(div);
         });
       } catch(e) {}
@@ -783,7 +821,7 @@
           const m = d.data();
           const div = document.createElement("div");
           div.className = "msg-item " + (m.autor === nomeUsuario ? "msg-minha" : "msg-outro");
-          div.innerHTML = m.autor === nomeUsuario ? m.texto : `<strong>${m.autor}:</strong> ${m.texto}`;
+          div.innerHTML = m.autor === nomeUsuario ? m.texto : `<strong>${m.autor}</strong>${badgeFor(m.autor)}: ${m.texto}`;
           mensagens.appendChild(div);
         });
         mensagens.scrollTop = mensagens.scrollHeight;
