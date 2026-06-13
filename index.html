@@ -66,6 +66,8 @@
     body.claro .comentario-input { background: #f0f2f5; color: #1a1a2e; border-color: #c0c4d0; }
     #perfil { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 24px; text-align: center; }
     body.claro #perfil { background: #ffffff; border-color: #dde1ed; }
+    #bioTexto { word-wrap: break-word; }
+    #editBioBox textarea { width: 100%; }
     .perfil-stats { display: flex; justify-content: center; gap: 30px; margin: 16px 0; }
     .perfil-stat { text-align: center; }
     .perfil-stat strong { display: block; font-size: 22px; color: #5b6ef5; }
@@ -246,7 +248,13 @@
     <input type="file" accept="image/*" onchange="trocarFoto(event)">
     <br><br>
     <p id="nomePerfilTexto"><strong>Nome:</strong> </p>
-    <p><strong>Bio:</strong> Utilizador do ConnectApp! 🚀</p>
+    <p id="bioTexto"><strong>Bio:</strong> Utilizador do ConnectApp! 🚀</p>
+    <button class="btn-editar" onclick="toggleEditarBio()">✏️ Editar Bio</button>
+    <div id="editBioBox" style="display:none;margin-top:8px;text-align:left;">
+      <textarea id="bioInput" maxlength="100" placeholder="Escreve algo sobre ti... (máx 100 caracteres)" style="height:60px;"></textarea>
+      <button onclick="guardarBio()">💾 Guardar</button>
+      <button onclick="toggleEditarBio()" style="background:#6b7280;">Cancelar</button>
+    </div>
     <div id="statusVerificado"></div>
     <div class="perfil-stats">
       <div class="perfil-stat"><strong id="numSeguidores">0</strong><span>Seguidores</span></div>
@@ -294,6 +302,7 @@
     let dmUnsubscribe = null;
     const EMOJIS_REACAO = ["👍","❤️","😂","😮","😢","🔥"];
     const THRESHOLD_VERIFICACAO = 5;
+    const BIO_PADRAO = "Utilizador do ConnectApp! 🚀";
 
     if (modoClaro) { document.body.classList.add("claro"); document.getElementById("modoBtn").textContent = "☀️ Claro"; }
 
@@ -422,7 +431,15 @@
     }
 
     async function registarUtilizador() {
-      try { await setDoc(doc(db, "utilizadores", nomeUsuario), { nome: nomeUsuario, bio: "Utilizador do ConnectApp! 🚀" }, { merge: true }); } catch(e) {}
+      try {
+        const ref = doc(db, "utilizadores", nomeUsuario);
+        const snap = await getDoc(ref);
+        if (!snap.exists()) {
+          await setDoc(ref, { nome: nomeUsuario, bio: BIO_PADRAO });
+        } else {
+          await setDoc(ref, { nome: nomeUsuario }, { merge: true });
+        }
+      } catch(e) {}
     }
 
     async function registarOnline() {
@@ -496,8 +513,34 @@
       setTimeout(() => document.getElementById("status").textContent = "", 3000);
     }
 
+    // BIO
+    window.toggleEditarBio = function() {
+      const box = document.getElementById("editBioBox");
+      if (box.style.display === "block") {
+        box.style.display = "none";
+      } else {
+        const atual = (document.getElementById("bioTexto").textContent || "").replace(/^Bio:\s*/, "");
+        document.getElementById("bioInput").value = atual === BIO_PADRAO ? "" : atual;
+        box.style.display = "block";
+      }
+    }
+
+    window.guardarBio = async function() {
+      const novaBio = document.getElementById("bioInput").value.trim() || BIO_PADRAO;
+      try {
+        await setDoc(doc(db, "utilizadores", nomeUsuario), { bio: novaBio }, { merge: true });
+        document.getElementById("bioTexto").innerHTML = "<strong>Bio:</strong> " + novaBio;
+        document.getElementById("editBioBox").style.display = "none";
+        setStatus("✅ Bio atualizada!");
+      } catch(e) { setStatus("❌ Erro ao atualizar bio."); }
+    }
+
     async function carregarEstatisticas() {
       try {
+        const userSnap = await getDoc(doc(db, "utilizadores", nomeUsuario));
+        const bio = (userSnap.exists() && userSnap.data().bio) ? userSnap.data().bio : BIO_PADRAO;
+        document.getElementById("bioTexto").innerHTML = "<strong>Bio:</strong> " + bio;
+
         const seguidoresSnap = await getDocs(collection(db, "utilizadores", nomeUsuario, "seguidores"));
         const seguindoSnap = await getDocs(collection(db, "utilizadores", nomeUsuario, "seguindo"));
         const postsSnap = await getDocs(query(collection(db, "posts")));
@@ -534,7 +577,7 @@
           if (u.nome === nomeUsuario) return;
           const div = document.createElement("div");
           div.className = "utilizador-card";
-          div.innerHTML = `<div class="utilizador-info"><div class="utilizador-avatar">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio || "Utilizador do ConnectApp"}</div></div></div><div class="utilizador-acoes"><button class="btn-mensagem" onclick="abrirDM('${u.nome}')">✉️</button><button class="btn-seguir" onclick="seguir('${u.nome}', this)">➕ Seguir</button></div>`;
+          div.innerHTML = `<div class="utilizador-info"><div class="utilizador-avatar">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio || BIO_PADRAO}</div></div></div><div class="utilizador-acoes"><button class="btn-mensagem" onclick="abrirDM('${u.nome}')">✉️</button><button class="btn-seguir" onclick="seguir('${u.nome}', this)">➕ Seguir</button></div>`;
           lista.appendChild(div);
         });
         if (lista.children.length === 0) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum utilizador ainda!</p>";
