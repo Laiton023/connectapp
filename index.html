@@ -6,10 +6,11 @@
   <title>ConnectApp</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
+    :root { --cor1: #5b6ef5; --cor2: #f56b6b; }
     * { box-sizing: border-box; margin: 0; padding: 0; transition: background 0.3s, color 0.3s; }
     body { background: #0d0f14; color: #e8eaf2; font-family: 'Poppins', sans-serif; }
     body.claro { background: #f0f2f5; color: #1a1a2e; }
-    header { background: linear-gradient(135deg, #5b6ef5, #f56b6b); padding: 20px; text-align: center; }
+    header { background: linear-gradient(135deg, var(--cor1), var(--cor2)); padding: 20px; text-align: center; }
     header h1 { font-size: 28px; font-weight: 700; color: white; }
     header p { color: rgba(255,255,255,0.8); font-size: 14px; }
     #onlineBar { background: #161920; text-align: center; padding: 6px; font-size: 13px; color: #4ecb8d; border-bottom: 1px solid #2a2f42; }
@@ -17,21 +18,22 @@
     nav { background: #161920; display: flex; justify-content: center; gap: 10px; padding: 14px; border-bottom: 1px solid #2a2f42; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; align-items: center; }
     body.claro nav { background: #ffffff; border-bottom: 1px solid #dde1ed; }
     nav a { color: #6b7280; text-decoration: none; font-weight: 600; font-size: 13px; padding: 6px 12px; border-radius: 20px; transition: all 0.2s; position: relative; }
-    nav a:hover { background: #5b6ef5; color: white; }
-    .notif-dot { position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; background: #f56b6b; border-radius: 50%; display: none; }
+    nav a:hover { background: var(--cor1); color: white; }
+    .notif-dot { position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; background: var(--cor2); border-radius: 50%; display: none; }
     #modoBtn { background: none; border: 1px solid #2a2f42; border-radius: 20px; padding: 6px 14px; color: #e8eaf2; font-family: 'Poppins', sans-serif; font-size: 13px; cursor: pointer; margin-top: 0; }
     body.claro #modoBtn { border-color: #c0c4d0; color: #1a1a2e; }
-    main, #perfil, #chatDiv, #utilizadoresDiv, #gruposDiv, #grupoDetalheDiv, #mensagensListaDiv, #dmConversaDiv, #perfilOutroDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
+    main, #perfil, #chatDiv, #utilizadoresDiv, #gruposDiv, #grupoDetalheDiv, #mensagensListaDiv, #dmConversaDiv, #perfilOutroDiv, #temaDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
     textarea { width: 100%; background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 12px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 14px; height: 90px; resize: none; outline: none; }
     body.claro textarea { background: #ffffff; color: #1a1a2e; border-color: #c0c4d0; }
-    textarea:focus { border-color: #5b6ef5; }
-    button { background: #5b6ef5; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; margin-right: 6px; transition: all 0.2s; }
-    button:hover { background: #4a5de8; transform: translateY(-1px); }
+    textarea:focus { border-color: var(--cor1); }
+    button { background: var(--cor1); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; margin-right: 6px; transition: all 0.2s; }
+    button:hover { opacity: 0.9; transform: translateY(-1px); }
     .btn-whatsapp { background: #25d366; } .btn-whatsapp:hover { background: #1da851; }
-    .btn-seguir { background: #f56b6b; } .btn-seguir:hover { background: #e05555; }
+    .btn-seguir { background: var(--cor2); }
     .btn-seguindo { background: #2a2f42; }
-    .btn-editar { background: #f0a500; } .btn-editar:hover { background: #d4900a; }
+    .btn-editar { background: #f0a500; }
     .btn-mensagem { background: #2a2f42; }
+    .btn-danger { background: #f56b6b; }
     .nome-clicavel { cursor: pointer; } .nome-clicavel:hover { text-decoration: underline; }
     .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
     body.claro .post-card { background: #ffffff; border-color: #dde1ed; }
@@ -39,20 +41,20 @@
     .edit-box { display: none; margin-top: 10px; }
     .edit-box textarea { height: 70px; margin-bottom: 6px; }
     .badge-verificado { font-size: 12px; vertical-align: middle; margin-left: 2px; }
-    .hashtag { color: #5b6ef5; font-weight: 600; cursor: pointer; } .hashtag:hover { text-decoration: underline; }
+    .hashtag { color: var(--cor1); font-weight: 600; cursor: pointer; } .hashtag:hover { text-decoration: underline; }
     #trendingBar { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 14px; margin-bottom: 16px; }
     body.claro #trendingBar { background: #ffffff; border-color: #dde1ed; }
     .trending-titulo { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
     .trending-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-    .hashtag-chip { background: #0d0f14; border: 1px solid #2a2f42; color: #5b6ef5; padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 600; margin: 0; }
+    .hashtag-chip { background: #0d0f14; border: 1px solid #2a2f42; color: var(--cor1); padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 600; margin: 0; }
     body.claro .hashtag-chip { background: #f0f2f5; border-color: #c0c4d0; }
-    .hashtag-chip:hover { background: #5b6ef5; color: white; }
+    .hashtag-chip:hover { background: var(--cor1); color: white; }
     .hashtag-chip small { color: #6b7280; font-weight: 400; }
     .reacoes-bar { display: flex; gap: 4px; flex-wrap: wrap; margin: 10px 0; }
     .reacao-btn { background: #0d0f14; border: 1px solid #2a2f42; color: #e8eaf2; padding: 6px 10px; border-radius: 20px; font-size: 13px; cursor: pointer; margin: 0; transition: all 0.2s; }
     body.claro .reacao-btn { background: #f0f2f5; border-color: #c0c4d0; color: #1a1a2e; }
     .reacao-btn:hover { background: #2a2f42; transform: scale(1.08); }
-    .reacao-btn.active { background: #5b6ef5; border-color: #5b6ef5; color: white; }
+    .reacao-btn.active { background: var(--cor1); border-color: var(--cor1); color: white; }
     .comentarios-box { margin-top: 12px; border-top: 1px solid #2a2f42; padding-top: 12px; display: none; }
     body.claro .comentarios-box { border-top-color: #dde1ed; }
     .comentario-item { background: #0d0f14; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; font-size: 13px; }
@@ -61,18 +63,18 @@
     body.claro .comentario-input { background: #f0f2f5; color: #1a1a2e; border-color: #c0c4d0; }
     #perfil, #perfilOutroDiv { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 24px; text-align: center; }
     body.claro #perfil, body.claro #perfilOutroDiv { background: #ffffff; border-color: #dde1ed; }
-    .outro-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #5b6ef5, #f56b6b); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 32px; color: white; margin: 0 auto 12px; }
+    .outro-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--cor1), var(--cor2)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 32px; color: white; margin: 0 auto 12px; }
     #outroBioTexto { color: #6b7280; font-size: 13px; margin-top: 6px; }
     .perfil-stats { display: flex; justify-content: center; gap: 30px; margin: 16px 0; }
     .perfil-stat { text-align: center; }
-    .perfil-stat strong { display: block; font-size: 22px; color: #5b6ef5; }
+    .perfil-stat strong { display: block; font-size: 22px; color: var(--cor1); }
     .perfil-stat span { font-size: 12px; color: #6b7280; }
     #statusVerificado { margin-top: 6px; font-size: 13px; color: #6b7280; }
     .notificacoes-box { text-align: left; margin-top: 20px; border-top: 1px solid #2a2f42; padding-top: 16px; }
     .notificacoes-box h3 { font-size: 15px; margin-bottom: 10px; }
     .notif-item { background: #0d0f14; border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; font-size: 13px; display: flex; align-items: center; gap: 10px; }
     body.claro .notif-item { background: #f0f2f5; color: #1a1a2e; }
-    .notif-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #5b6ef5, #f56b6b); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
+    .notif-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--cor1), var(--cor2)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
     input[type="text"] { background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 8px; padding: 10px 14px; font-family: 'Poppins', sans-serif; font-size: 14px; width: 75%; outline: none; }
     body.claro input[type="text"] { background: #ffffff; color: #1a1a2e; border-color: #c0c4d0; }
     #pesquisaBox { width: 100%; background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 10px; padding: 12px 14px; font-family: 'Poppins', sans-serif; font-size: 14px; outline: none; margin-bottom: 16px; }
@@ -83,7 +85,7 @@
     .utilizador-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 16px; margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
     body.claro .utilizador-card { background: #ffffff; border-color: #dde1ed; }
     .utilizador-info { display: flex; align-items: center; gap: 12px; min-width: 0; }
-    .utilizador-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #5b6ef5, #f56b6b); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: white; flex-shrink: 0; }
+    .utilizador-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--cor1), var(--cor2)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 18px; color: white; flex-shrink: 0; }
     .utilizador-nome { font-weight: 600; font-size: 14px; }
     .utilizador-bio { font-size: 12px; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 160px; }
     .utilizador-acoes { display: flex; gap: 6px; flex-shrink: 0; }
@@ -93,7 +95,7 @@
     body.claro .grupo-card { background: #ffffff; border-color: #dde1ed; }
     .grupo-card h3 { font-size: 15px; margin-bottom: 4px; }
     .grupo-card p { font-size: 12px; color: #6b7280; margin-bottom: 8px; }
-    .grupo-icone { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #5b6ef5, #f56b6b); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 8px; }
+    .grupo-icone { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, var(--cor1), var(--cor2)); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 8px; }
     .post-grupo { background: #0d0f14; border-radius: 10px; padding: 10px 14px; margin-top: 10px; font-size: 13px; }
     body.claro .post-grupo { background: #f0f2f5; color: #1a1a2e; }
     .post-grupo .pg-info { color: #6b7280; font-size: 11px; margin-top: 4px; }
@@ -102,21 +104,28 @@
     #storiesBar { max-width: 600px; margin: 16px auto 0; padding: 0 16px; }
     .stories-container { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
     .story-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex-shrink: 0; }
-    .story-avatar { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #5b6ef5; overflow: hidden; background: #1e2230; display: flex; align-items: center; justify-content: center; }
+    .story-avatar { width: 60px; height: 60px; border-radius: 50%; border: 3px solid var(--cor1); overflow: hidden; background: #1e2230; display: flex; align-items: center; justify-content: center; }
     .story-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .story-avatar-add { background: linear-gradient(135deg, #5b6ef5, #f56b6b); font-size: 24px; }
+    .story-avatar-add { background: linear-gradient(135deg, var(--cor1), var(--cor2)); font-size: 24px; }
     .story-nome { font-size: 11px; color: #6b7280; text-align: center; max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #storyViewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; justify-content: center; align-items: center; }
     #storyViewer img { max-width: 100%; max-height: 80vh; border-radius: 10px; }
     #storyViewer .story-info { position: absolute; top: 20px; left: 20px; color: white; font-weight: 600; }
     #storyViewer .story-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 28px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; }
+    /* TEMAS */
+    #temaDiv { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 24px; }
+    body.claro #temaDiv { background: #ffffff; border-color: #dde1ed; }
+    .temas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
+    .tema-btn { border-radius: 12px; height: 70px; cursor: pointer; border: 3px solid transparent; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; color: white; margin: 0; padding: 0; transition: all 0.2s; }
+    .tema-btn:hover { transform: scale(1.05); border-color: white; }
+    .tema-btn.ativo { border-color: white; box-shadow: 0 0 0 3px rgba(255,255,255,0.3); }
     footer { text-align: center; padding: 20px; color: #6b7280; font-size: 13px; margin-top: 30px; }
     #status { text-align: center; color: #4ecb8d; font-size: 13px; max-width: 600px; margin: 8px auto; padding: 0 16px; }
     #loginTela { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0d0f14; display: flex; align-items: center; justify-content: center; z-index: 999; }
     body.claro #loginTela { background: #f0f2f5; }
     .login-box { background: #1e2230; border: 1px solid #2a2f42; border-radius: 20px; padding: 40px 30px; text-align: center; width: 90%; max-width: 400px; }
     body.claro .login-box { background: #ffffff; border-color: #dde1ed; }
-    .login-box h2 { font-size: 24px; margin-bottom: 8px; color: #5b6ef5; }
+    .login-box h2 { font-size: 24px; margin-bottom: 8px; color: var(--cor1); }
     .login-box p { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
     .login-box input { width: 100%; background: #0d0f14; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 10px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 16px; outline: none; margin-bottom: 16px; }
     body.claro .login-box input { background: #f0f2f5; color: #1a1a2e; border-color: #c0c4d0; }
@@ -126,7 +135,7 @@
     #mensagens { height: 300px; overflow-y: auto; background: #0d0f14; padding: 12px; border-radius: 10px; display: flex; flex-direction: column; gap: 8px; }
     body.claro #mensagens { background: #f0f2f5; }
     .msg-item { padding: 8px 12px; border-radius: 10px; font-size: 13px; max-width: 80%; }
-    .msg-minha { background: #5b6ef5; color: white; align-self: flex-end; }
+    .msg-minha { background: var(--cor1); color: white; align-self: flex-end; }
     .msg-outro { background: #2a2f42; color: #e8eaf2; align-self: flex-start; }
     body.claro .msg-outro { background: #dde1ed; color: #1a1a2e; }
     .chat-input-box { display: flex; gap: 8px; margin-top: 12px; }
@@ -153,7 +162,8 @@
     <a href="#" onclick="verMensagens()">✉️ Msgs<span class="notif-dot" id="dmNotif"></span></a>
     <a href="#" onclick="verPerfil()">Perfil<span class="notif-dot" id="perfilNotif"></span></a>
     <a href="#" onclick="verChat()">💬 Chat<span class="notif-dot" id="chatNotif"></span></a>
-    <a href="#" onclick="sair()" style="color:#f56b6b;">Sair</a>
+    <a href="#" onclick="verTema()">🎨 Tema</a>
+    <a href="#" onclick="sair()" style="color:var(--cor2);">Sair</a>
     <button id="modoBtn" onclick="toggleModo()">🌙 Escuro</button>
   </nav>
   <div id="status"></div>
@@ -219,12 +229,20 @@
       <button onclick="enviarDM()">Enviar</button>
     </div>
   </div>
+  <div id="temaDiv" style="display:none">
+    <h2>🎨 Escolhe o teu Tema</h2>
+    <p style="color:#6b7280;font-size:13px;margin-top:8px;">Toca num tema para personalizar o ConnectApp!</p>
+    <div class="temas-grid" id="temasGrid"></div>
+  </div>
   <div id="perfilOutroDiv" style="display:none">
     <button onclick="mostrarFeed()" style="background:#6b7280;">⬅ Voltar</button>
     <div style="margin-top:16px;">
       <div class="outro-avatar" id="outroAvatar">?</div>
       <h2 id="outroNomeTitulo"></h2>
       <p id="outroBioTexto"></p>
+      <div id="outraMusicaDiv" style="margin-top:10px;display:none;">
+        <iframe id="outraMusicaIframe" width="100%" height="80" frameborder="0" allow="autoplay" style="border-radius:10px;"></iframe>
+      </div>
     </div>
     <div class="perfil-stats">
       <div class="perfil-stat"><strong id="outroNumSeguidores">0</strong><span>Seguidores</span></div>
@@ -243,11 +261,17 @@
     <br><br>
     <p id="nomePerfilTexto"><strong>Nome:</strong> </p>
     <p id="bioTexto"><strong>Bio:</strong> Utilizador do ConnectApp! 🚀</p>
-    <button class="btn-editar" onclick="toggleEditarBio()">✏️ Editar Bio</button>
+    <button class="btn-editar" onclick="toggleEditarBio()">✏️ Editar Perfil</button>
     <div id="editBioBox" style="display:none;margin-top:8px;text-align:left;">
-      <textarea id="bioInput" maxlength="100" placeholder="Escreve algo sobre ti..." style="height:60px;"></textarea>
+      <label style="font-size:13px;color:#6b7280;">Bio (máx 100 caracteres)</label>
+      <textarea id="bioInput" maxlength="100" placeholder="Escreve algo sobre ti..." style="height:60px;margin-top:4px;"></textarea>
+      <label style="font-size:13px;color:#6b7280;display:block;margin-top:8px;">🎵 Link de música (YouTube)</label>
+      <input type="text" id="musicaInput" placeholder="https://www.youtube.com/watch?v=..." style="width:100%;margin-top:4px;">
       <button onclick="guardarBio()">💾 Guardar</button>
       <button onclick="toggleEditarBio()" style="background:#6b7280;">Cancelar</button>
+    </div>
+    <div id="musicaPerfilDiv" style="margin-top:10px;display:none;">
+      <iframe id="musicaIframe" width="100%" height="80" frameborder="0" allow="autoplay" style="border-radius:10px;"></iframe>
     </div>
     <div id="statusVerificado"></div>
     <div class="perfil-stats">
@@ -297,6 +321,45 @@
     const THRESHOLD_VERIFICACAO = 5;
     const BIO_PADRAO = "Utilizador do ConnectApp! 🚀";
 
+    const TEMAS = [
+      { nome: "Roxo/Rosa", cor1: "#5b6ef5", cor2: "#f56b6b" },
+      { nome: "Verde/Azul", cor1: "#10b981", cor2: "#3b82f6" },
+      { nome: "Laranja/Rosa", cor1: "#f97316", cor2: "#ec4899" },
+      { nome: "Azul/Ciano", cor1: "#2563eb", cor2: "#06b6d4" },
+      { nome: "Roxo/Laranja", cor1: "#7c3aed", cor2: "#f59e0b" },
+      { nome: "Rosa/Roxo", cor1: "#db2777", cor2: "#7c3aed" },
+      { nome: "Verde/Amarelo", cor1: "#16a34a", cor2: "#ca8a04" },
+      { nome: "Vermelho/Escuro", cor1: "#dc2626", cor2: "#991b1b" },
+      { nome: "Cinza/Azul", cor1: "#475569", cor2: "#0ea5e9" },
+    ];
+
+    function aplicarTema(idx) {
+      const t = TEMAS[idx] || TEMAS[0];
+      document.documentElement.style.setProperty("--cor1", t.cor1);
+      document.documentElement.style.setProperty("--cor2", t.cor2);
+      localStorage.setItem("temaIdx", idx);
+      document.querySelectorAll(".tema-btn").forEach((b,i) => {
+        b.classList.toggle("ativo", i === idx);
+      });
+    }
+
+    function renderTemas() {
+      const grid = document.getElementById("temasGrid");
+      const atual = parseInt(localStorage.getItem("temaIdx") || "0");
+      grid.innerHTML = "";
+      TEMAS.forEach((t, i) => {
+        const btn = document.createElement("button");
+        btn.className = "tema-btn" + (i === atual ? " ativo" : "");
+        btn.style.background = `linear-gradient(135deg, ${t.cor1}, ${t.cor2})`;
+        btn.textContent = t.nome;
+        btn.onclick = () => aplicarTema(i);
+        grid.appendChild(btn);
+      });
+    }
+
+    const temaGuardado = parseInt(localStorage.getItem("temaIdx") || "0");
+    aplicarTema(temaGuardado);
+
     if (modoClaro) { document.body.classList.add("claro"); document.getElementById("modoBtn").textContent = "☀️ Claro"; }
 
     window.toggleModo = function() {
@@ -304,6 +367,12 @@
       document.body.classList.toggle("claro");
       document.getElementById("modoBtn").textContent = modoClaro ? "☀️ Claro" : "🌙 Escuro";
       localStorage.setItem("modoClaro", modoClaro);
+    }
+
+    window.verTema = function() {
+      escondertodas();
+      document.getElementById("temaDiv").style.display = "block";
+      renderTemas();
     }
 
     function badgeFor(nome) { return verificados[nome] ? ' <span class="badge-verificado" title="Conta verificada">✅</span>' : ''; }
@@ -458,18 +527,46 @@
       else {
         const atual=(document.getElementById("bioTexto").textContent||"").replace(/^Bio:\s*/,"");
         document.getElementById("bioInput").value=atual===BIO_PADRAO?"":atual;
+        getDoc(doc(db,"utilizadores",nomeUsuario)).then(snap=>{
+          if(snap.exists()&&snap.data().musica) document.getElementById("musicaInput").value=snap.data().musica||"";
+        }).catch(()=>{});
         box.style.display="block";
       }
     }
 
     window.guardarBio = async function() {
       const novaBio=document.getElementById("bioInput").value.trim()||BIO_PADRAO;
+      const musica=document.getElementById("musicaInput").value.trim();
       try {
-        await setDoc(doc(db,"utilizadores",nomeUsuario),{bio:novaBio},{merge:true});
+        await setDoc(doc(db,"utilizadores",nomeUsuario),{bio:novaBio,musica},{merge:true});
         document.getElementById("bioTexto").innerHTML="<strong>Bio:</strong> "+novaBio;
         document.getElementById("editBioBox").style.display="none";
-        setStatus("✅ Bio atualizada!");
+        mostrarMusicaPerfil(musica);
+        setStatus("✅ Perfil atualizado!");
       } catch(e){setStatus("❌ Erro.");}
+    }
+
+    function youtubeEmbedUrl(url) {
+      if (!url) return null;
+      const match = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+      if (match) return `https://www.youtube.com/embed/${match[1]}?autoplay=1&loop=1&playlist=${match[1]}`;
+      return null;
+    }
+
+    function mostrarMusicaPerfil(url) {
+      const embedUrl = youtubeEmbedUrl(url);
+      const div = document.getElementById("musicaPerfilDiv");
+      const iframe = document.getElementById("musicaIframe");
+      if (embedUrl) { iframe.src = embedUrl; div.style.display = "block"; }
+      else { div.style.display = "none"; iframe.src = ""; }
+    }
+
+    function mostrarMusicaOutro(url) {
+      const embedUrl = youtubeEmbedUrl(url);
+      const div = document.getElementById("outraMusicaDiv");
+      const iframe = document.getElementById("outraMusicaIframe");
+      if (embedUrl) { iframe.src = embedUrl; div.style.display = "block"; }
+      else { div.style.display = "none"; iframe.src = ""; }
     }
 
     async function carregarEstatisticas() {
@@ -477,6 +574,7 @@
         const userSnap=await getDoc(doc(db,"utilizadores",nomeUsuario));
         const bio=(userSnap.exists()&&userSnap.data().bio)?userSnap.data().bio:BIO_PADRAO;
         document.getElementById("bioTexto").innerHTML="<strong>Bio:</strong> "+bio;
+        mostrarMusicaPerfil(userSnap.exists()?userSnap.data().musica:"");
         const segSnap=await getDocs(collection(db,"utilizadores",nomeUsuario,"seguidores"));
         const segIndoSnap=await getDocs(collection(db,"utilizadores",nomeUsuario,"seguindo"));
         const postsSnap=await getDocs(query(collection(db,"posts")));
@@ -507,6 +605,7 @@
         document.getElementById("outroNomeTitulo").innerHTML=outroNome+badgeFor(outroNome);
         const userSnap=await getDoc(doc(db,"utilizadores",outroNome));
         document.getElementById("outroBioTexto").textContent=(userSnap.exists()&&userSnap.data().bio)?userSnap.data().bio:BIO_PADRAO;
+        mostrarMusicaOutro(userSnap.exists()?userSnap.data().musica:"");
         const segSnap=await getDocs(collection(db,"utilizadores",outroNome,"seguidores"));
         const segIndoSnap=await getDocs(collection(db,"utilizadores",outroNome,"seguindo"));
         document.getElementById("outroNumSeguidores").textContent=segSnap.size;
@@ -636,7 +735,7 @@
           div.innerHTML=`<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="verPerfilOutro('${outro}')">${outro[0].toUpperCase()}</div><div><div class="utilizador-nome nome-clicavel" onclick="verPerfilOutro('${outro}')">${outro}${badgeFor(outro)}</div><div class="utilizador-bio">${(c.ultimaMsg||"").substring(0,40)}</div></div></div><button onclick="abrirDM('${outro}')">Abrir</button>`;
           lista.appendChild(div);
         });
-        if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem conversas. Vai a 👥 Users e toca em ✉️!</p>";
+        if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem conversas!</p>";
       } catch(e){lista.innerHTML="<p style='color:#f56b6b;'>Erro.</p>";}
     }
 
@@ -676,7 +775,9 @@
 
     function escondertodas() {
       chatAberto=false;
-      ["feedDiv","chatDiv","utilizadoresDiv","gruposDiv","grupoDetalheDiv","mensagensListaDiv","dmConversaDiv","perfilOutroDiv","perfil"].forEach(id=>document.getElementById(id).style.display="none");
+      document.getElementById("musicaIframe").src="";
+      document.getElementById("outraMusicaIframe").src="";
+      ["feedDiv","chatDiv","utilizadoresDiv","gruposDiv","grupoDetalheDiv","mensagensListaDiv","dmConversaDiv","perfilOutroDiv","perfil","temaDiv"].forEach(id=>document.getElementById(id).style.display="none");
     }
 
     window.seguir = async function(autorPost, botao) {
@@ -730,7 +831,6 @@
     }
 
     function atualizarContagem(postId,emoji,delta){const el=document.getElementById("count-"+postId+"-"+emoji);if(el)el.textContent=Math.max(0,parseInt(el.textContent)+delta);}
-
     function marcarAtiva(postId,emoji){EMOJIS_REACAO.forEach(em=>{const b=document.getElementById("btn-"+postId+"-"+em);if(!b)return;if(em===emoji)b.classList.add("active");else b.classList.remove("active");});}
 
     function criarReacoesBar(postId,reacoes){
