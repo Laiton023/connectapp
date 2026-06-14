@@ -21,28 +21,25 @@
     .notif-dot { position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; background: #f56b6b; border-radius: 50%; display: none; }
     #modoBtn { background: none; border: 1px solid #2a2f42; border-radius: 20px; padding: 6px 14px; color: #e8eaf2; font-family: 'Poppins', sans-serif; font-size: 13px; cursor: pointer; margin-top: 0; }
     body.claro #modoBtn { border-color: #c0c4d0; color: #1a1a2e; }
-    main, #perfil, #chatDiv, #utilizadoresDiv, #gruposDiv, #grupoDetalheDiv, #mensagensListaDiv, #dmConversaDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
+    main, #perfil, #chatDiv, #utilizadoresDiv, #gruposDiv, #grupoDetalheDiv, #mensagensListaDiv, #dmConversaDiv, #perfilOutroDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
     textarea { width: 100%; background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 12px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 14px; height: 90px; resize: none; outline: none; }
     body.claro textarea { background: #ffffff; color: #1a1a2e; border-color: #c0c4d0; }
     textarea:focus { border-color: #5b6ef5; }
     button { background: #5b6ef5; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 8px; margin-right: 6px; transition: all 0.2s; }
     button:hover { background: #4a5de8; transform: translateY(-1px); }
-    .btn-whatsapp { background: #25d366; }
-    .btn-whatsapp:hover { background: #1da851; }
-    .btn-seguir { background: #f56b6b; }
-    .btn-seguir:hover { background: #e05555; }
+    .btn-whatsapp { background: #25d366; } .btn-whatsapp:hover { background: #1da851; }
+    .btn-seguir { background: #f56b6b; } .btn-seguir:hover { background: #e05555; }
     .btn-seguindo { background: #2a2f42; }
-    .btn-editar { background: #f0a500; }
-    .btn-editar:hover { background: #d4900a; }
+    .btn-editar { background: #f0a500; } .btn-editar:hover { background: #d4900a; }
     .btn-mensagem { background: #2a2f42; }
+    .nome-clicavel { cursor: pointer; } .nome-clicavel:hover { text-decoration: underline; }
     .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
     body.claro .post-card { background: #ffffff; border-color: #dde1ed; }
     .post-img { width: 100%; border-radius: 10px; margin: 10px 0; max-height: 300px; object-fit: cover; }
     .edit-box { display: none; margin-top: 10px; }
     .edit-box textarea { height: 70px; margin-bottom: 6px; }
     .badge-verificado { font-size: 12px; vertical-align: middle; margin-left: 2px; }
-    .hashtag { color: #5b6ef5; font-weight: 600; cursor: pointer; }
-    .hashtag:hover { text-decoration: underline; }
+    .hashtag { color: #5b6ef5; font-weight: 600; cursor: pointer; } .hashtag:hover { text-decoration: underline; }
     #trendingBar { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 14px; margin-bottom: 16px; }
     body.claro #trendingBar { background: #ffffff; border-color: #dde1ed; }
     .trending-titulo { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
@@ -51,12 +48,10 @@
     body.claro .hashtag-chip { background: #f0f2f5; border-color: #c0c4d0; }
     .hashtag-chip:hover { background: #5b6ef5; color: white; }
     .hashtag-chip small { color: #6b7280; font-weight: 400; }
-    .hashtag-chip:hover small { color: rgba(255,255,255,0.8); }
     .reacoes-bar { display: flex; gap: 4px; flex-wrap: wrap; margin: 10px 0; }
     .reacao-btn { background: #0d0f14; border: 1px solid #2a2f42; color: #e8eaf2; padding: 6px 10px; border-radius: 20px; font-size: 13px; cursor: pointer; margin: 0; transition: all 0.2s; }
     body.claro .reacao-btn { background: #f0f2f5; border-color: #c0c4d0; color: #1a1a2e; }
     .reacao-btn:hover { background: #2a2f42; transform: scale(1.08); }
-    body.claro .reacao-btn:hover { background: #dde1ed; }
     .reacao-btn.active { background: #5b6ef5; border-color: #5b6ef5; color: white; }
     .comentarios-box { margin-top: 12px; border-top: 1px solid #2a2f42; padding-top: 12px; display: none; }
     body.claro .comentarios-box { border-top-color: #dde1ed; }
@@ -64,17 +59,16 @@
     body.claro .comentario-item { background: #f0f2f5; color: #1a1a2e; }
     .comentario-input { width: 100%; background: #0d0f14; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 8px; padding: 10px; font-family: 'Poppins', sans-serif; font-size: 13px; outline: none; margin-top: 8px; }
     body.claro .comentario-input { background: #f0f2f5; color: #1a1a2e; border-color: #c0c4d0; }
-    #perfil { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 24px; text-align: center; }
-    body.claro #perfil { background: #ffffff; border-color: #dde1ed; }
-    #bioTexto { word-wrap: break-word; }
-    #editBioBox textarea { width: 100%; }
+    #perfil, #perfilOutroDiv { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 24px; text-align: center; }
+    body.claro #perfil, body.claro #perfilOutroDiv { background: #ffffff; border-color: #dde1ed; }
+    .outro-avatar { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #5b6ef5, #f56b6b); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 32px; color: white; margin: 0 auto 12px; }
+    #outroBioTexto { color: #6b7280; font-size: 13px; margin-top: 6px; }
     .perfil-stats { display: flex; justify-content: center; gap: 30px; margin: 16px 0; }
     .perfil-stat { text-align: center; }
     .perfil-stat strong { display: block; font-size: 22px; color: #5b6ef5; }
     .perfil-stat span { font-size: 12px; color: #6b7280; }
     #statusVerificado { margin-top: 6px; font-size: 13px; color: #6b7280; }
     .notificacoes-box { text-align: left; margin-top: 20px; border-top: 1px solid #2a2f42; padding-top: 16px; }
-    body.claro .notificacoes-box { border-top-color: #dde1ed; }
     .notificacoes-box h3 { font-size: 15px; margin-bottom: 10px; }
     .notif-item { background: #0d0f14; border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; font-size: 13px; display: flex; align-items: center; gap: 10px; }
     body.claro .notif-item { background: #f0f2f5; color: #1a1a2e; }
@@ -107,9 +101,6 @@
     body.claro #dmMensagens { background: #f0f2f5; }
     #storiesBar { max-width: 600px; margin: 16px auto 0; padding: 0 16px; }
     .stories-container { display: flex; gap: 12px; overflow-x: auto; padding-bottom: 8px; }
-    .stories-container::-webkit-scrollbar { height: 4px; }
-    .stories-container::-webkit-scrollbar-track { background: transparent; }
-    .stories-container::-webkit-scrollbar-thumb { background: #2a2f42; border-radius: 4px; }
     .story-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; flex-shrink: 0; }
     .story-avatar { width: 60px; height: 60px; border-radius: 50%; border: 3px solid #5b6ef5; overflow: hidden; background: #1e2230; display: flex; align-items: center; justify-content: center; }
     .story-avatar img { width: 100%; height: 100%; object-fit: cover; }
@@ -153,10 +144,7 @@
       <button onclick="entrar()">Entrar 🚀</button>
     </div>
   </div>
-  <header>
-    <h1>🌐 ConnectApp</h1>
-    <p id="bemVindo">Bem-vindo!</p>
-  </header>
+  <header><h1>🌐 ConnectApp</h1><p id="bemVindo">Bem-vindo!</p></header>
   <div id="onlineBar">🟢 <span id="onlineCount">0</span> pessoa(s) online agora</div>
   <nav>
     <a href="#" onclick="mostrarFeed()">Feed</a>
@@ -164,12 +152,11 @@
     <a href="#" onclick="verGrupos()">🏘️ Grupos</a>
     <a href="#" onclick="verMensagens()">✉️ Msgs<span class="notif-dot" id="dmNotif"></span></a>
     <a href="#" onclick="verPerfil()">Perfil<span class="notif-dot" id="perfilNotif"></span></a>
-    <a href="#" onclick="verChat()" id="chatBtn">💬 Chat<span class="notif-dot" id="chatNotif"></span></a>
+    <a href="#" onclick="verChat()">💬 Chat<span class="notif-dot" id="chatNotif"></span></a>
     <a href="#" onclick="sair()" style="color:#f56b6b;">Sair</a>
     <button id="modoBtn" onclick="toggleModo()">🌙 Escuro</button>
   </nav>
   <div id="status"></div>
-
   <div id="storiesBar">
     <div class="stories-container" id="storiesContainer">
       <div class="story-item" onclick="document.getElementById('inputStory').click()">
@@ -179,13 +166,11 @@
     </div>
     <input type="file" id="inputStory" accept="image/*" style="display:none" onchange="publicarStory(event)">
   </div>
-
   <div id="storyViewer" style="display:none">
     <div class="story-info" id="storyAutor"></div>
     <img id="storyImg" src="">
     <button class="story-close" onclick="fecharStory()">✕</button>
   </div>
-
   <main id="feedDiv">
     <h2 style="margin-bottom:16px;">Feed</h2>
     <div id="trendingBar" style="display:none;"></div>
@@ -194,27 +179,23 @@
     <br>
     <label class="img-label" for="inputImagem">🖼️ Adicionar imagem</label>
     <input type="file" id="inputImagem" accept="image/*" style="display:none" onchange="previewImagem(event)">
-    <img id="imgPreview" class="img-preview">
-    <br>
+    <img id="imgPreview" class="img-preview"><br>
     <button onclick="publicar()">Publicar</button>
     <div id="posts"></div>
   </main>
-
   <div id="utilizadoresDiv" style="display:none">
     <h2 style="margin-bottom:16px;">👥 Utilizadores</h2>
     <div id="listaUtilizadores"></div>
   </div>
-
   <div id="gruposDiv" style="display:none">
     <h2 style="margin-bottom:16px;">🏘️ Grupos</h2>
     <input type="text" id="nomeGrupoInput" placeholder="Nome do grupo...">
-    <textarea id="descGrupoInput" placeholder="Descrição do grupo..." style="height:60px;"></textarea>
+    <textarea id="descGrupoInput" placeholder="Descrição..." style="height:60px;"></textarea>
     <button onclick="criarGrupo()">➕ Criar Grupo</button>
     <div id="listaGrupos"></div>
   </div>
-
   <div id="grupoDetalheDiv" style="display:none">
-    <button onclick="verGrupos()" style="background:#6b7280;">⬅ Voltar aos Grupos</button>
+    <button onclick="verGrupos()" style="background:#6b7280;">⬅ Voltar</button>
     <h2 id="grupoNomeTitulo" style="margin:12px 0 4px;"></h2>
     <p id="grupoDescTexto" style="color:#6b7280;font-size:13px;margin-bottom:8px;"></p>
     <p style="font-size:13px;color:#6b7280;margin-bottom:8px;"><span id="grupoMembrosCount">0</span> membro(s)</p>
@@ -225,12 +206,10 @@
     </div>
     <div id="postsGrupo"></div>
   </div>
-
   <div id="mensagensListaDiv" style="display:none">
     <h2 style="margin-bottom:16px;">✉️ Mensagens</h2>
     <div id="listaDMs"></div>
   </div>
-
   <div id="dmConversaDiv" style="display:none">
     <button onclick="verMensagens()" style="background:#6b7280;">⬅ Voltar</button>
     <h2 id="dmNomeTitulo" style="margin:12px 0;"></h2>
@@ -240,7 +219,22 @@
       <button onclick="enviarDM()">Enviar</button>
     </div>
   </div>
-
+  <div id="perfilOutroDiv" style="display:none">
+    <button onclick="mostrarFeed()" style="background:#6b7280;">⬅ Voltar</button>
+    <div style="margin-top:16px;">
+      <div class="outro-avatar" id="outroAvatar">?</div>
+      <h2 id="outroNomeTitulo"></h2>
+      <p id="outroBioTexto"></p>
+    </div>
+    <div class="perfil-stats">
+      <div class="perfil-stat"><strong id="outroNumSeguidores">0</strong><span>Seguidores</span></div>
+      <div class="perfil-stat"><strong id="outroNumSeguindo">0</strong><span>A seguir</span></div>
+      <div class="perfil-stat"><strong id="outroNumPosts">0</strong><span>Posts</span></div>
+    </div>
+    <div id="outroAcoes" style="text-align:center;margin-bottom:8px;"></div>
+    <h3 style="text-align:left;margin:12px 0 8px;">Posts</h3>
+    <div id="postsOutro"></div>
+  </div>
   <div id="perfil" style="display:none">
     <h2>👤 Meu Perfil</h2>
     <img id="fotoPerfil" src="https://via.placeholder.com/100" style="border-radius:50%; width:100px; height:100px; margin-top:16px;">
@@ -251,7 +245,7 @@
     <p id="bioTexto"><strong>Bio:</strong> Utilizador do ConnectApp! 🚀</p>
     <button class="btn-editar" onclick="toggleEditarBio()">✏️ Editar Bio</button>
     <div id="editBioBox" style="display:none;margin-top:8px;text-align:left;">
-      <textarea id="bioInput" maxlength="100" placeholder="Escreve algo sobre ti... (máx 100 caracteres)" style="height:60px;"></textarea>
+      <textarea id="bioInput" maxlength="100" placeholder="Escreve algo sobre ti..." style="height:60px;"></textarea>
       <button onclick="guardarBio()">💾 Guardar</button>
       <button onclick="toggleEditarBio()" style="background:#6b7280;">Cancelar</button>
     </div>
@@ -266,7 +260,6 @@
       <div id="listaNotificacoes"></div>
     </div>
   </div>
-
   <div id="chatDiv" style="display:none; max-width:600px; margin:24px auto; padding:20px 16px;">
     <h2>💬 Chat em Tempo Real</h2>
     <div id="mensagens"></div>
@@ -313,573 +306,455 @@
       localStorage.setItem("modoClaro", modoClaro);
     }
 
-    function badgeFor(nome) {
-      return verificados[nome] ? ' <span class="badge-verificado" title="Conta verificada">✅</span>' : '';
-    }
-
-    function formatarTexto(texto) {
-      return (texto || "").replace(/#(\w+)/g, '<span class="hashtag" onclick="filtrarHashtag(\'$1\')">#$1</span>');
-    }
+    function badgeFor(nome) { return verificados[nome] ? ' <span class="badge-verificado" title="Conta verificada">✅</span>' : ''; }
+    function nomeClick(nome) { return nome === nomeUsuario ? "verPerfil()" : `verPerfilOutro('${nome}')`; }
+    function formatarTexto(texto) { return (texto||"").replace(/#(\w+)/g,'<span class="hashtag" onclick="filtrarHashtag(\'$1\')">#$1</span>'); }
 
     window.filtrarHashtag = function(tag) {
       const box = document.getElementById("pesquisaBox");
-      box.value = "#" + tag;
-      pesquisar();
-      box.scrollIntoView({behavior:"smooth"});
+      box.value = "#" + tag; pesquisar();
+      mostrarFeed(); box.scrollIntoView({behavior:"smooth"});
     }
 
     function calcularTrending() {
-      const contagem = {};
+      const c = {};
       todosPosts.forEach(d => {
-        const texto = d.data.texto || "";
-        const matches = texto.match(/#(\w+)/g) || [];
-        const vistos = new Set();
-        matches.forEach(m => {
-          const tag = m.substring(1).toLowerCase();
-          if (vistos.has(tag)) return;
-          vistos.add(tag);
-          contagem[tag] = (contagem[tag] || 0) + 1;
-        });
+        const m = (d.data.texto||"").match(/#(\w+)/g)||[];
+        const v = new Set();
+        m.forEach(x => { const t=x.substring(1).toLowerCase(); if(v.has(t))return; v.add(t); c[t]=(c[t]||0)+1; });
       });
-      return Object.entries(contagem).sort((a,b) => b[1]-a[1]).slice(0,8);
+      return Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,8);
     }
 
     function renderTrending() {
-      const trending = calcularTrending();
+      const t = calcularTrending();
       const div = document.getElementById("trendingBar");
-      if (trending.length === 0) { div.style.display = "none"; return; }
-      div.style.display = "block";
+      if (!t.length) { div.style.display="none"; return; }
+      div.style.display="block";
       div.innerHTML = "<div class='trending-titulo'>🔥 Trending</div><div class='trending-tags'>" +
-        trending.map(([tag,count]) => `<button class="hashtag-chip" onclick="filtrarHashtag('${tag}')">#${tag} <small>${count}</small></button>`).join("") +
-        "</div>";
+        t.map(([tag,n])=>`<button class="hashtag-chip" onclick="filtrarHashtag('${tag}')">#${tag} <small>${n}</small></button>`).join("") + "</div>";
     }
 
-    function dmId(a, b) { return [a, b].sort().join("__"); }
+    function dmId(a,b) { return [a,b].sort().join("__"); }
 
     async function carregarVerificados() {
       try {
-        const snap = await getDocs(collection(db, "utilizadores"));
-        const novo = {};
-        snap.forEach(d => { const u = d.data(); novo[u.nome] = !!u.verificado; });
-        verificados = novo;
-      } catch(e) {}
+        const snap = await getDocs(collection(db,"utilizadores"));
+        const n = {}; snap.forEach(d=>{const u=d.data(); n[u.nome]=!!u.verificado;}); verificados=n;
+      } catch(e){}
     }
 
     window.previewImagem = function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(x) {
-        imagemBase64 = x.target.result;
-        const preview = document.getElementById("imgPreview");
-        preview.src = imagemBase64;
-        preview.style.display = "block";
-      };
-      reader.readAsDataURL(file);
+      const f=e.target.files[0]; if(!f)return;
+      const r=new FileReader(); r.onload=x=>{imagemBase64=x.target.result; const p=document.getElementById("imgPreview"); p.src=imagemBase64; p.style.display="block";}; r.readAsDataURL(f);
     }
 
     window.publicarStory = async function(e) {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = async function(x) {
-        try {
-          const expira = new Date();
-          expira.setHours(expira.getHours() + 24);
-          await addDoc(collection(db, "stories"), {
-            imagem: x.target.result, autor: nomeUsuario, expira: expira.getTime(), data: serverTimestamp()
-          });
-          setStatus("✅ Story publicado!");
-          carregarStories();
-        } catch(e) { setStatus("❌ Erro ao publicar story."); }
-      };
-      reader.readAsDataURL(file);
+      const f=e.target.files[0]; if(!f)return;
+      const r=new FileReader(); r.onload=async x=>{
+        try { const exp=new Date(); exp.setHours(exp.getHours()+24);
+          await addDoc(collection(db,"stories"),{imagem:x.target.result,autor:nomeUsuario,expira:exp.getTime(),data:serverTimestamp()});
+          setStatus("✅ Story publicado!"); carregarStories();
+        } catch(e){setStatus("❌ Erro.");}
+      }; r.readAsDataURL(f);
     }
 
     async function carregarStories() {
-      const container = document.getElementById("storiesContainer");
-      const addBtn = container.querySelector(".story-item");
-      container.innerHTML = "";
-      container.appendChild(addBtn);
+      const container=document.getElementById("storiesContainer");
+      const addBtn=container.querySelector(".story-item");
+      container.innerHTML=""; container.appendChild(addBtn);
       try {
-        const agora = new Date().getTime();
-        const snap = await getDocs(collection(db, "stories"));
-        snap.forEach((d) => {
-          const s = d.data();
-          if (s.expira < agora) { deleteDoc(doc(db, "stories", d.id)); return; }
-          const item = document.createElement("div");
-          item.className = "story-item";
-          item.onclick = () => verStory(s.imagem, s.autor);
-          item.innerHTML = `<div class="story-avatar"><img src="${s.imagem}"></div><span class="story-nome">${s.autor}</span>`;
+        const agora=new Date().getTime();
+        const snap=await getDocs(collection(db,"stories"));
+        snap.forEach(d=>{
+          const s=d.data(); if(s.expira<agora){deleteDoc(doc(db,"stories",d.id));return;}
+          const item=document.createElement("div"); item.className="story-item";
+          item.onclick=()=>verStory(s.imagem,s.autor);
+          item.innerHTML=`<div class="story-avatar"><img src="${s.imagem}"></div><span class="story-nome">${s.autor}</span>`;
           container.appendChild(item);
         });
-      } catch(e) {}
+      } catch(e){}
     }
 
-    window.verStory = function(imagem, autor) {
-      document.getElementById("storyImg").src = imagem;
-      document.getElementById("storyAutor").textContent = autor;
-      document.getElementById("storyViewer").style.display = "flex";
-    }
-    window.fecharStory = function() { document.getElementById("storyViewer").style.display = "none"; }
+    window.verStory=function(imagem,autor){document.getElementById("storyImg").src=imagem;document.getElementById("storyAutor").textContent=autor;document.getElementById("storyViewer").style.display="flex";}
+    window.fecharStory=function(){document.getElementById("storyViewer").style.display="none";}
 
     if (nomeUsuario) {
-      document.getElementById("loginTela").style.display = "none";
-      document.getElementById("bemVindo").textContent = "Bem-vindo, " + nomeUsuario + "!";
-      document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nomeUsuario;
+      document.getElementById("loginTela").style.display="none";
+      document.getElementById("bemVindo").textContent="Bem-vindo, "+nomeUsuario+"!";
+      document.getElementById("nomePerfilTexto").innerHTML="<strong>Nome:</strong> "+nomeUsuario;
       carregarPosts(); registarOnline(); monitorarChat(); registarUtilizador(); carregarStories(); monitorarNotificacoes(); monitorarDMs();
     }
 
     async function registarUtilizador() {
       try {
-        const ref = doc(db, "utilizadores", nomeUsuario);
-        const snap = await getDoc(ref);
-        if (!snap.exists()) {
-          await setDoc(ref, { nome: nomeUsuario, bio: BIO_PADRAO });
-        } else {
-          await setDoc(ref, { nome: nomeUsuario }, { merge: true });
-        }
-      } catch(e) {}
+        const ref=doc(db,"utilizadores",nomeUsuario); const snap=await getDoc(ref);
+        if(!snap.exists()) await setDoc(ref,{nome:nomeUsuario,bio:BIO_PADRAO});
+        else await setDoc(ref,{nome:nomeUsuario},{merge:true});
+      } catch(e){}
     }
 
     async function registarOnline() {
       try {
-        await setDoc(doc(db, "online", sessionId), { nome: nomeUsuario, timestamp: serverTimestamp() });
-        window.addEventListener("beforeunload", () => { deleteDoc(doc(db, "online", sessionId)); });
-        onSnapshot(collection(db, "online"), (snap) => { document.getElementById("onlineCount").textContent = snap.size; });
-      } catch(e) {}
+        await setDoc(doc(db,"online",sessionId),{nome:nomeUsuario,timestamp:serverTimestamp()});
+        window.addEventListener("beforeunload",()=>{deleteDoc(doc(db,"online",sessionId));});
+        onSnapshot(collection(db,"online"),snap=>{document.getElementById("onlineCount").textContent=snap.size;});
+      } catch(e){}
     }
 
     function monitorarChat() {
-      const q = query(collection(db, "chat"), orderBy("data", "desc"));
-      onSnapshot(q, (snap) => {
-        if (snap.empty) return;
-        const ultimaMsg = snap.docs[0].data();
-        if (!chatAberto && ultimaMsg.autor !== nomeUsuario) document.getElementById("chatNotif").style.display = "block";
+      const q=query(collection(db,"chat"),orderBy("data","desc"));
+      onSnapshot(q,snap=>{
+        if(snap.empty)return;
+        const u=snap.docs[0].data();
+        if(!chatAberto&&u.autor!==nomeUsuario) document.getElementById("chatNotif").style.display="block";
       });
     }
 
     function monitorarNotificacoes() {
-      const q = query(collection(db, "notificacoes"), where("paraQuem", "==", nomeUsuario), where("lida", "==", false));
-      onSnapshot(q, (snap) => {
-        document.getElementById("perfilNotif").style.display = snap.size > 0 ? "block" : "none";
-      });
+      const q=query(collection(db,"notificacoes"),where("paraQuem","==",nomeUsuario),where("lida","==",false));
+      onSnapshot(q,snap=>{document.getElementById("perfilNotif").style.display=snap.size>0?"block":"none";});
     }
 
     function monitorarDMs() {
-      const q = query(collection(db, "notificacoesDM"), where("paraQuem", "==", nomeUsuario), where("lida", "==", false));
-      onSnapshot(q, (snap) => {
-        document.getElementById("dmNotif").style.display = snap.size > 0 ? "block" : "none";
-      });
+      const q=query(collection(db,"notificacoesDM"),where("paraQuem","==",nomeUsuario),where("lida","==",false));
+      onSnapshot(q,snap=>{document.getElementById("dmNotif").style.display=snap.size>0?"block":"none";});
     }
 
     async function carregarNotificacoes() {
-      const lista = document.getElementById("listaNotificacoes");
-      lista.innerHTML = "<p style='color:#6b7280;'>Carregando...</p>";
+      const lista=document.getElementById("listaNotificacoes");
+      lista.innerHTML="<p style='color:#6b7280;'>Carregando...</p>";
       try {
-        const q = query(collection(db, "notificacoes"), where("paraQuem", "==", nomeUsuario), orderBy("data", "desc"), limit(20));
-        const snap = await getDocs(q);
-        lista.innerHTML = "";
-        snap.forEach((d) => {
-          const n = d.data();
-          const div = document.createElement("div");
-          div.className = "notif-item";
-          div.innerHTML = `<div class="notif-avatar">${n.deQuem[0].toUpperCase()}</div><div><strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} começou a seguir-te! 🎉</div>`;
-          lista.appendChild(div);
-          if (!n.lida) updateDoc(doc(db, "notificacoes", d.id), { lida: true });
+        const q=query(collection(db,"notificacoes"),where("paraQuem","==",nomeUsuario),orderBy("data","desc"),limit(20));
+        const snap=await getDocs(q); lista.innerHTML="";
+        snap.forEach(d=>{
+          const n=d.data(); const div=document.createElement("div"); div.className="notif-item";
+          div.innerHTML=`<div class="notif-avatar">${n.deQuem[0].toUpperCase()}</div><div><strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} começou a seguir-te! 🎉</div>`;
+          lista.appendChild(div); if(!n.lida) updateDoc(doc(db,"notificacoes",d.id),{lida:true});
         });
-        if (snap.empty) lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Sem notificações ainda.</p>";
-        document.getElementById("perfilNotif").style.display = "none";
-      } catch(e) {}
+        if(snap.empty) lista.innerHTML="<p style='color:#6b7280;font-size:13px;'>Sem notificações ainda.</p>";
+        document.getElementById("perfilNotif").style.display="none";
+      } catch(e){}
     }
 
     window.entrar = function() {
-      const nome = document.getElementById("inputNome").value.trim();
-      if (!nome) { alert("Digite seu nome!"); return; }
-      nomeUsuario = nome;
-      localStorage.setItem("nomeUsuario", nome);
-      document.getElementById("loginTela").style.display = "none";
-      document.getElementById("bemVindo").textContent = "Bem-vindo, " + nome + "!";
-      document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nome;
+      const nome=document.getElementById("inputNome").value.trim(); if(!nome){alert("Digite seu nome!");return;}
+      nomeUsuario=nome; localStorage.setItem("nomeUsuario",nome);
+      document.getElementById("loginTela").style.display="none";
+      document.getElementById("bemVindo").textContent="Bem-vindo, "+nome+"!";
+      document.getElementById("nomePerfilTexto").innerHTML="<strong>Nome:</strong> "+nome;
       carregarPosts(); registarOnline(); monitorarChat(); registarUtilizador(); carregarStories(); monitorarNotificacoes(); monitorarDMs();
     }
 
     window.sair = function() {
-      if (confirm("Quer sair?")) { deleteDoc(doc(db, "online", sessionId)); localStorage.removeItem("nomeUsuario"); location.reload(); }
+      if(confirm("Quer sair?")){deleteDoc(doc(db,"online",sessionId));localStorage.removeItem("nomeUsuario");location.reload();}
     }
 
-    function setStatus(msg) {
-      document.getElementById("status").textContent = msg;
-      setTimeout(() => document.getElementById("status").textContent = "", 3000);
-    }
+    function setStatus(msg) { document.getElementById("status").textContent=msg; setTimeout(()=>document.getElementById("status").textContent="",3000); }
 
-    // BIO
     window.toggleEditarBio = function() {
-      const box = document.getElementById("editBioBox");
-      if (box.style.display === "block") {
-        box.style.display = "none";
-      } else {
-        const atual = (document.getElementById("bioTexto").textContent || "").replace(/^Bio:\s*/, "");
-        document.getElementById("bioInput").value = atual === BIO_PADRAO ? "" : atual;
-        box.style.display = "block";
+      const box=document.getElementById("editBioBox");
+      if(box.style.display==="block"){box.style.display="none";}
+      else {
+        const atual=(document.getElementById("bioTexto").textContent||"").replace(/^Bio:\s*/,"");
+        document.getElementById("bioInput").value=atual===BIO_PADRAO?"":atual;
+        box.style.display="block";
       }
     }
 
     window.guardarBio = async function() {
-      const novaBio = document.getElementById("bioInput").value.trim() || BIO_PADRAO;
+      const novaBio=document.getElementById("bioInput").value.trim()||BIO_PADRAO;
       try {
-        await setDoc(doc(db, "utilizadores", nomeUsuario), { bio: novaBio }, { merge: true });
-        document.getElementById("bioTexto").innerHTML = "<strong>Bio:</strong> " + novaBio;
-        document.getElementById("editBioBox").style.display = "none";
+        await setDoc(doc(db,"utilizadores",nomeUsuario),{bio:novaBio},{merge:true});
+        document.getElementById("bioTexto").innerHTML="<strong>Bio:</strong> "+novaBio;
+        document.getElementById("editBioBox").style.display="none";
         setStatus("✅ Bio atualizada!");
-      } catch(e) { setStatus("❌ Erro ao atualizar bio."); }
+      } catch(e){setStatus("❌ Erro.");}
     }
 
     async function carregarEstatisticas() {
       try {
-        const userSnap = await getDoc(doc(db, "utilizadores", nomeUsuario));
-        const bio = (userSnap.exists() && userSnap.data().bio) ? userSnap.data().bio : BIO_PADRAO;
-        document.getElementById("bioTexto").innerHTML = "<strong>Bio:</strong> " + bio;
+        const userSnap=await getDoc(doc(db,"utilizadores",nomeUsuario));
+        const bio=(userSnap.exists()&&userSnap.data().bio)?userSnap.data().bio:BIO_PADRAO;
+        document.getElementById("bioTexto").innerHTML="<strong>Bio:</strong> "+bio;
+        const segSnap=await getDocs(collection(db,"utilizadores",nomeUsuario,"seguidores"));
+        const segIndoSnap=await getDocs(collection(db,"utilizadores",nomeUsuario,"seguindo"));
+        const postsSnap=await getDocs(query(collection(db,"posts")));
+        const meusPosts=postsSnap.docs.filter(d=>d.data().autor===nomeUsuario);
+        document.getElementById("numSeguidores").textContent=segSnap.size;
+        document.getElementById("numSeguindo").textContent=segIndoSnap.size;
+        document.getElementById("numPosts").textContent=meusPosts.length;
+        const verificado=segSnap.size>=THRESHOLD_VERIFICACAO;
+        await setDoc(doc(db,"utilizadores",nomeUsuario),{verificado},{merge:true});
+        verificados[nomeUsuario]=verificado;
+        document.getElementById("nomePerfilTexto").innerHTML="<strong>Nome:</strong> "+nomeUsuario+badgeFor(nomeUsuario);
+        const el=document.getElementById("statusVerificado");
+        if(verificado){el.innerHTML="✅ <strong>Conta verificada!</strong>";}
+        else{el.innerHTML=`🔒 Faltam ${THRESHOLD_VERIFICACAO-segSnap.size} seguidor(es) para verificação (${segSnap.size}/${THRESHOLD_VERIFICACAO})`;}
+      } catch(e){}
+    }
 
-        const seguidoresSnap = await getDocs(collection(db, "utilizadores", nomeUsuario, "seguidores"));
-        const seguindoSnap = await getDocs(collection(db, "utilizadores", nomeUsuario, "seguindo"));
-        const postsSnap = await getDocs(query(collection(db, "posts")));
-        const meusPosts = postsSnap.docs.filter(d => d.data().autor === nomeUsuario);
-        document.getElementById("numSeguidores").textContent = seguidoresSnap.size;
-        document.getElementById("numSeguindo").textContent = seguindoSnap.size;
-        document.getElementById("numPosts").textContent = meusPosts.length;
-
-        const verificado = seguidoresSnap.size >= THRESHOLD_VERIFICACAO;
-        await setDoc(doc(db, "utilizadores", nomeUsuario), { verificado }, { merge: true });
-        verificados[nomeUsuario] = verificado;
-        document.getElementById("nomePerfilTexto").innerHTML = "<strong>Nome:</strong> " + nomeUsuario + badgeFor(nomeUsuario);
-        const statusEl = document.getElementById("statusVerificado");
-        if (verificado) {
-          statusEl.innerHTML = "✅ <strong>Conta verificada!</strong>";
-        } else {
-          const faltam = THRESHOLD_VERIFICACAO - seguidoresSnap.size;
-          statusEl.innerHTML = `🔒 Faltam ${faltam} seguidor(es) para a tua conta ficar verificada (${seguidoresSnap.size}/${THRESHOLD_VERIFICACAO})`;
-        }
-      } catch(e) {}
+    window.verPerfilOutro = async function(outroNome) {
+      if(outroNome===nomeUsuario){verPerfil();return;}
+      escondertodas(); document.getElementById("perfilOutroDiv").style.display="block";
+      document.getElementById("outroAvatar").textContent=outroNome[0].toUpperCase();
+      document.getElementById("outroNomeTitulo").textContent=outroNome;
+      document.getElementById("outroBioTexto").textContent="Carregando...";
+      document.getElementById("outroAcoes").innerHTML="";
+      document.getElementById("postsOutro").innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
+      try {
+        await carregarVerificados();
+        document.getElementById("outroNomeTitulo").innerHTML=outroNome+badgeFor(outroNome);
+        const userSnap=await getDoc(doc(db,"utilizadores",outroNome));
+        document.getElementById("outroBioTexto").textContent=(userSnap.exists()&&userSnap.data().bio)?userSnap.data().bio:BIO_PADRAO;
+        const segSnap=await getDocs(collection(db,"utilizadores",outroNome,"seguidores"));
+        const segIndoSnap=await getDocs(collection(db,"utilizadores",outroNome,"seguindo"));
+        document.getElementById("outroNumSeguidores").textContent=segSnap.size;
+        document.getElementById("outroNumSeguindo").textContent=segIndoSnap.size;
+        const postsSnap=await getDocs(query(collection(db,"posts"),orderBy("data","desc")));
+        const postsDoOutro=[]; postsSnap.forEach(d=>{if(d.data().autor===outroNome)postsDoOutro.push({id:d.id,data:d.data()});});
+        document.getElementById("outroNumPosts").textContent=postsDoOutro.length;
+        const jaSegue=await getDoc(doc(db,"utilizadores",outroNome,"seguidores",nomeUsuario));
+        document.getElementById("outroAcoes").innerHTML=`<button class="${jaSegue.exists()?"btn-seguindo":"btn-seguir"}" onclick="seguir('${outroNome}',this)">${jaSegue.exists()?"✅ A seguir":"➕ Seguir"}</button><button class="btn-mensagem" onclick="abrirDM('${outroNome}')">✉️ Mensagem</button>`;
+        const div=document.getElementById("postsOutro"); div.innerHTML="";
+        if(!postsDoOutro.length){div.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem posts.</p>";}
+        else{postsDoOutro.forEach(d=>{div.appendChild(criarPostCard(d));carregarComentarios(d.id);});}
+      } catch(e){}
     }
 
     window.verUtilizadores = async function() {
-      escondertodas();
-      document.getElementById("utilizadoresDiv").style.display="block";
-      const lista = document.getElementById("listaUtilizadores");
-      lista.innerHTML = "<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
+      escondertodas(); document.getElementById("utilizadoresDiv").style.display="block";
+      const lista=document.getElementById("listaUtilizadores");
+      lista.innerHTML="<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
       try {
         await carregarVerificados();
-        const snap = await getDocs(collection(db, "utilizadores"));
-        lista.innerHTML = "";
-        snap.forEach((d) => {
-          const u = d.data();
-          if (u.nome === nomeUsuario) return;
-          const div = document.createElement("div");
-          div.className = "utilizador-card";
-          div.innerHTML = `<div class="utilizador-info"><div class="utilizador-avatar">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio || BIO_PADRAO}</div></div></div><div class="utilizador-acoes"><button class="btn-mensagem" onclick="abrirDM('${u.nome}')">✉️</button><button class="btn-seguir" onclick="seguir('${u.nome}', this)">➕ Seguir</button></div>`;
+        const snap=await getDocs(collection(db,"utilizadores")); lista.innerHTML="";
+        snap.forEach(d=>{
+          const u=d.data(); if(u.nome===nomeUsuario)return;
+          const div=document.createElement("div"); div.className="utilizador-card";
+          div.innerHTML=`<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio||BIO_PADRAO}</div></div></div><div class="utilizador-acoes"><button class="btn-mensagem" onclick="abrirDM('${u.nome}')">✉️</button><button class="btn-seguir" onclick="seguir('${u.nome}',this)">➕ Seguir</button></div>`;
           lista.appendChild(div);
         });
-        if (lista.children.length === 0) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum utilizador ainda!</p>";
-      } catch(e) {}
+        if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum utilizador ainda!</p>";
+      } catch(e){}
     }
 
     window.verGrupos = async function() {
-      escondertodas();
-      document.getElementById("gruposDiv").style.display="block";
-      const lista = document.getElementById("listaGrupos");
-      lista.innerHTML = "<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
+      escondertodas(); document.getElementById("gruposDiv").style.display="block";
+      const lista=document.getElementById("listaGrupos");
+      lista.innerHTML="<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
       try {
-        const snap = await getDocs(query(collection(db, "grupos"), orderBy("data", "desc")));
-        lista.innerHTML = "";
-        for (const d of snap.docs) {
-          const g = d.data();
-          const membrosSnap = await getDocs(collection(db, "grupos", d.id, "membros"));
-          const div = document.createElement("div");
-          div.className = "grupo-card";
-          div.innerHTML = `
-            <div class="grupo-icone">🏘️</div>
-            <h3>${g.nome}</h3>
-            <p>${g.descricao || "Sem descrição"} · ${membrosSnap.size} membro(s)</p>
-            <button onclick="abrirGrupo('${d.id}')">Abrir grupo</button>
-          `;
+        const snap=await getDocs(query(collection(db,"grupos"),orderBy("data","desc")));
+        lista.innerHTML="";
+        for(const d of snap.docs){
+          const g=d.data(); const mSnap=await getDocs(collection(db,"grupos",d.id,"membros"));
+          const div=document.createElement("div"); div.className="grupo-card";
+          div.innerHTML=`<div class="grupo-icone">🏘️</div><h3>${g.nome}</h3><p>${g.descricao||"Sem descrição"} · ${mSnap.size} membro(s)</p><button onclick="abrirGrupo('${d.id}')">Abrir grupo</button>`;
           lista.appendChild(div);
         }
-        if (lista.children.length === 0) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum grupo ainda. Cria o primeiro!</p>";
-      } catch(e) { lista.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
+        if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum grupo ainda!</p>";
+      } catch(e){lista.innerHTML="<p style='color:#f56b6b;'>Erro ao carregar.</p>";}
     }
 
     window.criarGrupo = async function() {
-      const nome = document.getElementById("nomeGrupoInput").value.trim();
-      const descricao = document.getElementById("descGrupoInput").value.trim();
-      if (!nome) { alert("Escreve um nome para o grupo!"); return; }
+      const nome=document.getElementById("nomeGrupoInput").value.trim();
+      const desc=document.getElementById("descGrupoInput").value.trim();
+      if(!nome){alert("Escreve um nome!");return;}
       try {
-        const ref = await addDoc(collection(db, "grupos"), { nome, descricao, criador: nomeUsuario, data: serverTimestamp() });
-        await setDoc(doc(db, "grupos", ref.id, "membros", nomeUsuario), { nome: nomeUsuario });
-        document.getElementById("nomeGrupoInput").value = "";
-        document.getElementById("descGrupoInput").value = "";
-        setStatus("✅ Grupo criado!");
-        verGrupos();
-      } catch(e) { setStatus("❌ Erro ao criar grupo."); }
+        const ref=await addDoc(collection(db,"grupos"),{nome,descricao:desc,criador:nomeUsuario,data:serverTimestamp()});
+        await setDoc(doc(db,"grupos",ref.id,"membros",nomeUsuario),{nome:nomeUsuario});
+        document.getElementById("nomeGrupoInput").value=""; document.getElementById("descGrupoInput").value="";
+        setStatus("✅ Grupo criado!"); verGrupos();
+      } catch(e){setStatus("❌ Erro.");}
     }
 
     window.abrirGrupo = async function(grupoId) {
-      escondertodas();
-      document.getElementById("grupoDetalheDiv").style.display="block";
-      grupoAtualId = grupoId;
+      escondertodas(); document.getElementById("grupoDetalheDiv").style.display="block"; grupoAtualId=grupoId;
       try {
-        const grupoSnap = await getDoc(doc(db, "grupos", grupoId));
-        const g = grupoSnap.data();
-        document.getElementById("grupoNomeTitulo").textContent = "🏘️ " + g.nome;
-        document.getElementById("grupoDescTexto").textContent = g.descricao || "Sem descrição";
-        const membrosSnap = await getDocs(collection(db, "grupos", grupoId, "membros"));
-        document.getElementById("grupoMembrosCount").textContent = membrosSnap.size;
-        const souMembro = await getDoc(doc(db, "grupos", grupoId, "membros", nomeUsuario));
-        const btn = document.getElementById("btnEntrarGrupo");
-        const postBox = document.getElementById("grupoPostBox");
-        if (souMembro.exists()) {
-          btn.textContent = "✅ Sair do grupo";
-          btn.className = "btn-seguindo";
-          postBox.style.display = "block";
-        } else {
-          btn.textContent = "➕ Entrar no grupo";
-          btn.className = "btn-seguir";
-          postBox.style.display = "none";
-        }
+        const gSnap=await getDoc(doc(db,"grupos",grupoId)); const g=gSnap.data();
+        document.getElementById("grupoNomeTitulo").textContent="🏘️ "+g.nome;
+        document.getElementById("grupoDescTexto").textContent=g.descricao||"Sem descrição";
+        const mSnap=await getDocs(collection(db,"grupos",grupoId,"membros"));
+        document.getElementById("grupoMembrosCount").textContent=mSnap.size;
+        const souMembro=await getDoc(doc(db,"grupos",grupoId,"membros",nomeUsuario));
+        const btn=document.getElementById("btnEntrarGrupo"); const pb=document.getElementById("grupoPostBox");
+        if(souMembro.exists()){btn.textContent="✅ Sair do grupo";btn.className="btn-seguindo";pb.style.display="block";}
+        else{btn.textContent="➕ Entrar no grupo";btn.className="btn-seguir";pb.style.display="none";}
         carregarPostsGrupo(grupoId);
-      } catch(e) {}
+      } catch(e){}
     }
 
     window.toggleMembroGrupo = async function() {
-      if (!grupoAtualId) return;
+      if(!grupoAtualId)return;
       try {
-        const ref = doc(db, "grupos", grupoAtualId, "membros", nomeUsuario);
-        const souMembro = await getDoc(ref);
-        if (souMembro.exists()) {
-          await deleteDoc(ref);
-        } else {
-          await setDoc(ref, { nome: nomeUsuario });
-        }
+        const ref=doc(db,"grupos",grupoAtualId,"membros",nomeUsuario);
+        const sm=await getDoc(ref);
+        if(sm.exists())await deleteDoc(ref); else await setDoc(ref,{nome:nomeUsuario});
         abrirGrupo(grupoAtualId);
-      } catch(e) {}
+      } catch(e){}
     }
 
     window.publicarNoGrupo = async function() {
-      if (!grupoAtualId) return;
-      const caixa = document.getElementById("caixaTextoGrupo");
-      const texto = caixa.value.trim();
-      if (!texto) return;
+      if(!grupoAtualId)return;
+      const caixa=document.getElementById("caixaTextoGrupo"); const texto=caixa.value.trim(); if(!texto)return;
       try {
-        const hora = new Date().toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"});
-        await addDoc(collection(db, "grupos", grupoAtualId, "posts"), { texto, autor: nomeUsuario, hora, data: serverTimestamp() });
-        caixa.value = "";
-        carregarPostsGrupo(grupoAtualId);
-      } catch(e) {}
+        const hora=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+        await addDoc(collection(db,"grupos",grupoAtualId,"posts"),{texto,autor:nomeUsuario,hora,data:serverTimestamp()});
+        caixa.value=""; carregarPostsGrupo(grupoAtualId);
+      } catch(e){}
     }
 
     async function carregarPostsGrupo(grupoId) {
-      const div = document.getElementById("postsGrupo");
-      div.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
+      const div=document.getElementById("postsGrupo");
+      div.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
       try {
         await carregarVerificados();
-        const snap = await getDocs(query(collection(db, "grupos", grupoId, "posts"), orderBy("data", "desc")));
-        div.innerHTML = "";
-        snap.forEach((d) => {
-          const p = d.data();
-          const item = document.createElement("div");
-          item.className = "post-grupo";
-          item.innerHTML = `<strong>${p.autor}</strong>${badgeFor(p.autor)}<div>${formatarTexto(p.texto)}</div><div class="pg-info">${p.hora}</div>`;
+        const snap=await getDocs(query(collection(db,"grupos",grupoId,"posts"),orderBy("data","desc")));
+        div.innerHTML="";
+        snap.forEach(d=>{
+          const p=d.data(); const item=document.createElement("div"); item.className="post-grupo";
+          item.innerHTML=`<strong class="nome-clicavel" onclick="${nomeClick(p.autor)}">${p.autor}</strong>${badgeFor(p.autor)}<div>${formatarTexto(p.texto)}</div><div class="pg-info">${p.hora}</div>`;
           div.appendChild(item);
         });
-        if (snap.empty) div.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem publicações neste grupo.</p>";
-      } catch(e) {}
+        if(snap.empty) div.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem publicações.</p>";
+      } catch(e){}
     }
 
     window.verMensagens = async function() {
-      escondertodas();
-      document.getElementById("mensagensListaDiv").style.display = "block";
-      const lista = document.getElementById("listaDMs");
-      lista.innerHTML = "<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
+      escondertodas(); document.getElementById("mensagensListaDiv").style.display="block";
+      const lista=document.getElementById("listaDMs");
+      lista.innerHTML="<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
       try {
         await carregarVerificados();
-        const snap = await getDocs(query(collection(db, "dms"), where("participantes", "array-contains", nomeUsuario)));
-        let conversas = [];
-        snap.forEach(d => conversas.push({ id: d.id, ...d.data() }));
-        conversas.sort((a,b) => (b.ultimaData?.toMillis?.() || 0) - (a.ultimaData?.toMillis?.() || 0));
-        lista.innerHTML = "";
-        conversas.forEach(c => {
-          const outro = (c.participantes || []).find(p => p !== nomeUsuario);
-          if (!outro) return;
-          const div = document.createElement("div");
-          div.className = "utilizador-card";
-          div.innerHTML = `<div class="utilizador-info"><div class="utilizador-avatar">${outro[0].toUpperCase()}</div><div><div class="utilizador-nome">${outro}${badgeFor(outro)}</div><div class="utilizador-bio">${(c.ultimaMsg||"").substring(0,40)}</div></div></div><button onclick="abrirDM('${outro}')">Abrir</button>`;
+        const snap=await getDocs(query(collection(db,"dms"),where("participantes","array-contains",nomeUsuario)));
+        let conversas=[]; snap.forEach(d=>conversas.push({id:d.id,...d.data()}));
+        conversas.sort((a,b)=>(b.ultimaData?.toMillis?.()||0)-(a.ultimaData?.toMillis?.()||0));
+        lista.innerHTML="";
+        conversas.forEach(c=>{
+          const outro=(c.participantes||[]).find(p=>p!==nomeUsuario); if(!outro)return;
+          const div=document.createElement("div"); div.className="utilizador-card";
+          div.innerHTML=`<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="verPerfilOutro('${outro}')">${outro[0].toUpperCase()}</div><div><div class="utilizador-nome nome-clicavel" onclick="verPerfilOutro('${outro}')">${outro}${badgeFor(outro)}</div><div class="utilizador-bio">${(c.ultimaMsg||"").substring(0,40)}</div></div></div><button onclick="abrirDM('${outro}')">Abrir</button>`;
           lista.appendChild(div);
         });
-        if (lista.children.length === 0) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem conversas. Vai a 👥 Users e toca em ✉️ para começar!</p>";
-      } catch(e) { lista.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
+        if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem conversas. Vai a 👥 Users e toca em ✉️!</p>";
+      } catch(e){lista.innerHTML="<p style='color:#f56b6b;'>Erro.</p>";}
     }
 
     window.abrirDM = async function(outroNome) {
-      escondertodas();
-      document.getElementById("dmConversaDiv").style.display = "block";
-      dmOutroUsuario = outroNome;
-      dmAtualId = dmId(nomeUsuario, outroNome);
-      document.getElementById("dmNomeTitulo").innerHTML = "✉️ " + outroNome + badgeFor(outroNome);
-      const mensagensDiv = document.getElementById("dmMensagens");
-      mensagensDiv.innerHTML = "<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
-
+      escondertodas(); document.getElementById("dmConversaDiv").style.display="block";
+      dmOutroUsuario=outroNome; dmAtualId=dmId(nomeUsuario,outroNome);
+      document.getElementById("dmNomeTitulo").innerHTML="✉️ "+outroNome+badgeFor(outroNome);
+      const mDiv=document.getElementById("dmMensagens");
+      mDiv.innerHTML="<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
       try {
-        const q = query(collection(db, "notificacoesDM"), where("paraQuem","==",nomeUsuario), where("deQuem","==",outroNome), where("lida","==",false));
-        const snap = await getDocs(q);
-        snap.forEach(d => updateDoc(doc(db,"notificacoesDM", d.id), {lida: true}));
-      } catch(e) {}
-
-      if (dmUnsubscribe) dmUnsubscribe();
-      const q2 = query(collection(db, "dms", dmAtualId, "mensagens"), orderBy("data","asc"));
-      dmUnsubscribe = onSnapshot(q2, (snap) => {
-        mensagensDiv.innerHTML = "";
-        snap.forEach(d => {
-          const m = d.data();
-          const div = document.createElement("div");
-          div.className = "msg-item " + (m.autor === nomeUsuario ? "msg-minha" : "msg-outro");
-          div.textContent = m.texto;
-          mensagensDiv.appendChild(div);
+        const q=query(collection(db,"notificacoesDM"),where("paraQuem","==",nomeUsuario),where("deQuem","==",outroNome),where("lida","==",false));
+        const snap=await getDocs(q); snap.forEach(d=>updateDoc(doc(db,"notificacoesDM",d.id),{lida:true}));
+      } catch(e){}
+      if(dmUnsubscribe)dmUnsubscribe();
+      const q2=query(collection(db,"dms",dmAtualId,"mensagens"),orderBy("data","asc"));
+      dmUnsubscribe=onSnapshot(q2,snap=>{
+        mDiv.innerHTML="";
+        snap.forEach(d=>{
+          const m=d.data(); const div=document.createElement("div");
+          div.className="msg-item "+(m.autor===nomeUsuario?"msg-minha":"msg-outro");
+          div.textContent=m.texto; mDiv.appendChild(div);
         });
-        if (snap.empty) mensagensDiv.innerHTML = "<p style='color:#6b7280;text-align:center;'>Diz olá! 👋</p>";
-        mensagensDiv.scrollTop = mensagensDiv.scrollHeight;
+        if(snap.empty) mDiv.innerHTML="<p style='color:#6b7280;text-align:center;'>Diz olá! 👋</p>";
+        mDiv.scrollTop=mDiv.scrollHeight;
       });
     }
 
     window.enviarDM = async function() {
-      const input = document.getElementById("inputDM");
-      const texto = input.value.trim();
-      if (!texto || !dmAtualId) return;
+      const i=document.getElementById("inputDM"); const texto=i.value.trim(); if(!texto||!dmAtualId)return;
       try {
-        await addDoc(collection(db, "dms", dmAtualId, "mensagens"), { texto, autor: nomeUsuario, data: serverTimestamp() });
-        await setDoc(doc(db, "dms", dmAtualId), { participantes: [nomeUsuario, dmOutroUsuario], ultimaMsg: texto, ultimaData: serverTimestamp() }, { merge: true });
-        await addDoc(collection(db, "notificacoesDM"), { paraQuem: dmOutroUsuario, deQuem: nomeUsuario, lida: false, data: serverTimestamp(), mensagem: texto.substring(0,40) });
-        input.value = "";
-      } catch(e) {}
+        await addDoc(collection(db,"dms",dmAtualId,"mensagens"),{texto,autor:nomeUsuario,data:serverTimestamp()});
+        await setDoc(doc(db,"dms",dmAtualId),{participantes:[nomeUsuario,dmOutroUsuario],ultimaMsg:texto,ultimaData:serverTimestamp()},{merge:true});
+        await addDoc(collection(db,"notificacoesDM"),{paraQuem:dmOutroUsuario,deQuem:nomeUsuario,lida:false,data:serverTimestamp(),mensagem:texto.substring(0,40)});
+        i.value="";
+      } catch(e){}
     }
 
     function escondertodas() {
       chatAberto=false;
-      document.getElementById("feedDiv").style.display="none";
-      document.getElementById("chatDiv").style.display="none";
-      document.getElementById("utilizadoresDiv").style.display="none";
-      document.getElementById("gruposDiv").style.display="none";
-      document.getElementById("grupoDetalheDiv").style.display="none";
-      document.getElementById("mensagensListaDiv").style.display="none";
-      document.getElementById("dmConversaDiv").style.display="none";
-      document.getElementById("perfil").style.display="none";
+      ["feedDiv","chatDiv","utilizadoresDiv","gruposDiv","grupoDetalheDiv","mensagensListaDiv","dmConversaDiv","perfilOutroDiv","perfil"].forEach(id=>document.getElementById(id).style.display="none");
     }
 
     window.seguir = async function(autorPost, botao) {
-      if (autorPost === nomeUsuario) return;
+      if(autorPost===nomeUsuario)return;
       try {
-        const jaSegue = await getDoc(doc(db, "utilizadores", autorPost, "seguidores", nomeUsuario));
-        if (jaSegue.exists()) {
-          await deleteDoc(doc(db, "utilizadores", autorPost, "seguidores", nomeUsuario));
-          await deleteDoc(doc(db, "utilizadores", nomeUsuario, "seguindo", autorPost));
-          botao.textContent = "➕ Seguir"; botao.className = "btn-seguir";
+        const jaSegue=await getDoc(doc(db,"utilizadores",autorPost,"seguidores",nomeUsuario));
+        if(jaSegue.exists()){
+          await deleteDoc(doc(db,"utilizadores",autorPost,"seguidores",nomeUsuario));
+          await deleteDoc(doc(db,"utilizadores",nomeUsuario,"seguindo",autorPost));
+          botao.textContent="➕ Seguir"; botao.className="btn-seguir";
         } else {
-          await setDoc(doc(db, "utilizadores", autorPost, "seguidores", nomeUsuario), { nome: nomeUsuario });
-          await setDoc(doc(db, "utilizadores", nomeUsuario, "seguindo", autorPost), { nome: autorPost });
-          botao.textContent = "✅ A seguir"; botao.className = "btn-seguindo";
-          await addDoc(collection(db, "notificacoes"), { paraQuem: autorPost, deQuem: nomeUsuario, tipo: "seguidor", lida: false, data: serverTimestamp() });
+          await setDoc(doc(db,"utilizadores",autorPost,"seguidores",nomeUsuario),{nome:nomeUsuario});
+          await setDoc(doc(db,"utilizadores",nomeUsuario,"seguindo",autorPost),{nome:autorPost});
+          botao.textContent="✅ A seguir"; botao.className="btn-seguindo";
+          await addDoc(collection(db,"notificacoes"),{paraQuem:autorPost,deQuem:nomeUsuario,tipo:"seguidor",lida:false,data:serverTimestamp()});
         }
-        const seguidoresAtorSnap = await getDocs(collection(db, "utilizadores", autorPost, "seguidores"));
-        const verificado = seguidoresAtorSnap.size >= THRESHOLD_VERIFICACAO;
-        await setDoc(doc(db, "utilizadores", autorPost), { verificado }, { merge: true });
-        verificados[autorPost] = verificado;
-        renderPosts(todosPosts);
-      } catch(e) {}
+        const segSnap=await getDocs(collection(db,"utilizadores",autorPost,"seguidores"));
+        const v=segSnap.size>=THRESHOLD_VERIFICACAO;
+        await setDoc(doc(db,"utilizadores",autorPost),{verificado:v},{merge:true});
+        verificados[autorPost]=v; renderPosts(todosPosts);
+      } catch(e){}
     }
 
-    window.toggleEditar = function(postId) {
-      const editBox = document.getElementById("edit-" + postId);
-      editBox.style.display = editBox.style.display === "block" ? "none" : "block";
-    }
+    window.toggleEditar=function(postId){const b=document.getElementById("edit-"+postId);b.style.display=b.style.display==="block"?"none":"block";}
 
     window.guardarEdicao = async function(postId) {
-      const novoTexto = document.getElementById("editInput-" + postId).value.trim();
-      if (!novoTexto) return;
+      const novoTexto=document.getElementById("editInput-"+postId).value.trim(); if(!novoTexto)return;
       try {
-        await updateDoc(doc(db, "posts", postId), { texto: novoTexto });
-        document.getElementById("texto-" + postId).innerHTML = formatarTexto(novoTexto);
-        document.getElementById("edit-" + postId).style.display = "none";
-        const idx = todosPosts.findIndex(p => p.id === postId);
-        if (idx !== -1) todosPosts[idx].data.texto = novoTexto;
-        renderTrending();
-        setStatus("✅ Post editado!");
-      } catch(e) { setStatus("❌ Erro ao editar."); }
+        await updateDoc(doc(db,"posts",postId),{texto:novoTexto});
+        document.getElementById("texto-"+postId).innerHTML=formatarTexto(novoTexto);
+        document.getElementById("edit-"+postId).style.display="none";
+        const idx=todosPosts.findIndex(p=>p.id===postId);
+        if(idx!==-1)todosPosts[idx].data.texto=novoTexto;
+        renderTrending(); setStatus("✅ Post editado!");
+      } catch(e){setStatus("❌ Erro.");}
     }
 
-    window.reagir = async function(postId, emoji) {
-      const chave = "reacao_" + postId;
-      const anterior = localStorage.getItem(chave);
+    window.reagir = async function(postId,emoji) {
+      const chave="reacao_"+postId; const anterior=localStorage.getItem(chave);
       try {
-        const ref = doc(db, "posts", postId);
-        if (anterior === emoji) {
-          await updateDoc(ref, { ["reacoes." + emoji]: increment(-1) });
-          localStorage.removeItem(chave);
-          atualizarContagem(postId, emoji, -1);
-          marcarAtiva(postId, null);
+        const ref=doc(db,"posts",postId);
+        if(anterior===emoji){
+          await updateDoc(ref,{["reacoes."+emoji]:increment(-1)});
+          localStorage.removeItem(chave); atualizarContagem(postId,emoji,-1); marcarAtiva(postId,null);
         } else {
-          if (anterior) {
-            await updateDoc(ref, { ["reacoes." + anterior]: increment(-1) });
-            atualizarContagem(postId, anterior, -1);
-          }
-          await updateDoc(ref, { ["reacoes." + emoji]: increment(1) });
-          atualizarContagem(postId, emoji, 1);
-          localStorage.setItem(chave, emoji);
-          marcarAtiva(postId, emoji);
+          if(anterior){await updateDoc(ref,{["reacoes."+anterior]:increment(-1)});atualizarContagem(postId,anterior,-1);}
+          await updateDoc(ref,{["reacoes."+emoji]:increment(1)});
+          atualizarContagem(postId,emoji,1); localStorage.setItem(chave,emoji); marcarAtiva(postId,emoji);
         }
-      } catch(e) {}
+      } catch(e){}
     }
 
-    function atualizarContagem(postId, emoji, delta) {
-      const el = document.getElementById("count-" + postId + "-" + emoji);
-      if (el) el.textContent = Math.max(0, parseInt(el.textContent) + delta);
-    }
+    function atualizarContagem(postId,emoji,delta){const el=document.getElementById("count-"+postId+"-"+emoji);if(el)el.textContent=Math.max(0,parseInt(el.textContent)+delta);}
 
-    function marcarAtiva(postId, emoji) {
-      EMOJIS_REACAO.forEach(em => {
-        const btn = document.getElementById("btn-" + postId + "-" + em);
-        if (!btn) return;
-        if (em === emoji) btn.classList.add("active"); else btn.classList.remove("active");
-      });
-    }
+    function marcarAtiva(postId,emoji){EMOJIS_REACAO.forEach(em=>{const b=document.getElementById("btn-"+postId+"-"+em);if(!b)return;if(em===emoji)b.classList.add("active");else b.classList.remove("active");});}
 
-    function criarReacoesBar(postId, reacoes) {
-      const minhaReacao = localStorage.getItem("reacao_" + postId);
-      let html = `<div class="reacoes-bar">`;
-      EMOJIS_REACAO.forEach(emoji => {
-        const count = (reacoes && reacoes[emoji]) || 0;
-        const ativa = minhaReacao === emoji ? "active" : "";
-        html += `<button id="btn-${postId}-${emoji}" class="reacao-btn ${ativa}" onclick="reagir('${postId}','${emoji}')">${emoji} <span id="count-${postId}-${emoji}">${count}</span></button>`;
-      });
-      html += `</div>`;
-      return html;
+    function criarReacoesBar(postId,reacoes){
+      const mr=localStorage.getItem("reacao_"+postId);
+      let h=`<div class="reacoes-bar">`;
+      EMOJIS_REACAO.forEach(emoji=>{const c=(reacoes&&reacoes[emoji])||0;const a=mr===emoji?"active":"";h+=`<button id="btn-${postId}-${emoji}" class="reacao-btn ${a}" onclick="reagir('${postId}','${emoji}')">${emoji} <span id="count-${postId}-${emoji}">${c}</span></button>`;});
+      return h+`</div>`;
     }
 
     function criarPostCard(d) {
-      const p = d.data;
-      const div = document.createElement("div");
-      div.className = "post-card";
-      const imgHtml = p.imagem ? `<img src="${p.imagem}" class="post-img">` : "";
-      const seguirBtn = p.autor !== nomeUsuario ? `<button class="btn-seguir" onclick="seguir('${p.autor}', this)">➕ Seguir</button>` : "";
-      const editarBtn = p.autor === nomeUsuario ? `<button class="btn-editar" onclick="toggleEditar('${d.id}')">✏️ Editar</button>` : "";
-      div.innerHTML = `
-        <strong>${p.autor}</strong>${badgeFor(p.autor)} · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
+      const p=d.data; const div=document.createElement("div"); div.className="post-card";
+      const imgHtml=p.imagem?`<img src="${p.imagem}" class="post-img">`:"";
+      const seguirBtn=p.autor!==nomeUsuario?`<button class="btn-seguir" onclick="seguir('${p.autor}',this)">➕ Seguir</button>`:"";
+      const editarBtn=p.autor===nomeUsuario?`<button class="btn-editar" onclick="toggleEditar('${d.id}')">✏️ Editar</button>`:"";
+      div.innerHTML=`
+        <strong class="nome-clicavel" onclick="${nomeClick(p.autor)}">${p.autor}</strong>${badgeFor(p.autor)} · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
         ${seguirBtn}
         <p class="post-texto" id="texto-${d.id}" style="margin:10px 0;color:#c8cad8;">${formatarTexto(p.texto)}</p>
         ${imgHtml}
-        ${criarReacoesBar(d.id, p.reacoes)}
+        ${criarReacoesBar(d.id,p.reacoes)}
         <button onclick="toggleComentarios('${d.id}')">💬 Comentar</button>
         ${editarBtn}
         <button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>
-        <button class="btn-whatsapp" onclick="partilhar('${p.texto.replace(/'/g, "\\'")}')">📲 Partilhar</button>
+        <button class="btn-whatsapp" onclick="partilhar('${p.texto.replace(/'/g,"\\'")}')">📲 Partilhar</button>
         <div class="edit-box" id="edit-${d.id}">
           <textarea id="editInput-${d.id}">${p.texto}</textarea>
           <button onclick="guardarEdicao('${d.id}')">💾 Guardar</button>
@@ -889,157 +764,112 @@
           <div id="lista-coms-${d.id}"></div>
           <input class="comentario-input" id="input-com-${d.id}" placeholder="Escreva um comentário...">
           <button onclick="enviarComentario('${d.id}')">Enviar</button>
-        </div>
-      `;
+        </div>`;
       return div;
     }
 
     async function carregarPosts() {
-      const postsDiv = document.getElementById("posts");
-      postsDiv.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
+      const postsDiv=document.getElementById("posts");
+      postsDiv.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
       try {
         await carregarVerificados();
-        const q = query(collection(db, "posts"), orderBy("data", "desc"));
-        const snap = await getDocs(q);
-        todosPosts = [];
-        snap.forEach((d) => { todosPosts.push({ id: d.id, data: d.data() }); });
-        renderTrending();
-        renderPosts(todosPosts);
-      } catch(e) { postsDiv.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
+        const q=query(collection(db,"posts"),orderBy("data","desc"));
+        const snap=await getDocs(q); todosPosts=[];
+        snap.forEach(d=>{todosPosts.push({id:d.id,data:d.data()});});
+        renderTrending(); renderPosts(todosPosts);
+      } catch(e){postsDiv.innerHTML="<p style='color:#f56b6b;'>Erro ao carregar.</p>";}
     }
 
     function renderPosts(lista) {
-      const postsDiv = document.getElementById("posts");
-      postsDiv.innerHTML = "";
-      if (lista.length === 0) { postsDiv.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum post encontrado!</p>"; return; }
-      lista.forEach((d) => {
-        const div = criarPostCard(d);
-        postsDiv.appendChild(div);
-        carregarComentarios(d.id);
-      });
+      const postsDiv=document.getElementById("posts"); postsDiv.innerHTML="";
+      if(!lista.length){postsDiv.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum post encontrado!</p>";return;}
+      lista.forEach(d=>{postsDiv.appendChild(criarPostCard(d));carregarComentarios(d.id);});
     }
 
     window.pesquisar = function() {
-      const termo = document.getElementById("pesquisaBox").value.toLowerCase();
-      if (!termo) { renderPosts(todosPosts); return; }
-      const filtrados = todosPosts.filter(d => d.data.texto.toLowerCase().includes(termo) || d.data.autor.toLowerCase().includes(termo));
-      renderPosts(filtrados);
+      const t=document.getElementById("pesquisaBox").value.toLowerCase();
+      if(!t){renderPosts(todosPosts);return;}
+      renderPosts(todosPosts.filter(d=>d.data.texto.toLowerCase().includes(t)||d.data.autor.toLowerCase().includes(t)));
     }
 
     async function carregarComentarios(postId) {
-      const lista = document.getElementById("lista-coms-" + postId);
-      if (!lista) return;
+      const lista=document.getElementById("lista-coms-"+postId); if(!lista)return;
       try {
-        const q = query(collection(db, "posts", postId, "comentarios"), orderBy("data", "asc"));
-        const snap = await getDocs(q);
-        lista.innerHTML = "";
-        snap.forEach((d) => {
-          const c = d.data();
-          const div = document.createElement("div");
-          div.className = "comentario-item";
-          div.innerHTML = `<strong>${c.autor}</strong>${badgeFor(c.autor)}: ${c.texto}`;
+        const q=query(collection(db,"posts",postId,"comentarios"),orderBy("data","asc"));
+        const snap=await getDocs(q); lista.innerHTML="";
+        snap.forEach(d=>{
+          const c=d.data(); const div=document.createElement("div"); div.className="comentario-item";
+          div.innerHTML=`<strong class="nome-clicavel" onclick="${nomeClick(c.autor)}">${c.autor}</strong>${badgeFor(c.autor)}: ${c.texto}`;
           lista.appendChild(div);
         });
-      } catch(e) {}
+      } catch(e){}
     }
 
-    window.toggleComentarios = function(postId) {
-      const box = document.getElementById("coms-" + postId);
-      box.style.display = box.style.display === "block" ? "none" : "block";
-    }
+    window.toggleComentarios=function(postId){const b=document.getElementById("coms-"+postId);b.style.display=b.style.display==="block"?"none":"block";}
 
     window.enviarComentario = async function(postId) {
-      const input = document.getElementById("input-com-" + postId);
-      const texto = input.value.trim();
-      if (!texto) return;
+      const input=document.getElementById("input-com-"+postId); const texto=input.value.trim(); if(!texto)return;
       try {
-        await addDoc(collection(db, "posts", postId, "comentarios"), { texto, autor: nomeUsuario, data: serverTimestamp() });
-        input.value = ""; carregarComentarios(postId);
-      } catch(e) {}
+        await addDoc(collection(db,"posts",postId,"comentarios"),{texto,autor:nomeUsuario,data:serverTimestamp()});
+        input.value=""; carregarComentarios(postId);
+      } catch(e){}
     }
 
     window.publicar = async function() {
-      const caixa = document.getElementById("caixaTexto");
-      const texto = caixa.value.trim();
-      if (!texto && !imagemBase64) { alert("Escreva algo ou escolha uma imagem!"); return; }
+      const caixa=document.getElementById("caixaTexto"); const texto=caixa.value.trim();
+      if(!texto&&!imagemBase64){alert("Escreva algo ou escolha uma imagem!");return;}
       try {
-        const hora = new Date().toLocaleTimeString("pt-BR", {hour:"2-digit",minute:"2-digit"});
-        const reacoesIniciais = {};
-        EMOJIS_REACAO.forEach(e => reacoesIniciais[e] = 0);
-        const postData = { texto: texto || "", autor: nomeUsuario, hora, data: serverTimestamp(), reacoes: reacoesIniciais };
-        if (imagemBase64) postData.imagem = imagemBase64;
-        await addDoc(collection(db, "posts"), postData);
-        caixa.value = "";
-        imagemBase64 = "";
-        document.getElementById("imgPreview").style.display = "none";
-        document.getElementById("inputImagem").value = "";
+        const hora=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+        const ri={}; EMOJIS_REACAO.forEach(e=>ri[e]=0);
+        const postData={texto:texto||"",autor:nomeUsuario,hora,data:serverTimestamp(),reacoes:ri};
+        if(imagemBase64)postData.imagem=imagemBase64;
+        await addDoc(collection(db,"posts"),postData);
+        caixa.value=""; imagemBase64="";
+        document.getElementById("imgPreview").style.display="none";
+        document.getElementById("inputImagem").value="";
         setStatus("✅ Post publicado!"); carregarPosts();
-      } catch(e) { setStatus("❌ Erro ao publicar."); }
+      } catch(e){setStatus("❌ Erro.");}
     }
 
-    window.deletarPost = async function(id, botao) {
-      try { await deleteDoc(doc(db, "posts", id)); botao.parentElement.remove(); setStatus("🗑️ Deletado!"); }
-      catch(e) { setStatus("❌ Erro ao deletar."); }
+    window.deletarPost = async function(id,botao) {
+      try{await deleteDoc(doc(db,"posts",id));botao.parentElement.remove();setStatus("🗑️ Deletado!");}
+      catch(e){setStatus("❌ Erro.");}
     }
 
-    window.partilhar = function(texto) {
-      const url = "https://wa.me/?text=" + encodeURIComponent(texto + "\n\n🌐 Via ConnectApp: https://laiton023.github.io/connectapp");
-      window.open(url, "_blank");
+    window.partilhar=function(texto){window.open("https://wa.me/?text="+encodeURIComponent(texto+"\n\n🌐 Via ConnectApp: https://laiton023.github.io/connectapp"),"_blank");}
+
+    window.verPerfil=function(){escondertodas();document.getElementById("perfil").style.display="block";carregarEstatisticas();carregarNotificacoes();}
+    window.mostrarFeed=function(){escondertodas();document.getElementById("feedDiv").style.display="block";}
+    window.trocarFoto=function(e){const r=new FileReader();r.onload=x=>{document.getElementById("fotoPerfil").src=x.target.result;};r.readAsDataURL(e.target.files[0]);}
+
+    window.verChat=function(){
+      escondertodas(); document.getElementById("chatDiv").style.display="block";
+      document.getElementById("chatNotif").style.display="none"; chatAberto=true; iniciarChat();
     }
 
-    window.verPerfil = function() {
-      escondertodas();
-      document.getElementById("perfil").style.display="block";
-      carregarEstatisticas();
-      carregarNotificacoes();
-    }
-
-    window.mostrarFeed = function() {
-      escondertodas();
-      document.getElementById("feedDiv").style.display="block";
-    }
-
-    window.trocarFoto = function(e) { const r=new FileReader(); r.onload=function(x){document.getElementById("fotoPerfil").src=x.target.result;}; r.readAsDataURL(e.target.files[0]); }
-
-    window.verChat = function() {
-      escondertodas();
-      document.getElementById("chatDiv").style.display="block";
-      document.getElementById("chatNotif").style.display="none";
-      chatAberto = true; iniciarChat();
-    }
-
-    let chatIniciado = false;
-    function iniciarChat() {
-      if (chatIniciado) return; chatIniciado = true;
-      const q = query(collection(db, "chat"), orderBy("data", "asc"));
-      onSnapshot(q, (snap) => {
-        const mensagens = document.getElementById("mensagens");
-        mensagens.innerHTML = "";
-        snap.forEach((d) => {
-          const m = d.data();
-          const div = document.createElement("div");
-          div.className = "msg-item " + (m.autor === nomeUsuario ? "msg-minha" : "msg-outro");
-          div.innerHTML = m.autor === nomeUsuario ? m.texto : `<strong>${m.autor}</strong>${badgeFor(m.autor)}: ${m.texto}`;
-          mensagens.appendChild(div);
+    let chatIniciado=false;
+    function iniciarChat(){
+      if(chatIniciado)return; chatIniciado=true;
+      const q=query(collection(db,"chat"),orderBy("data","asc"));
+      onSnapshot(q,snap=>{
+        const m=document.getElementById("mensagens"); m.innerHTML="";
+        snap.forEach(d=>{
+          const msg=d.data(); const div=document.createElement("div");
+          div.className="msg-item "+(msg.autor===nomeUsuario?"msg-minha":"msg-outro");
+          div.innerHTML=msg.autor===nomeUsuario?msg.texto:`<strong class="nome-clicavel" onclick="${nomeClick(msg.autor)}">${msg.autor}</strong>${badgeFor(msg.autor)}: ${msg.texto}`;
+          m.appendChild(div);
         });
-        mensagens.scrollTop = mensagens.scrollHeight;
+        m.scrollTop=m.scrollHeight;
       });
     }
 
-    window.enviarMsg = async function() {
-      const i = document.getElementById("inputMsg");
-      const texto = i.value.trim();
-      if (!texto) return;
-      try { await addDoc(collection(db, "chat"), { texto, autor: nomeUsuario, data: serverTimestamp() }); i.value = ""; }
-      catch(e) {}
+    window.enviarMsg=async function(){
+      const i=document.getElementById("inputMsg"); const texto=i.value.trim(); if(!texto)return;
+      try{await addDoc(collection(db,"chat"),{texto,autor:nomeUsuario,data:serverTimestamp()});i.value="";}catch(e){}
     }
 
-    document.getElementById("inputMsg").addEventListener("keypress", function(e) {
-      if (e.key === "Enter") window.enviarMsg();
-    });
-    document.getElementById("inputDM").addEventListener("keypress", function(e) {
-      if (e.key === "Enter") window.enviarDM();
-    });
+    document.getElementById("inputMsg").addEventListener("keypress",e=>{if(e.key==="Enter")window.enviarMsg();});
+    document.getElementById("inputDM").addEventListener("keypress",e=>{if(e.key==="Enter")window.enviarDM();});
   </script>
 </body>
 </html>
