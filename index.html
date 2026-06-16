@@ -34,6 +34,11 @@
     .btn-editar { background: #f0a500; }
     .btn-guardar { background: #2a2f42; }
     .btn-guardar.ativo { background: #f0a500; }
+    .sondagem-opcao { background: #0d0f14; border-radius: 8px; padding: 10px 14px; margin-bottom: 6px; cursor: pointer; font-size: 13px; position: relative; overflow: hidden; }
+    body.claro .sondagem-opcao { background: #f0f2f5; }
+    .sondagem-barra { position: absolute; left: 0; top: 0; height: 100%; background: var(--cor1); opacity: 0.25; border-radius: 8px; transition: width 0.5s; }
+    .sondagem-texto { position: relative; z-index: 1; display: flex; justify-content: space-between; }
+    .sondagem-total { font-size: 11px; color: #6b7280; margin-top: 4px; }
     .btn-danger { background: #f56b6b; }
     .nome-clicavel { cursor: pointer; } .nome-clicavel:hover { text-decoration: underline; }
     .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
@@ -190,8 +195,17 @@
     <br>
     <label class="img-label" for="inputImagem">🖼️ Adicionar imagem</label>
     <input type="file" id="inputImagem" accept="image/*" style="display:none" onchange="previewImagem(event)">
-    <img id="imgPreview" class="img-preview"><br>
+    <img id="imgPreview" class="img-preview">
+    <div id="sondagemBox" style="display:none;margin-top:10px;background:#161920;border-radius:10px;padding:12px;">
+      <p style="font-size:13px;font-weight:600;margin-bottom:8px;">📊 Sondagem</p>
+      <input type="text" id="op1" placeholder="Opção 1..." style="width:100%;margin-bottom:6px;">
+      <input type="text" id="op2" placeholder="Opção 2..." style="width:100%;margin-bottom:6px;">
+      <input type="text" id="op3" placeholder="Opção 3 (opcional)..." style="width:100%;margin-bottom:6px;">
+      <input type="text" id="op4" placeholder="Opção 4 (opcional)..." style="width:100%;margin-bottom:6px;">
+    </div>
+    <br>
     <button onclick="publicar()">Publicar</button>
+    <button onclick="toggleSondagem()" id="btnSondagem" style="background:#2a2f42;">📊 Sondagem</button>
     <div id="posts"></div>
   </main>
   <div id="utilizadoresDiv" style="display:none">
@@ -858,6 +872,42 @@
       return h+`</div>`;
     }
 
+    window.toggleSondagem = function() {
+      const box = document.getElementById("sondagemBox");
+      const btn = document.getElementById("btnSondagem");
+      const visivel = box.style.display === "block";
+      box.style.display = visivel ? "none" : "block";
+      btn.style.background = visivel ? "#2a2f42" : "var(--cor1)";
+    }
+
+    function criarSondagemHtml(postId, sondagem, votos) {
+      if (!sondagem || !sondagem.opcoes || !sondagem.opcoes.length) return "";
+      const total = Object.values(votos||{}).reduce((a,b)=>a+b,0);
+      const meuVoto = localStorage.getItem("voto_"+postId);
+      let html = `<div style="margin:10px 0;">`;
+      sondagem.opcoes.forEach((op, i) => {
+        const v = (votos&&votos[i]) || 0;
+        const pct = total > 0 ? Math.round((v/total)*100) : 0;
+        const ativa = meuVoto == i ? "border:2px solid var(--cor1);" : "";
+        html += `<div class="sondagem-opcao" style="${ativa}" onclick="votar('${postId}',${i})">
+          <div class="sondagem-barra" style="width:${pct}%"></div>
+          <div class="sondagem-texto"><span>${op}</span><span>${meuVoto!=null?pct+"%":""}</span></div>
+        </div>`;
+      });
+      html += `<div class="sondagem-total">${total} voto(s)</div></div>`;
+      return html;
+    }
+
+    window.votar = async function(postId, opcaoIdx) {
+      const chave = "voto_"+postId;
+      if (localStorage.getItem(chave) !== null) return;
+      try {
+        await updateDoc(doc(db,"posts",postId), { ["votos."+opcaoIdx]: increment(1) });
+        localStorage.setItem(chave, opcaoIdx);
+        carregarPosts();
+      } catch(e){}
+    }
+
     function isGuardado(postId) {
       const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
       return guardados.includes(postId);
@@ -912,11 +962,13 @@
       const editarBtn=p.autor===nomeUsuario?`<button class="btn-editar" onclick="toggleEditar('${d.id}')">✏️ Editar</button>`:"";
       const views = p.views || 0;
       registarVisualizacao(d.id);
+      const sondagemHtml = criarSondagemHtml(d.id, p.sondagem, p.votos);
       div.innerHTML=`
         <strong class="nome-clicavel" onclick="${nomeClick(p.autor)}">${p.autor}</strong>${badgeFor(p.autor)} · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
         ${seguirBtn}
         <p class="post-texto" id="texto-${d.id}" style="margin:10px 0;color:#c8cad8;">${formatarTexto(p.texto)}</p>
         ${imgHtml}
+        ${sondagemHtml}
         ${criarReacoesBar(d.id,p.reacoes)}
         <div style="font-size:12px;color:#6b7280;margin-bottom:4px;">👁️ <span id="views-${d.id}">${views}</span> visualizações</div>
         <button onclick="toggleComentarios('${d.id}')">💬 Comentar</button>
@@ -990,12 +1042,29 @@
       try {
         const hora=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
         const ri={}; EMOJIS_REACAO.forEach(e=>ri[e]=0);
-        const postData={texto:texto||"",autor:nomeUsuario,hora,data:serverTimestamp(),reacoes:ri};
+        const postData={texto:texto||"",autor:nomeUsuario,hora,data:serverTimestamp(),reacoes:ri,views:0};
         if(imagemBase64)postData.imagem=imagemBase64;
+        const op1=document.getElementById("op1").value.trim();
+        const op2=document.getElementById("op2").value.trim();
+        if(op1&&op2){
+          const op3=document.getElementById("op3").value.trim();
+          const op4=document.getElementById("op4").value.trim();
+          const opcoes=[op1,op2];
+          if(op3)opcoes.push(op3);
+          if(op4)opcoes.push(op4);
+          postData.sondagem={opcoes};
+          postData.votos={};
+        }
         await addDoc(collection(db,"posts"),postData);
         caixa.value=""; imagemBase64="";
         document.getElementById("imgPreview").style.display="none";
         document.getElementById("inputImagem").value="";
+        document.getElementById("op1").value="";
+        document.getElementById("op2").value="";
+        document.getElementById("op3").value="";
+        document.getElementById("op4").value="";
+        document.getElementById("sondagemBox").style.display="none";
+        document.getElementById("btnSondagem").style.background="#2a2f42";
         setStatus("✅ Post publicado!"); carregarPosts();
       } catch(e){setStatus("❌ Erro.");}
     }
