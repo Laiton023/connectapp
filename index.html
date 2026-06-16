@@ -32,7 +32,8 @@
     .btn-seguir { background: var(--cor2); }
     .btn-seguindo { background: #2a2f42; }
     .btn-editar { background: #f0a500; }
-    .btn-mensagem { background: #2a2f42; }
+    .btn-guardar { background: #2a2f42; }
+    .btn-guardar.ativo { background: #f0a500; }
     .btn-danger { background: #f56b6b; }
     .nome-clicavel { cursor: pointer; } .nome-clicavel:hover { text-decoration: underline; }
     .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
@@ -284,6 +285,10 @@
     <div class="notificacoes-box">
       <h3>🔔 Notificações</h3>
       <div id="listaNotificacoes"></div>
+    </div>
+    <div class="notificacoes-box">
+      <h3>🔖 Posts Guardados</h3>
+      <div id="listaGuardados"></div>
     </div>
   </div>
   <div id="chatDiv" style="display:none; max-width:600px; margin:24px auto; padding:20px 16px;">
@@ -853,21 +858,72 @@
       return h+`</div>`;
     }
 
+    function isGuardado(postId) {
+      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+      return guardados.includes(postId);
+    }
+
+    window.toggleGuardar = function(postId, botao) {
+      let guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+      if (guardados.includes(postId)) {
+        guardados = guardados.filter(id => id !== postId);
+        botao.textContent = "🔖 Guardar";
+        botao.classList.remove("ativo");
+      } else {
+        guardados.push(postId);
+        botao.textContent = "🔖 Guardado";
+        botao.classList.add("ativo");
+      }
+      localStorage.setItem("guardados_"+nomeUsuario, JSON.stringify(guardados));
+    }
+
+    function carregarPostsGuardados() {
+      const lista = document.getElementById("listaGuardados");
+      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+      if (!guardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Nenhum post guardado ainda.</p>"; return; }
+      lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Carregando...</p>";
+      const postsGuardados = todosPosts.filter(p => guardados.includes(p.id));
+      lista.innerHTML = "";
+      if (!postsGuardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Posts guardados não encontrados no feed.</p>"; return; }
+      postsGuardados.forEach(d => {
+        const div = document.createElement("div");
+        div.className = "post-card";
+        div.style.marginTop = "10px";
+        div.innerHTML = `<strong class="nome-clicavel" onclick="${nomeClick(d.data.autor)}">${d.data.autor}</strong>${badgeFor(d.data.autor)} · <span style="color:#6b7280;font-size:12px;">${d.data.hora}</span><p style="margin:8px 0;color:#c8cad8;font-size:13px;">${formatarTexto(d.data.texto)}</p><button onclick="toggleGuardar('${d.id}',this);this.closest('.post-card').remove();" style="background:#f56b6b;font-size:12px;padding:6px 12px;">🗑️ Remover</button>`;
+        lista.appendChild(div);
+      });
+    }
+
+    const viewsRegistadas = new Set();
+    async function registarVisualizacao(postId) {
+      if (viewsRegistadas.has(postId)) return;
+      viewsRegistadas.add(postId);
+      try {
+        await updateDoc(doc(db,"posts",postId),{views: increment(1)});
+        const el = document.getElementById("views-"+postId);
+        if (el) el.textContent = parseInt(el.textContent||"0") + 1;
+      } catch(e){}
+    }
+
     function criarPostCard(d) {
       const p=d.data; const div=document.createElement("div"); div.className="post-card";
       const imgHtml=p.imagem?`<img src="${p.imagem}" class="post-img">`:"";
       const seguirBtn=p.autor!==nomeUsuario?`<button class="btn-seguir" onclick="seguir('${p.autor}',this)">➕ Seguir</button>`:"";
       const editarBtn=p.autor===nomeUsuario?`<button class="btn-editar" onclick="toggleEditar('${d.id}')">✏️ Editar</button>`:"";
+      const views = p.views || 0;
+      registarVisualizacao(d.id);
       div.innerHTML=`
         <strong class="nome-clicavel" onclick="${nomeClick(p.autor)}">${p.autor}</strong>${badgeFor(p.autor)} · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
         ${seguirBtn}
         <p class="post-texto" id="texto-${d.id}" style="margin:10px 0;color:#c8cad8;">${formatarTexto(p.texto)}</p>
         ${imgHtml}
         ${criarReacoesBar(d.id,p.reacoes)}
+        <div style="font-size:12px;color:#6b7280;margin-bottom:4px;">👁️ <span id="views-${d.id}">${views}</span> visualizações</div>
         <button onclick="toggleComentarios('${d.id}')">💬 Comentar</button>
         ${editarBtn}
         <button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>
         <button class="btn-whatsapp" onclick="partilhar('${p.texto.replace(/'/g,"\\'")}')">📲 Partilhar</button>
+        <button id="btn-guardar-${d.id}" class="btn-guardar" onclick="toggleGuardar('${d.id}',this)">${isGuardado(d.id)?"🔖 Guardado":"🔖 Guardar"}</button>
         <div class="edit-box" id="edit-${d.id}">
           <textarea id="editInput-${d.id}">${p.texto}</textarea>
           <button onclick="guardarEdicao('${d.id}')">💾 Guardar</button>
@@ -951,7 +1007,7 @@
 
     window.partilhar=function(texto){window.open("https://wa.me/?text="+encodeURIComponent(texto+"\n\n🌐 Via ConnectApp: https://laiton023.github.io/connectapp"),"_blank");}
 
-    window.verPerfil=function(){escondertodas();document.getElementById("perfil").style.display="block";carregarEstatisticas();carregarNotificacoes();}
+    window.verPerfil=function(){escondertodas();document.getElementById("perfil").style.display="block";carregarEstatisticas();carregarNotificacoes();carregarPostsGuardados();}
     window.mostrarFeed=function(){escondertodas();document.getElementById("feedDiv").style.display="block";}
     window.trocarFoto=function(e){const r=new FileReader();r.onload=x=>{document.getElementById("fotoPerfil").src=x.target.result;};r.readAsDataURL(e.target.files[0]);}
 
