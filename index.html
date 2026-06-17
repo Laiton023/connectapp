@@ -1042,3 +1042,168 @@
         else{el.innerHTML=`🔒 Faltam ${THRESHOLD_VERIFICACAO-segSnap.size} seguidor(es) para verificação (${segSnap.size}/${THRESHOLD_VERIFICACAO})`;}
       } catch(e){}
   }
+function criarPostCard(d) {
+      const p=d.data; const div=document.createElement("div"); div.className="post-card";
+      const ehMeuPost = p.autorReal === nomeUsuario || (!p.autorReal && p.autor === nomeUsuario);
+      const nomeExibido = p.anonimo ? "🎭 Anónimo" + (ehMeuPost ? " (tu)" : "") : p.autor;
+      const nomeClickHtml = p.anonimo ? `<strong>${nomeExibido}</strong>` : `<strong class="nome-clicavel" onclick="${nomeClick(p.autor)}">${nomeExibido}</strong>`;
+      const imgHtml=p.imagem?`<img src="${p.imagem}" class="post-img">`:"";
+      const seguirBtn=(!p.anonimo && p.autor!==nomeUsuario)?`<button class="btn-seguir" onclick="seguir('${p.autor}',this)">➕ Seguir</button>`:"";
+      const editarBtn=ehMeuPost?`<button class="btn-editar" onclick="toggleEditar('${d.id}')">✏️ Editar</button>`:"";
+      const deletarBtn=ehMeuPost?`<button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>`:"";
+      const views = p.views || 0;
+      registarVisualizacao(d.id);
+      const sondagemHtml = criarSondagemHtml(d.id, p.sondagem, p.votos);
+      div.innerHTML=`
+        ${nomeClickHtml}${p.anonimo?"":badgeFor(p.autor)} · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
+        ${seguirBtn}
+        <p class="post-texto" id="texto-${d.id}" style="margin:10px 0;color:#c8cad8;">${formatarTexto(p.texto)}</p>
+        ${imgHtml}
+        ${sondagemHtml}
+        ${criarReacoesBar(d.id,p.reacoes)}
+        <div style="font-size:12px;color:#6b7280;margin-bottom:4px;">👁️ <span id="views-${d.id}">${views}</span> visualizações</div>
+        <button onclick="toggleComentarios('${d.id}')">💬 Comentar</button>
+        ${editarBtn}
+        ${deletarBtn}
+        <button class="btn-whatsapp" onclick="partilhar('${p.texto.replace(/'/g,"\\'")}')">📲 Partilhar</button>
+        <button id="btn-guardar-${d.id}" class="btn-guardar" onclick="toggleGuardar('${d.id}',this)">${isGuardado(d.id)?"🔖 Guardado":"🔖 Guardar"}</button>
+        <div class="edit-box" id="edit-${d.id}">
+          <textarea id="editInput-${d.id}">${p.texto}</textarea>
+          <button onclick="guardarEdicao('${d.id}')">💾 Guardar</button>
+          <button onclick="toggleEditar('${d.id}')" style="background:#6b7280;">Cancelar</button>
+        </div>
+        <div class="comentarios-box" id="coms-${d.id}">
+          <div id="lista-coms-${d.id}"></div>
+          <input class="comentario-input" id="input-com-${d.id}" placeholder="Escreva um comentário...">
+          <button onclick="enviarComentario('${d.id}')">Enviar</button>
+        </div>`;
+      return div;
+    }
+
+    async function carregarPosts() {
+      const postsDiv=document.getElementById("posts");
+      postsDiv.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
+      try {
+        await carregarVerificados();
+        const q=query(collection(db,"posts"),orderBy("data","desc"));
+        const snap=await getDocs(q); todosPosts=[];
+        snap.forEach(d=>{todosPosts.push({id:d.id,data:d.data()});});
+        const bloqueados = getBloqueados();
+        if (bloqueados.length) todosPosts = todosPosts.filter(p => !bloqueados.includes(p.data.autor));
+        renderTrending(); renderPosts(todosPosts);
+      } catch(e){postsDiv.innerHTML="<p style='color:#f56b6b;'>Erro ao carregar.</p>";}
+    }
+
+    function renderPosts(lista) {
+      const postsDiv=document.getElementById("posts"); postsDiv.innerHTML="";
+      if(!lista.length){postsDiv.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum post encontrado!</p>";return;}
+      lista.forEach(d=>{postsDiv.appendChild(criarPostCard(d));carregarComentarios(d.id);});
+    }
+
+    window.pesquisar = function() {
+      const t=document.getElementById("pesquisaBox").value.toLowerCase();
+      if(!t){renderPosts(todosPosts);return;}
+      renderPosts(todosPosts.filter(d=>d.data.texto.toLowerCase().includes(t)||d.data.autor.toLowerCase().includes(t)));
+    }
+
+    async function carregarComentarios(postId) {
+      const lista=document.getElementById("lista-coms-"+postId); if(!lista)return;
+      try {
+        const q=query(collection(db,"posts",postId,"comentarios"),orderBy("data","asc"));
+        const snap=await getDocs(q); lista.innerHTML="";
+        snap.forEach(d=>{
+          const c=d.data(); const div=document.createElement("div"); div.className="comentario-item";
+          div.innerHTML=`<strong class="nome-clicavel" onclick="${nomeClick(c.autor)}">${c.autor}</strong>${badgeFor(c.autor)}: ${c.texto}`;
+          lista.appendChild(div);
+        });
+      } catch(e){}
+    }
+
+    window.toggleComentarios=function(postId){const b=document.getElementById("coms-"+postId);b.style.display=b.style.display==="block"?"none":"block";}
+
+    window.enviarComentario = async function(postId) {
+      const input=document.getElementById("input-com-"+postId); const texto=input.value.trim(); if(!texto)return;
+      try {
+        await addDoc(collection(db,"posts",postId,"comentarios"),{texto,autor:nomeUsuario,data:serverTimestamp()});
+        input.value=""; carregarComentarios(postId);
+      } catch(e){}
+    }
+
+    window.publicar = async function() {
+      const caixa=document.getElementById("caixaTexto"); const texto=caixa.value.trim();
+      if(!texto&&!imagemBase64){alert("Escreva algo ou escolha uma imagem!");return;}
+      try {
+        const hora=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+        const ri={}; EMOJIS_REACAO.forEach(e=>ri[e]=0);
+        const postData={texto:texto||"",autor:nomeUsuario,autorReal:nomeUsuario,anonimo:modoAnonimo,hora,data:serverTimestamp(),reacoes:ri,views:0};
+        if(imagemBase64)postData.imagem=imagemBase64;
+        const op1=document.getElementById("op1").value.trim();
+        const op2=document.getElementById("op2").value.trim();
+        if(op1&&op2){
+          const op3=document.getElementById("op3").value.trim();
+          const op4=document.getElementById("op4").value.trim();
+          const opcoes=[op1,op2];
+          if(op3)opcoes.push(op3);
+          if(op4)opcoes.push(op4);
+          postData.sondagem={opcoes};
+          postData.votos={};
+        }
+        await addDoc(collection(db,"posts"),postData);
+        caixa.value=""; imagemBase64="";
+        document.getElementById("imgPreview").style.display="none";
+        document.getElementById("inputImagem").value="";
+        document.getElementById("op1").value="";
+        document.getElementById("op2").value="";
+        document.getElementById("op3").value="";
+        document.getElementById("op4").value="";
+        document.getElementById("sondagemBox").style.display="none";
+        document.getElementById("btnSondagem").style.background="#2a2f42";
+        modoAnonimo=false;
+        document.getElementById("btnAnonimo").style.background="#2a2f42";
+        document.getElementById("btnAnonimo").textContent="🎭 Anónimo";
+        setStatus(postData.anonimo?"✅ Post anónimo publicado!":"✅ Post publicado!"); carregarPosts();
+      } catch(e){setStatus("❌ Erro.");}
+    }
+
+    window.deletarPost = async function(id,botao) {
+      try{await deleteDoc(doc(db,"posts",id));botao.parentElement.remove();setStatus("🗑️ Deletado!");}
+      catch(e){setStatus("❌ Erro.");}
+    }
+
+    window.partilhar=function(texto){window.open("https://wa.me/?text="+encodeURIComponent(texto+"\n\n🌐 Via ConnectApp: https://laiton023.github.io/connectapp"),"_blank");}
+
+    window.verPerfil=function(){escondertodas();document.getElementById("perfil").style.display="block";carregarEstatisticas();carregarNotificacoes();carregarPostsGuardados();}
+    window.mostrarFeed=function(){escondertodas();document.getElementById("feedDiv").style.display="block";}
+    window.trocarFoto=function(e){const r=new FileReader();r.onload=x=>{document.getElementById("fotoPerfil").src=x.target.result;};r.readAsDataURL(e.target.files[0]);}
+
+    window.verChat=function(){
+      escondertodas(); document.getElementById("chatDiv").style.display="block";
+      document.getElementById("chatNotif").style.display="none"; chatAberto=true; iniciarChat();
+    }
+
+    let chatIniciado=false;
+    function iniciarChat(){
+      if(chatIniciado)return; chatIniciado=true;
+      const q=query(collection(db,"chat"),orderBy("data","asc"));
+      onSnapshot(q,snap=>{
+        const m=document.getElementById("mensagens"); m.innerHTML="";
+        snap.forEach(d=>{
+          const msg=d.data(); const div=document.createElement("div");
+          div.className="msg-item "+(msg.autor===nomeUsuario?"msg-minha":"msg-outro");
+          div.innerHTML=msg.autor===nomeUsuario?msg.texto:`<strong class="nome-clicavel" onclick="${nomeClick(msg.autor)}">${msg.autor}</strong>${badgeFor(msg.autor)}: ${msg.texto}`;
+          m.appendChild(div);
+        });
+        m.scrollTop=m.scrollHeight;
+      });
+    }
+
+    window.enviarMsg=async function(){
+      const i=document.getElementById("inputMsg"); const texto=i.value.trim(); if(!texto)return;
+      try{await addDoc(collection(db,"chat"),{texto,autor:nomeUsuario,data:serverTimestamp()});i.value="";}catch(e){}
+    }
+
+    document.getElementById("inputMsg").addEventListener("keypress",e=>{if(e.key==="Enter")window.enviarMsg();});
+    document.getElementById("inputDM").addEventListener("keypress",e=>{if(e.key==="Enter")window.enviarDM();});
+  </script>
+</body>
+</html>
