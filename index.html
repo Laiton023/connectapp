@@ -22,7 +22,7 @@
     .notif-dot { position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; background: var(--cor2); border-radius: 50%; display: none; }
     #modoBtn { background: none; border: 1px solid #2a2f42; border-radius: 20px; padding: 6px 14px; color: #e8eaf2; font-family: 'Poppins', sans-serif; font-size: 13px; cursor: pointer; margin-top: 0; }
     body.claro #modoBtn { border-color: #c0c4d0; color: #1a1a2e; }
-    main, #perfil, #chatDiv, #utilizadoresDiv, #gruposDiv, #grupoDetalheDiv, #mensagensListaDiv, #dmConversaDiv, #perfilOutroDiv, #temaDiv, #onlineDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
+    main, #perfil, #chatDiv, #utilizadoresDiv, #gruposDiv, #grupoDetalheDiv, #mensagensListaDiv, #dmConversaDiv, #perfilOutroDiv, #temaDiv, #onlineDiv, #rankingDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
     textarea { width: 100%; background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 12px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 14px; height: 90px; resize: none; outline: none; }
     body.claro textarea { background: #ffffff; color: #1a1a2e; border-color: #c0c4d0; }
     textarea:focus { border-color: var(--cor1); }
@@ -39,6 +39,13 @@
     .sondagem-barra { position: absolute; left: 0; top: 0; height: 100%; background: var(--cor1); opacity: 0.25; border-radius: 8px; transition: width 0.5s; }
     .sondagem-texto { position: relative; z-index: 1; display: flex; justify-content: space-between; }
     .sondagem-total { font-size: 11px; color: #6b7280; margin-top: 4px; }
+    .ranking-item { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 14px 16px; margin-top: 10px; display: flex; align-items: center; gap: 12px; }
+    body.claro .ranking-item { background: #ffffff; border-color: #dde1ed; }
+    .ranking-pos { font-size: 18px; font-weight: 700; width: 32px; text-align: center; color: #6b7280; }
+    .ranking-item.top1 .ranking-pos { color: #ffd700; }
+    .ranking-item.top2 .ranking-pos { color: #c0c0c0; }
+    .ranking-item.top3 .ranking-pos { color: #cd7f32; }
+    .ranking-pontos { font-size: 12px; color: var(--cor1); font-weight: 600; margin-left: auto; }
     .btn-danger { background: #f56b6b; }
     .nome-clicavel { cursor: pointer; } .nome-clicavel:hover { text-decoration: underline; }
     .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
@@ -169,6 +176,7 @@
     <a href="#" onclick="verPerfil()">Perfil<span class="notif-dot" id="perfilNotif"></span></a>
     <a href="#" onclick="verChat()">💬 Chat<span class="notif-dot" id="chatNotif"></span></a>
     <a href="#" onclick="verTema()">🎨 Tema</a>
+    <a href="#" onclick="verRanking()">🏆 Ranking</a>
     <a href="#" onclick="sair()" style="color:var(--cor2);">Sair</a>
     <button id="modoBtn" onclick="toggleModo()">🌙 Escuro</button>
   </nav>
@@ -217,13 +225,4 @@
     <input type="text" id="nomeGrupoInput" placeholder="Nome do grupo...">
     <textarea id="descGrupoInput" placeholder="Descrição..." style="height:60px;"></textarea>
     <button onclick="criarGrupo()">➕ Criar Grupo</button>
-    <div id="listaGrupos"></div>
-  </div>
-  <div id="grupoDetalheDiv" style="display:none">
-    <button onclick="verGrupos()" style="background:#6b7280;">⬅ Voltar</button>
-    <h2 id="grupoNomeTitulo" style="margin:12px 0 4px;"></h2>
-    <p id="grupoDescTexto" style="color:#6b7280;font-size:13px;margin-bottom:8px;"></p>
-    <p style="font-size:13px;color:#6b7280;margin-bottom:8px;"><span id="grupoMembrosCount">0</span> membro(s)</p>
-    <button id="btnEntrarGrupo" class="btn-seguir" onclick="toggleMembroGrupo()">➕ Entrar no grupo</button>
-    <div id="grupoPostBox" style="display:none;margin-top:12px;">
-      <textarea id="caixaTextoGrupo" placeholder="Escreva algo para o grupo...">
+  
