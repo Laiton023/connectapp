@@ -22,7 +22,7 @@
     .notif-dot { position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; background: var(--cor2); border-radius: 50%; display: none; }
     #modoBtn { background: none; border: 1px solid #2a2f42; border-radius: 20px; padding: 6px 14px; color: #e8eaf2; font-family: 'Poppins', sans-serif; font-size: 13px; cursor: pointer; margin-top: 0; }
     body.claro #modoBtn { border-color: #c0c4d0; color: #1a1a2e; }
-    main, #perfil, #chatDiv, #utilizadoresDiv, #gruposDiv, #grupoDetalheDiv, #mensagensListaDiv, #dmConversaDiv, #perfilOutroDiv, #temaDiv, #onlineDiv, #rankingDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
+    main, #perfil, #chatDiv, #utilizadoresDiv, #gruposDiv, #grupoDetalheDiv, #mensagensListaDiv, #dmConversaDiv, #perfilOutroDiv, #temaDiv, #onlineDiv, #rankingDiv, #estatisticasDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
     textarea { width: 100%; background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 12px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 14px; height: 90px; resize: none; outline: none; }
     body.claro textarea { background: #ffffff; color: #1a1a2e; border-color: #c0c4d0; }
     textarea:focus { border-color: var(--cor1); }
@@ -46,6 +46,21 @@
     .ranking-item.top2 .ranking-pos { color: #c0c0c0; }
     .ranking-item.top3 .ranking-pos { color: #cd7f32; }
     .ranking-pontos { font-size: 12px; color: var(--cor1); font-weight: 600; margin-left: auto; }
+    .estat-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
+    body.claro .estat-card { background: #ffffff; border-color: #dde1ed; }
+    .estat-card h3 { font-size: 14px; margin-bottom: 12px; }
+    .barra-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 13px; }
+    .barra-label { width: 50px; flex-shrink: 0; }
+    .barra-track { flex: 1; background: #0d0f14; border-radius: 8px; height: 18px; overflow: hidden; }
+    body.claro .barra-track { background: #f0f2f5; }
+    .barra-fill { height: 100%; background: var(--cor1); border-radius: 8px; transition: width 0.6s; display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; }
+    .barra-fill span { font-size: 11px; color: white; }
+    .estat-resumo { display: flex; justify-content: space-around; text-align: center; margin-bottom: 8px; }
+    .estat-resumo div strong { display: block; font-size: 20px; color: var(--cor1); }
+    .estat-resumo div span { font-size: 11px; color: #6b7280; }
+    .top-post-item { background: #0d0f14; border-radius: 10px; padding: 10px 14px; margin-top: 8px; font-size: 13px; }
+    body.claro .top-post-item { background: #f0f2f5; color: #1a1a2e; }
+    .top-post-item .top-post-info { color: #6b7280; font-size: 11px; margin-top: 4px; }
     .btn-danger { background: #f56b6b; }
     .nome-clicavel { cursor: pointer; } .nome-clicavel:hover { text-decoration: underline; }
     .post-card { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 18px; margin-top: 16px; }
@@ -55,6 +70,7 @@
     .edit-box textarea { height: 70px; margin-bottom: 6px; }
     .badge-verificado { font-size: 12px; vertical-align: middle; margin-left: 2px; }
     .hashtag { color: var(--cor1); font-weight: 600; cursor: pointer; } .hashtag:hover { text-decoration: underline; }
+    .mencao { color: var(--cor2); font-weight: 600; cursor: pointer; } .mencao:hover { text-decoration: underline; }
     #trendingBar { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 14px; margin-bottom: 16px; }
     body.claro #trendingBar { background: #ffffff; border-color: #dde1ed; }
     .trending-titulo { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
@@ -176,6 +192,7 @@
     <a href="#" onclick="verChat()">💬 Chat<span class="notif-dot" id="chatNotif"></span></a>
     <a href="#" onclick="verTema()">🎨 Tema</a>
     <a href="#" onclick="verRanking()">🏆 Ranking</a>
+    <a href="#" onclick="verEstatisticas()">📊 Estatísticas</a>
     <a href="#" onclick="sair()" style="color:var(--cor2);">Sair</a>
     <button id="modoBtn" onclick="toggleModo()">🌙 Escuro</button>
   </nav>
@@ -200,17 +217,7 @@
     <input type="text" id="pesquisaBox" placeholder="🔍 Pesquisar posts..." oninput="pesquisar()">
     <textarea id="caixaTexto" placeholder="O que você está pensando? Usa #hashtags!"></textarea>
     <br>
-    <label class="img-label" for="inputImagem">🖼️ Adicionar imagem</label>
-    <input type="file" id="inputImagem" accept="image/*" style="display:none" onchange="previewImagem(event)">
-    <img id="imgPreview" class="img-preview">
-    <div id="sondagemBox" style="display:none;margin-top:10px;background:#161920;border-radius:10px;padding:12px;">
-      <p style="font-size:13px;font-weight:600;margin-bottom:8px;">📊 Sondagem</p>
-      <input type="text" id="op1" placeholder="Opção 1..." style="width:100%;margin-bottom:6px;">
-      <input type="text" id="op2" placeholder="Opção 2..." style="width:100%;margin-bottom:6px;">
-      <input type="text" id="op3" placeholder="Opção 3 (opcional)..." style="width:100%;margin-bottom:6px;">
-      <input type="text" id="op4" placeholder="Opção 4 (opcional)..." style="width:100%;margin-bottom:6px;">
-    </div>
-    <br>
+    <label<br>
     <button onclick="publicar()">Publicar</button>
     <button onclick="toggleSondagem()" id="btnSondagem" style="background:#2a2f42;">📊 Sondagem</button>
     <button onclick="toggleAnonimo()" id="btnAnonimo" style="background:#2a2f42;">🎭 Anónimo</button>
@@ -224,7 +231,15 @@
     <h2 style="margin-bottom:16px;">🏘️ Grupos</h2>
     <input type="text" id="nomeGrupoInput" placeholder="Nome do grupo...">
     <textarea id="descGrupoInput" placeholder="Descrição..." style="height:60px;"></textarea>
+    <label style="font-size:13px;color:#6b7280;display:flex;align-items:center;gap:6px;margin-bottom:8px;">
+      <input type="checkbox" id="grupoPrivadoInput" style="width:auto;"> 🔒 Grupo privado (só por convite)
+    </label>
     <button onclick="criarGrupo()">➕ Criar Grupo</button>
+    <div style="margin-top:16px;border-top:1px solid #2a2f42;padding-top:12px;">
+      <p style="font-size:13px;color:#6b7280;margin-bottom:8px;">Tens um código de convite?</p>
+      <input type="text" id="codigoConviteInput" placeholder="Cola o código de convite...">
+      <button onclick="entrarComCodigo()">🔑 Entrar com código</button>
+    </div>
     <div id="listaGrupos"></div>
   </div>
   <div id="grupoDetalheDiv" style="display:none">
@@ -246,7 +261,8 @@
   <div id="dmConversaDiv" style="display:none">
     <button onclick="verMensagens()" style="background:#6b7280;">⬅ Voltar</button>
     <h2 id="dmNomeTitulo" style="margin:12px 0;"></h2>
-    <div id="dmMensagens"></div><div class="chat-input-box">
+    <div id="dmMensagens"></div>
+    <div class="chat-input-box">
       <input id="inputDM" type="text" placeholder="Escreva uma mensagem...">
       <button onclick="enviarDM()">Enviar</button>
     </div>
@@ -264,6 +280,10 @@
     <h2 style="margin-bottom:16px;">🏆 Ranking de Popularidade</h2>
     <p style="color:#6b7280;font-size:13px;margin-bottom:8px;">Baseado em seguidores + posts</p>
     <div id="listaRanking"></div>
+  </div>
+  <div id="estatisticasDiv" style="display:none">
+    <h2 style="margin-bottom:16px;">📊 As Minhas Estatísticas</h2>
+    <div id="conteudoEstatisticas"></div>
   </div>
   <div id="perfilOutroDiv" style="display:none">
     <button onclick="mostrarFeed()" style="background:#6b7280;">⬅ Voltar</button>
@@ -319,6 +339,11 @@
     <div class="notificacoes-box">
       <h3>🔖 Posts Guardados</h3>
       <div id="listaGuardados"></div>
+    </div>
+    <div class="notificacoes-box">
+      <h3>📥 Os Meus Dados</h3>
+      <p style="font-size:12px;color:#6b7280;margin-bottom:8px;">Descarrega uma cópia de todos os teus dados (posts, seguidores, bio, etc.)</p>
+      <button onclick="exportarDados()">📥 Exportar Dados</button>
     </div>
   </div>
   <div id="chatDiv" style="display:none; max-width:600px; margin:24px auto; padding:20px 16px;">
@@ -411,9 +436,7 @@
       escondertodas();
       document.getElementById("temaDiv").style.display = "block";
       renderTemas();
-    }
-
-    window.verRanking = async function() {
+    }window.verRanking = async function() {
       escondertodas();
       document.getElementById("rankingDiv").style.display = "block";
       const lista = document.getElementById("listaRanking");
@@ -445,6 +468,69 @@
         });
         if (!ranking.length) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem utilizadores no ranking.</p>";
       } catch(e) { lista.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
+    }
+
+    window.verEstatisticas = async function() {
+      escondertodas();
+      document.getElementById("estatisticasDiv").style.display = "block";
+      const div = document.getElementById("conteudoEstatisticas");
+      div.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
+      try {
+        const postsSnap = await getDocs(collection(db,"posts"));
+        const meusPosts = [];
+        postsSnap.forEach(d => {
+          const p = d.data();
+          if ((p.autorReal === nomeUsuario) || (!p.autorReal && p.autor === nomeUsuario)) {
+            meusPosts.push({ id: d.id, ...p });
+          }
+        });
+
+        const segSnap = await getDocs(collection(db,"utilizadores",nomeUsuario,"seguidores"));
+        const totalViews = meusPosts.reduce((sum,p) => sum + (p.views||0), 0);
+        const totalReacoes = meusPosts.reduce((sum,p) => {
+          const r = p.reacoes || {};
+          return sum + Object.values(r).reduce((a,b)=>a+b,0);
+        }, 0);
+
+        const somaReacoes = {};
+        EMOJIS_REACAO.forEach(em => somaReacoes[em] = 0);
+        meusPosts.forEach(p => {
+          const r = p.reacoes || {};
+          EMOJIS_REACAO.forEach(em => somaReacoes[em] += (r[em]||0));
+        });
+        const maxReacao = Math.max(1, ...Object.values(somaReacoes));
+
+        const topPosts = [...meusPosts].sort((a,b) => (b.views||0) - (a.views||0)).slice(0,3);
+
+        let html = `
+          <div class="estat-card">
+            <h3>📈 Resumo</h3>
+            <div class="estat-resumo">
+              <div><strong>${meusPosts.length}</strong><span>Posts</span></div>
+              <div><strong>${totalViews}</strong><span>Visualizações</span></div>
+              <div><strong>${totalReacoes}</strong><span>Reações</span></div>
+              <div><strong>${segSnap.size}</strong><span>Seguidores</span></div>
+            </div>
+          </div>
+          <div class="estat-card">
+            <h3>😀 Distribuição de Reações</h3>`;
+        EMOJIS_REACAO.forEach(em => {
+          const val = somaReacoes[em];
+          const pct = Math.round((val/maxReacao)*100);
+          html += `<div class="barra-row"><div class="barra-label">${em}</div><div class="barra-track"><div class="barra-fill" style="width:${pct}%"><span>${val}</span></div></div></div>`;
+        });
+        html += `</div><div class="estat-card"><h3>🔥 Posts Mais Vistos</h3>`;
+        if (!topPosts.length) {
+          html += `<p style="color:#6b7280;font-size:13px;">Ainda não tens posts.</p>`;
+        } else {
+          topPosts.forEach(p => {
+            const textoCurto = (p.texto||"").substring(0,60) + ((p.texto||"").length > 60 ? "..." : "");
+            html += `<div class="top-post-item">${textoCurto || "(post com imagem)"}<div class="top-post-info">👁️ ${p.views||0} visualizações · ${p.hora}</div></div>`;
+          });
+        }
+        html += `</div>`;
+        div.innerHTML = html;
+      } catch(e) { div.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar estatísticas.</p>"; }
     }
 
     window.verOnline = async function() {
@@ -492,17 +578,31 @@
       localStorage.setItem("bloqueados_"+nomeUsuario, JSON.stringify(bloqueados));
       verPerfilOutro(outroNome);
       carregarPosts();
-    }function badgeFor(nome) { return verificados[nome] ? ' <span class="badge-verificado" title="Conta verificada">✅</span>' : ''; }
+    }
+
+    function badgeFor(nome) { return verificados[nome] ? ' <span class="badge-verificado" title="Conta verificada">✅</span>' : ''; }
     function nomeClick(nome) { return nome === nomeUsuario ? "verPerfil()" : `verPerfilOutro('${nome}')`; }
-    function formatarTexto(texto) { return (texto||"").replace(/#(\w+)/g,'<span class="hashtag" onclick="filtrarHashtag(\'$1\')">#$1</span>'); }
+
+    function formatarTexto(texto) {
+      let t = (texto||"").replace(/#(\w+)/g,'<span class="hashtag" onclick="filtrarHashtag(\'$1\')">#$1</span>');
+      t = t.replace(/@([a-zA-Z0-9_]+)/g, '<span class="mencao" onclick="abrirMencao(\'$1\')">@$1</span>');
+      return t;
+    }
+
+    window.abrirMencao = function(nome) {
+      verPerfilOutro(nome);
+    }
+
+    function extrairMencoes(texto) {
+      const matches = (texto||"").match(/@([a-zA-Z0-9_]+)/g) || [];
+      return [...new Set(matches.map(m => m.substring(1)))];
+    }
 
     window.filtrarHashtag = function(tag) {
       const box = document.getElementById("pesquisaBox");
       box.value = "#" + tag; pesquisar();
       mostrarFeed(); box.scrollIntoView({behavior:"smooth"});
-    }
-
-    function calcularTrending() {
+    }function calcularTrending() {
       const c = {};
       todosPosts.forEach(d => {
         const m = (d.data.texto||"").match(/#(\w+)/g)||[];
@@ -615,7 +715,10 @@
         const snap=await getDocs(q); lista.innerHTML="";
         snap.forEach(d=>{
           const n=d.data(); const div=document.createElement("div"); div.className="notif-item";
-          div.innerHTML=`<div class="notif-avatar">${n.deQuem[0].toUpperCase()}</div><div><strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} começou a seguir-te! 🎉</div>`;
+          const texto = n.tipo === "mencao"
+            ? `<strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} mencionou-te num post! 📢`
+            : `<strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} começou a seguir-te! 🎉`;
+          div.innerHTML=`<div class="notif-avatar">${n.deQuem[0].toUpperCase()}</div><div>${texto}</div>`;
           lista.appendChild(div); if(!n.lida) updateDoc(doc(db,"notificacoes",d.id),{lida:true});
         });
         if(snap.empty) lista.innerHTML="<p style='color:#6b7280;font-size:13px;'>Sem notificações ainda.</p>";
@@ -683,52 +786,189 @@
       const div = document.getElementById("outraMusicaDiv");
       const iframe = document.getElementById("outraMusicaIframe");
       if (embedUrl) { iframe.src = embedUrl; div.style.display = "block"; }
-      else { div.style.display = "none"; iframe.src = ""; }window.verPerfilOutro = async function(outroNome) {
-      if(outroNome===nomeUsuario){verPerfil();return;}
-      escondertodas(); document.getElementById("perfilOutroDiv").style.display="block";
-      document.getElementById("outroAvatar").textContent=outroNome[0].toUpperCase();
-      document.getElementById("outroNomeTitulo").textContent=outroNome;
-      document.getElementById("outroBioTexto").textContent="Carregando...";
-      document.getElementById("outroAcoes").innerHTML="";
-      document.getElementById("postsOutro").innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
+      else { div.style.display = "none"; iframe.src = ""; }
+    }
+
+    function calcularNivel(seguidores, posts) {
+      const total = seguidores + posts;
+      if (total >= 50) return "👑 Lenda";
+      if (total >= 20) return "💎 Pro";
+      if (total >= 10) return "🔥 Popular";
+      if (total >= 5)  return "⭐ Ativo";
+      return "🌱 Iniciante";
+    }
+
+    async function carregarEstatisticas() {
       try {
-        await carregarVerificados();
-        document.getElementById("outroNomeTitulo").innerHTML=outroNome+badgeFor(outroNome);
-        const userSnap=await getDoc(doc(db,"utilizadores",outroNome));
-        document.getElementById("outroBioTexto").textContent=(userSnap.exists()&&userSnap.data().bio)?userSnap.data().bio:BIO_PADRAO;
-        mostrarMusicaOutro(userSnap.exists()?userSnap.data().musica:"");
-        const segSnap=await getDocs(collection(db,"utilizadores",outroNome,"seguidores"));
-        const segIndoSnap=await getDocs(collection(db,"utilizadores",outroNome,"seguindo"));
-        document.getElementById("outroNumSeguidores").textContent=segSnap.size;
-        document.getElementById("outroNumSeguindo").textContent=segIndoSnap.size;
-        const postsSnap=await getDocs(query(collection(db,"posts"),orderBy("data","desc")));
-        const postsDoOutro=[]; postsSnap.forEach(d=>{if(d.data().autor===outroNome)postsDoOutro.push({id:d.id,data:d.data()});});
-        document.getElementById("outroNumPosts").textContent=postsDoOutro.length;
-        document.getElementById("outroNivelDiv").textContent="Nível: " + calcularNivel(segSnap.size, postsDoOutro.length);
-        const jaSegue=await getDoc(doc(db,"utilizadores",outroNome,"seguidores",nomeUsuario));
-        const jaBloqueado = estaBloqueado(outroNome);
-        document.getElementById("outroAcoes").innerHTML=`<button class="${jaSegue.exists()?"btn-seguindo":"btn-seguir"}" onclick="seguir('${outroNome}',this)">${jaSegue.exists()?"✅ A seguir":"➕ Seguir"}</button><button class="btn-mensagem" onclick="abrirDM('${outroNome}')">✉️ Mensagem</button><button class="btn-danger" onclick="toggleBloqueio('${outroNome}')">${jaBloqueado?"✅ Desbloquear":"🚫 Bloquear"}</button>`;
-        const div=document.getElementById("postsOutro"); div.innerHTML="";
-        if(!postsDoOutro.length){div.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem posts.</p>";}
-        else{postsDoOutro.forEach(d=>{div.appendChild(criarPostCard(d));carregarComentarios(d.id);});}
+        const userSnap=await getDoc(doc(db,"utilizadores",nomeUsuario));
+        const bio=(userSnap.exists()&&userSnap.data().bio)?userSnap.data().bio:BIO_PADRAO;
+        document.getElementById("bioTexto").innerHTML="<strong>Bio:</strong> "+bio;
+        mostrarMusicaPerfil(userSnap.exists()?userSnap.data().musica:"");
+        const segSnap=await getDocs(collection(db,"utilizadores",nomeUsuario,"seguidores"));
+        const segIndoSnap=await getDocs(collection(db,"utilizadores",nomeUsuario,"seguindo"));
+        const postsSnap=await getDocs(query(collection(db,"posts")));
+        const meusPosts=postsSnap.docs.filter(d=>d.data().autor===nomeUsuario);
+        document.getElementById("numSeguidores").textContent=segSnap.size;
+        document.getElementById("numSeguindo").textContent=segIndoSnap.size;
+        document.getElementById("numPosts").textContent=meusPosts.length;
+        document.getElementById("nivelDiv").textContent="Nível: " + calcularNivel(segSnap.size, meusPosts.length);
+        const verificado=segSnap.size>=THRESHOLD_VERIFICACAO;
+        await setDoc(doc(db,"utilizadores",nomeUsuario),{verificado},{merge:true});
+        verificados[nomeUsuario]=verificado;
+        document.getElementById("nomePerfilTexto").innerHTML="<strong>Nome:</strong> "+nomeUsuario+badgeFor(nomeUsuario);
+        const el=document.getElementById("statusVerificado");
+        if(verificado){el.innerHTML="✅ <strong>Conta verificada!</strong>";}
+        else{el.innerHTML=`🔒 Faltam ${THRESHOLD_VERIFICACAO-segSnap.size} seguidor(es) para verificação (${segSnap.size}/${THRESHOLD_VERIFICACAO})`;}
+      } catch(e){}
+    }window.exportarDados = async function() {
+      setStatus("⏳ A preparar os teus dados...");
+      try {
+        const userSnap = await getDoc(doc(db,"utilizadores",nomeUsuario));
+        const dadosUser = userSnap.exists() ? userSnap.data() : {};
+
+        const segSnap = await getDocs(collection(db,"utilizadores",nomeUsuario,"seguidores"));
+        const seguidores = segSnap.docs.map(d => d.id);
+
+        const segIndoSnap = await getDocs(collection(db,"utilizadores",nomeUsuario,"seguindo"));
+        const aSeguir = segIndoSnap.docs.map(d => d.id);
+
+        const postsSnap = await getDocs(collection(db,"posts"));
+        const meusPosts = [];
+        postsSnap.forEach(d => {
+          const p = d.data();
+          if ((p.autorReal === nomeUsuario) || (!p.autorReal && p.autor === nomeUsuario)) {
+            meusPosts.push({
+              texto: p.texto, hora: p.hora, anonimo: !!p.anonimo,
+              reacoes: p.reacoes || {}, views: p.views || 0
+            });
+          }
+        });
+
+        const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+        const bloqueados = JSON.parse(localStorage.getItem("bloqueados_"+nomeUsuario)||"[]");
+
+        const dadosExportados = {
+          nome: nomeUsuario,
+          bio: dadosUser.bio || BIO_PADRAO,
+          musica: dadosUser.musica || "",
+          verificado: !!dadosUser.verificado,
+          totalSeguidores: seguidores.length,
+          seguidores: seguidores,
+          totalASeguir: aSeguir.length,
+          aSeguir: aSeguir,
+          totalPosts: meusPosts.length,
+          posts: meusPosts,
+          postsGuardadosIds: guardados,
+          utilizadoresBloqueados: bloqueados,
+          exportadoEm: new Date().toLocaleString("pt-PT")
+        };
+
+        const blob = new Blob([JSON.stringify(dadosExportados, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "connectapp_dados_" + nomeUsuario + ".json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        setStatus("✅ Dados exportados com sucesso!");
+      } catch(e) { setStatus("❌ Erro ao exportar dados."); }
+    }
+
+    window.denunciarPost = async function(postId, autorPost) {
+      const motivos = ["Spam", "Conteúdo ofensivo", "Discurso de odio", "Assédio", "Outro"];
+      const escolha = prompt("Porque queres denunciar este post?\n\n1 - Spam\n2 - Conteúdo ofensivo\n3 - Discurso de ódio\n4 - Assédio\n5 - Outro\n\nDigite o número:");
+      if (!escolha) return;
+      const idx = parseInt(escolha) - 1;
+      const motivo = motivos[idx] || "Não especificado";
+      try {
+        await addDoc(collection(db,"denuncias"), {
+          postId, autorPost, denunciante: nomeUsuario, motivo, data: serverTimestamp(), resolvido: false
+        });
+        setStatus("🚩 Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.");
+      } catch(e) { setStatus("❌ Erro ao enviar denúncia."); }
+    }
+
+    window.denunciarUtilizador = async function(nome) {
+      const motivos = ["Spam", "Conta falsa", "Assédio", "Conteúdo inadequado", "Outro"];
+      const escolha = prompt("Porque queres denunciar "+nome+"?\n\n1 - Spam\n2 - Conta falsa\n3 - Assédio\n4 - Conteúdo inadequado\n5 - Outro\n\nDigite o número:");
+      if (!escolha) return;
+      const idx = parseInt(escolha) - 1;
+      const motivo = motivos[idx] || "Não especificado";
+      try {
+        await addDoc(collection(db,"denuncias"), {
+          autorPost: nome, denunciante: nomeUsuario, motivo, tipo: "utilizador", data: serverTimestamp(), resolvido: false
+        });
+        setStatus("🚩 Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.");
+      } catch(e) { setStatus("❌ Erro ao enviar denúncia."); }
+    }
+
+    window.toggleAnonimo = function() {
+      modoAnonimo = !modoAnonimo;
+      const btn = document.getElementById("btnAnonimo");
+      btn.style.background = modoAnonimo ? "var(--cor2)" : "#2a2f42";
+      btn.textContent = modoAnonimo ? "🎭 Anónimo (ativo)" : "🎭 Anónimo";
+    }
+
+    window.toggleSondagem = function() {
+      const box = document.getElementById("sondagemBox");
+      const btn = document.getElementById("btnSondagem");
+      const visivel = box.style.display === "block";
+      box.style.display = visivel ? "none" : "block";
+      btn.style.background = visivel ? "#2a2f42" : "var(--cor1)";
+    }
+
+    function isGuardado(postId) {
+      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+      return guardados.includes(postId);
+    }
+
+    window.toggleGuardar = function(postId, botao) {
+      let guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+      if (guardados.includes(postId)) {
+        guardados = guardados.filter(id => id !== postId);
+        botao.textContent = "🔖 Guardar";
+        botao.classList.remove("ativo");
+      } else {
+        guardados.push(postId);
+        botao.textContent = "🔖 Guardado";
+        botao.classList.add("ativo");
+      }
+      localStorage.setItem("guardados_"+nomeUsuario, JSON.stringify(guardados));
+    }
+
+    function carregarPostsGuardados() {
+      const lista = document.getElementById("listaGuardados");
+      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+      if (!guardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Nenhum post guardado ainda.</p>"; return; }
+      lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Carregando...</p>";
+      const postsGuardados = todosPosts.filter(p => guardados.includes(p.id));
+      lista.innerHTML = "";
+      if (!postsGuardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Posts guardados não encontrados no feed.</p>"; return; }
+      postsGuardados.forEach(d => {
+        const div = document.createElement("div");
+        div.className = "post-card";
+        div.style.marginTop = "10px";
+        div.innerHTML = `<strong class="nome-clicavel" onclick="${nomeClick(d.data.autor)}">${d.data.autor}</strong>${badgeFor(d.data.autor)} · <span style="color:#6b7280;font-size:12px;">${d.data.hora}</span><p style="margin:8px 0;color:#c8cad8;font-size:13px;">${formatarTexto(d.data.texto)}</p><button onclick="toggleGuardar('${d.id}',this);this.closest('.post-card').remove();" style="background:#f56b6b;font-size:12px;padding:6px 12px;">🗑️ Remover</button>`;
+        lista.appendChild(div);
+      });
+    }
+
+    const viewsRegistadas = new Set();
+    async function registarVisualizacao(postId) {
+      if (viewsRegistadas.has(postId)) return;
+      viewsRegistadas.add(postId);
+      try {
+        await updateDoc(doc(db,"posts",postId),{views: increment(1)});
+        const el = document.getElementById("views-"+postId);
+        if (el) el.textContent = parseInt(el.textContent||"0") + 1;
       } catch(e){}
     }
 
-    window.verUtilizadores = async function() {
-      escondertodas(); document.getElementById("utilizadoresDiv").style.display="block";
-      const lista=document.getElementById("listaUtilizadores");
-      lista.innerHTML="<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
-      try {
-        await carregarVerificados();
-        const snap=await getDocs(collection(db,"utilizadores")); lista.innerHTML="";
-        snap.forEach(d=>{
-          const u=d.data(); if(u.nome===nomeUsuario)return; if(estaBloqueado(u.nome))return;
-          const div=document.createElement("div"); div.className="utilizador-card";
-          div.innerHTML=`<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio||BIO_PADRAO}</div></div></div><div class="utilizador-acoes"><button class="btn-mensagem" onclick="abrirDM('${u.nome}')">✉️</button><button class="btn-seguir" onclick="seguir('${u.nome}',this)">➕ Seguir</button></div>`;
-          lista.appendChild(div);
-        });
-        if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum utilizador ainda!</p>";
-      } catch(e){}
+    function gerarCodigoConvite() {
+      return Math.random().toString(36).substring(2,8).toUpperCase();
     }
 
     window.verGrupos = async function() {
@@ -740,8 +980,13 @@
         lista.innerHTML="";
         for(const d of snap.docs){
           const g=d.data(); const mSnap=await getDocs(collection(db,"grupos",d.id,"membros"));
+          if (g.privado) {
+            const souMembro = await getDoc(doc(db,"grupos",d.id,"membros",nomeUsuario));
+            if (!souMembro.exists()) continue;
+          }
           const div=document.createElement("div"); div.className="grupo-card";
-          div.innerHTML=`<div class="grupo-icone">🏘️</div><h3>${g.nome}</h3><p>${g.descricao||"Sem descrição"} · ${mSnap.size} membro(s)</p><button onclick="abrirGrupo('${d.id}')">Abrir grupo</button>`;
+          const cadeado = g.privado ? "🔒 " : "";
+          div.innerHTML=`<div class="grupo-icone">🏘️</div><h3>${cadeado}${g.nome}</h3><p>${g.descricao||"Sem descrição"} · ${mSnap.size} membro(s)</p><button onclick="abrirGrupo('${d.id}')">Abrir grupo</button>`;
           lista.appendChild(div);
         }
         if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum grupo ainda!</p>";
@@ -751,32 +996,315 @@
     window.criarGrupo = async function() {
       const nome=document.getElementById("nomeGrupoInput").value.trim();
       const desc=document.getElementById("descGrupoInput").value.trim();
+      const privado=document.getElementById("grupoPrivadoInput").checked;
       if(!nome){alert("Escreve um nome!");return;}
       try {
-        const ref=await addDoc(collection(db,"grupos"),{nome,descricao:desc,criador:nomeUsuario,data:serverTimestamp()});
+        const codigo = privado ? gerarCodigoConvite() : null;
+        const dadosGrupo = {nome,descricao:desc,criador:nomeUsuario,privado,data:serverTimestamp()};
+        if (codigo) dadosGrupo.codigoConvite = codigo;
+        const ref=await addDoc(collection(db,"grupos"),dadosGrupo);
         await setDoc(doc(db,"grupos",ref.id,"membros",nomeUsuario),{nome:nomeUsuario});
         document.getElementById("nomeGrupoInput").value=""; document.getElementById("descGrupoInput").value="";
-        setStatus("✅ Grupo criado!"); verGrupos();
+        document.getElementById("grupoPrivadoInput").checked=false;
+        if (codigo) {
+          setStatus("✅ Grupo privado criado! Código: "+codigo);
+          alert("Grupo privado criado!\n\nCódigo de convite: "+codigo+"\n\nPartilha este código com quem quiseres convidar.");
+        } else {
+          setStatus("✅ Grupo criado!");
+        }
+        verGrupos();
       } catch(e){setStatus("❌ Erro.");}
+    }
+
+    window.entrarComCodigo = async function() {
+      const codigo = document.getElementById("codigoConviteInput").value.trim().toUpperCase();
+      if (!codigo) { alert("Cola um código de convite!"); return; }
+      try {
+        const snap = await getDocs(query(collection(db,"grupos"), where("codigoConvite","==",codigo)));
+        if (snap.empty) { setStatus("❌ Código inválido."); return; }
+        const grupoDoc = snap.docs[0];
+        await setDoc(doc(db,"grupos",grupoDoc.id,"membros",nomeUsuario),{nome:nomeUsuario});
+        document.getElementById("codigoConviteInput").value="";
+        setStatus("✅ Entraste no grupo!");
+        abrirGrupo(grupoDoc.id);
+      } catch(e){setStatus("❌ Erro ao entrar.");}
     }
 
     window.abrirGrupo = async function(grupoId) {
       escondertodas(); document.getElementById("grupoDetalheDiv").style.display="block"; grupoAtualId=grupoId;
       try {
         const gSnap=await getDoc(doc(db,"grupos",grupoId)); const g=gSnap.data();
-        document.getElementById("grupoNomeTitulo").textContent="🏘️ "+g.nome;
+        const cadeado = g.privado ? "🔒 " : "";
+        document.getElementById("grupoNomeTitulo").textContent="🏘️ "+cadeado+g.nome;
         document.getElementById("grupoDescTexto").textContent=g.descricao||"Sem descrição";
         const mSnap=await getDocs(collection(db,"grupos",grupoId,"membros"));
         document.getElementById("grupoMembrosCount").textContent=mSnap.size;
         const souMembro=await getDoc(doc(db,"grupos",grupoId,"membros",nomeUsuario));
         const btn=document.getElementById("btnEntrarGrupo"); const pb=document.getElementById("grupoPostBox");
-        if(souMembro.exists()){btn.textContent="✅ Sair do grupo";btn.className="btn-seguindo";pb.style.display="block";}
-        else{btn.textContent="➕ Entrar no grupo";btn.className="btn-seguir";pb.style.display="none";}
-        carregarPostsGrupo(grupoId);
+        let convitebtn = document.getElementById("btnConviteGrupo");
+        if (convitebtn) convitebtn.remove();
+        if(souMembro.exists()){
+          btn.textContent="✅ Sair do grupo";btn.className="btn-seguindo";pb.style.display="block";
+          if (g.privado && g.criador===nomeUsuario && g.codigoConvite) {
+            const novoBtn = document.createElement("button");
+            novoBtn.id = "btnConviteGrupo";
+            novoBtn.textContent = "🔑 Ver código de convite";
+            novoBtn.onclick = () => alert("Código de convite: "+g.codigoConvite+"\n\nPartilha este código com quem quiseres convidar para o grupo.");
+            btn.parentNode.insertBefore(novoBtn, btn.nextSibling);
+          }
+          carregarPostsGrupo(grupoId);
+        } else if (g.privado) {
+          btn.style.display="none"; pb.style.display="none";
+          document.getElementById("postsGrupo").innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>🔒 Este grupo é privado. Precisas de um código de convite para entrar.</p>";
+        } else {
+          btn.style.display="inline-block";
+          btn.textContent="➕ Entrar no grupo";btn.className="btn-seguir";pb.style.display="none";
+          carregarPostsGrupo(grupoId);
+        }
+      } catch(e){}
+  }window.exportarDados = async function() {
+      setStatus("⏳ A preparar os teus dados...");
+      try {
+        const userSnap = await getDoc(doc(db,"utilizadores",nomeUsuario));
+        const dadosUser = userSnap.exists() ? userSnap.data() : {};
+
+        const segSnap = await getDocs(collection(db,"utilizadores",nomeUsuario,"seguidores"));
+        const seguidores = segSnap.docs.map(d => d.id);
+
+        const segIndoSnap = await getDocs(collection(db,"utilizadores",nomeUsuario,"seguindo"));
+        const aSeguir = segIndoSnap.docs.map(d => d.id);
+
+        const postsSnap = await getDocs(collection(db,"posts"));
+        const meusPosts = [];
+        postsSnap.forEach(d => {
+          const p = d.data();
+          if ((p.autorReal === nomeUsuario) || (!p.autorReal && p.autor === nomeUsuario)) {
+            meusPosts.push({
+              texto: p.texto, hora: p.hora, anonimo: !!p.anonimo,
+              reacoes: p.reacoes || {}, views: p.views || 0
+            });
+          }
+        });
+
+        const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+        const bloqueados = JSON.parse(localStorage.getItem("bloqueados_"+nomeUsuario)||"[]");
+
+        const dadosExportados = {
+          nome: nomeUsuario,
+          bio: dadosUser.bio || BIO_PADRAO,
+          musica: dadosUser.musica || "",
+          verificado: !!dadosUser.verificado,
+          totalSeguidores: seguidores.length,
+          seguidores: seguidores,
+          totalASeguir: aSeguir.length,
+          aSeguir: aSeguir,
+          totalPosts: meusPosts.length,
+          posts: meusPosts,
+          postsGuardadosIds: guardados,
+          utilizadoresBloqueados: bloqueados,
+          exportadoEm: new Date().toLocaleString("pt-PT")
+        };
+
+        const blob = new Blob([JSON.stringify(dadosExportados, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "connectapp_dados_" + nomeUsuario + ".json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        setStatus("✅ Dados exportados com sucesso!");
+      } catch(e) { setStatus("❌ Erro ao exportar dados."); }
+    }
+
+    window.denunciarPost = async function(postId, autorPost) {
+      const motivos = ["Spam", "Conteúdo ofensivo", "Discurso de odio", "Assédio", "Outro"];
+      const escolha = prompt("Porque queres denunciar este post?\n\n1 - Spam\n2 - Conteúdo ofensivo\n3 - Discurso de ódio\n4 - Assédio\n5 - Outro\n\nDigite o número:");
+      if (!escolha) return;
+      const idx = parseInt(escolha) - 1;
+      const motivo = motivos[idx] || "Não especificado";
+      try {
+        await addDoc(collection(db,"denuncias"), {
+          postId, autorPost, denunciante: nomeUsuario, motivo, data: serverTimestamp(), resolvido: false
+        });
+        setStatus("🚩 Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.");
+      } catch(e) { setStatus("❌ Erro ao enviar denúncia."); }
+    }
+
+    window.denunciarUtilizador = async function(nome) {
+      const motivos = ["Spam", "Conta falsa", "Assédio", "Conteúdo inadequado", "Outro"];
+      const escolha = prompt("Porque queres denunciar "+nome+"?\n\n1 - Spam\n2 - Conta falsa\n3 - Assédio\n4 - Conteúdo inadequado\n5 - Outro\n\nDigite o número:");
+      if (!escolha) return;
+      const idx = parseInt(escolha) - 1;
+      const motivo = motivos[idx] || "Não especificado";
+      try {
+        await addDoc(collection(db,"denuncias"), {
+          autorPost: nome, denunciante: nomeUsuario, motivo, tipo: "utilizador", data: serverTimestamp(), resolvido: false
+        });
+        setStatus("🚩 Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.");
+      } catch(e) { setStatus("❌ Erro ao enviar denúncia."); }
+    }
+
+    window.toggleAnonimo = function() {
+      modoAnonimo = !modoAnonimo;
+      const btn = document.getElementById("btnAnonimo");
+      btn.style.background = modoAnonimo ? "var(--cor2)" : "#2a2f42";
+      btn.textContent = modoAnonimo ? "🎭 Anónimo (ativo)" : "🎭 Anónimo";
+    }
+
+    window.toggleSondagem = function() {
+      const box = document.getElementById("sondagemBox");
+      const btn = document.getElementById("btnSondagem");
+      const visivel = box.style.display === "block";
+      box.style.display = visivel ? "none" : "block";
+      btn.style.background = visivel ? "#2a2f42" : "var(--cor1)";
+    }
+
+    function isGuardado(postId) {
+      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+      return guardados.includes(postId);
+    }
+
+    window.toggleGuardar = function(postId, botao) {
+      let guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+      if (guardados.includes(postId)) {
+        guardados = guardados.filter(id => id !== postId);
+        botao.textContent = "🔖 Guardar";
+        botao.classList.remove("ativo");
+      } else {
+        guardados.push(postId);
+        botao.textContent = "🔖 Guardado";
+        botao.classList.add("ativo");
+      }
+      localStorage.setItem("guardados_"+nomeUsuario, JSON.stringify(guardados));
+    }
+
+    function carregarPostsGuardados() {
+      const lista = document.getElementById("listaGuardados");
+      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+      if (!guardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Nenhum post guardado ainda.</p>"; return; }
+      lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Carregando...</p>";
+      const postsGuardados = todosPosts.filter(p => guardados.includes(p.id));
+      lista.innerHTML = "";
+      if (!postsGuardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Posts guardados não encontrados no feed.</p>"; return; }
+      postsGuardados.forEach(d => {
+        const div = document.createElement("div");
+        div.className = "post-card";
+        div.style.marginTop = "10px";
+        div.innerHTML = `<strong class="nome-clicavel" onclick="${nomeClick(d.data.autor)}">${d.data.autor}</strong>${badgeFor(d.data.autor)} · <span style="color:#6b7280;font-size:12px;">${d.data.hora}</span><p style="margin:8px 0;color:#c8cad8;font-size:13px;">${formatarTexto(d.data.texto)}</p><button onclick="toggleGuardar('${d.id}',this);this.closest('.post-card').remove();" style="background:#f56b6b;font-size:12px;padding:6px 12px;">🗑️ Remover</button>`;
+        lista.appendChild(div);
+      });
+    }
+
+    const viewsRegistadas = new Set();
+    async function registarVisualizacao(postId) {
+      if (viewsRegistadas.has(postId)) return;
+      viewsRegistadas.add(postId);
+      try {
+        await updateDoc(doc(db,"posts",postId),{views: increment(1)});
+        const el = document.getElementById("views-"+postId);
+        if (el) el.textContent = parseInt(el.textContent||"0") + 1;
       } catch(e){}
     }
 
-    window.toggleMembroGrupo = async function() {
+    function gerarCodigoConvite() {
+      return Math.random().toString(36).substring(2,8).toUpperCase();
+    }
+
+    window.verGrupos = async function() {
+      escondertodas(); document.getElementById("gruposDiv").style.display="block";
+      const lista=document.getElementById("listaGrupos");
+      lista.innerHTML="<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
+      try {
+        const snap=await getDocs(query(collection(db,"grupos"),orderBy("data","desc")));
+        lista.innerHTML="";
+        for(const d of snap.docs){
+          const g=d.data(); const mSnap=await getDocs(collection(db,"grupos",d.id,"membros"));
+          if (g.privado) {
+            const souMembro = await getDoc(doc(db,"grupos",d.id,"membros",nomeUsuario));
+            if (!souMembro.exists()) continue;
+          }
+          const div=document.createElement("div"); div.className="grupo-card";
+          const cadeado = g.privado ? "🔒 " : "";
+          div.innerHTML=`<div class="grupo-icone">🏘️</div><h3>${cadeado}${g.nome}</h3><p>${g.descricao||"Sem descrição"} · ${mSnap.size} membro(s)</p><button onclick="abrirGrupo('${d.id}')">Abrir grupo</button>`;
+          lista.appendChild(div);
+        }
+        if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum grupo ainda!</p>";
+      } catch(e){lista.innerHTML="<p style='color:#f56b6b;'>Erro ao carregar.</p>";}
+    }
+
+    window.criarGrupo = async function() {
+      const nome=document.getElementById("nomeGrupoInput").value.trim();
+      const desc=document.getElementById("descGrupoInput").value.trim();
+      const privado=document.getElementById("grupoPrivadoInput").checked;
+      if(!nome){alert("Escreve um nome!");return;}
+      try {
+        const codigo = privado ? gerarCodigoConvite() : null;
+        const dadosGrupo = {nome,descricao:desc,criador:nomeUsuario,privado,data:serverTimestamp()};
+        if (codigo) dadosGrupo.codigoConvite = codigo;
+        const ref=await addDoc(collection(db,"grupos"),dadosGrupo);
+        await setDoc(doc(db,"grupos",ref.id,"membros",nomeUsuario),{nome:nomeUsuario});
+        document.getElementById("nomeGrupoInput").value=""; document.getElementById("descGrupoInput").value="";
+        document.getElementById("grupoPrivadoInput").checked=false;
+        if (codigo) {
+          setStatus("✅ Grupo privado criado! Código: "+codigo);
+          alert("Grupo privado criado!\n\nCódigo de convite: "+codigo+"\n\nPartilha este código com quem quiseres convidar.");
+        } else {
+          setStatus("✅ Grupo criado!");
+        }
+        verGrupos();
+      } catch(e){setStatus("❌ Erro.");}
+    }
+
+    window.entrarComCodigo = async function() {
+      const codigo = document.getElementById("codigoConviteInput").value.trim().toUpperCase();
+      if (!codigo) { alert("Cola um código de convite!"); return; }
+      try {
+        const snap = await getDocs(query(collection(db,"grupos"), where("codigoConvite","==",codigo)));
+        if (snap.empty) { setStatus("❌ Código inválido."); return; }
+        const grupoDoc = snap.docs[0];
+        await setDoc(doc(db,"grupos",grupoDoc.id,"membros",nomeUsuario),{nome:nomeUsuario});
+        document.getElementById("codigoConviteInput").value="";
+        setStatus("✅ Entraste no grupo!");
+        abrirGrupo(grupoDoc.id);
+      } catch(e){setStatus("❌ Erro ao entrar.");}
+    }
+
+    window.abrirGrupo = async function(grupoId) {
+      escondertodas(); document.getElementById("grupoDetalheDiv").style.display="block"; grupoAtualId=grupoId;
+      try {
+        const gSnap=await getDoc(doc(db,"grupos",grupoId)); const g=gSnap.data();
+        const cadeado = g.privado ? "🔒 " : "";
+        document.getElementById("grupoNomeTitulo").textContent="🏘️ "+cadeado+g.nome;
+        document.getElementById("grupoDescTexto").textContent=g.descricao||"Sem descrição";
+        const mSnap=await getDocs(collection(db,"grupos",grupoId,"membros"));
+        document.getElementById("grupoMembrosCount").textContent=mSnap.size;
+        const souMembro=await getDoc(doc(db,"grupos",grupoId,"membros",nomeUsuario));
+        const btn=document.getElementById("btnEntrarGrupo"); const pb=document.getElementById("grupoPostBox");
+        let convitebtn = document.getElementById("btnConviteGrupo");
+        if (convitebtn) convitebtn.remove();
+        if(souMembro.exists()){
+          btn.textContent="✅ Sair do grupo";btn.className="btn-seguindo";pb.style.display="block";
+          if (g.privado && g.criador===nomeUsuario && g.codigoConvite) {
+            const novoBtn = document.createElement("button");
+            novoBtn.id = "btnConviteGrupo";
+            novoBtn.textContent = "🔑 Ver código de convite";
+            novoBtn.onclick = () => alert("Código de convite: "+g.codigoConvite+"\n\nPartilha este código com quem quiseres convidar para o grupo.");
+            btn.parentNode.insertBefore(novoBtn, btn.nextSibling);
+          }
+          carregarPostsGrupo(grupoId);
+        } else if (g.privado) {
+          btn.style.display="none"; pb.style.display="none";
+          document.getElementById("postsGrupo").innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>🔒 Este grupo é privado. Precisas de um código de convite para entrar.</p>";
+        } else {
+          btn.style.display="inline-block";
+          btn.textContent="➕ Entrar no grupo";btn.className="btn-seguir";pb.style.display="none";
+          carregarPostsGrupo(grupoId);
+        }
+      } catch(e){}
+  }window.toggleMembroGrupo = async function() {
       if(!grupoAtualId)return;
       try {
         const ref=doc(db,"grupos",grupoAtualId,"membros",nomeUsuario);
@@ -866,11 +1394,59 @@
       } catch(e){}
     }
 
+    window.verPerfilOutro = async function(outroNome) {
+      if(outroNome===nomeUsuario){verPerfil();return;}
+      escondertodas(); document.getElementById("perfilOutroDiv").style.display="block";
+      document.getElementById("outroAvatar").textContent=outroNome[0].toUpperCase();
+      document.getElementById("outroNomeTitulo").textContent=outroNome;
+      document.getElementById("outroBioTexto").textContent="Carregando...";
+      document.getElementById("outroAcoes").innerHTML="";
+      document.getElementById("postsOutro").innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
+      try {
+        await carregarVerificados();
+        document.getElementById("outroNomeTitulo").innerHTML=outroNome+badgeFor(outroNome);
+        const userSnap=await getDoc(doc(db,"utilizadores",outroNome));
+        document.getElementById("outroBioTexto").textContent=(userSnap.exists()&&userSnap.data().bio)?userSnap.data().bio:BIO_PADRAO;
+        mostrarMusicaOutro(userSnap.exists()?userSnap.data().musica:"");
+        const segSnap=await getDocs(collection(db,"utilizadores",outroNome,"seguidores"));
+        const segIndoSnap=await getDocs(collection(db,"utilizadores",outroNome,"seguindo"));
+        document.getElementById("outroNumSeguidores").textContent=segSnap.size;
+        document.getElementById("outroNumSeguindo").textContent=segIndoSnap.size;
+        const postsSnap=await getDocs(query(collection(db,"posts"),orderBy("data","desc")));
+        const postsDoOutro=[]; postsSnap.forEach(d=>{if(d.data().autor===outroNome)postsDoOutro.push({id:d.id,data:d.data()});});
+        document.getElementById("outroNumPosts").textContent=postsDoOutro.length;
+        document.getElementById("outroNivelDiv").textContent="Nível: " + calcularNivel(segSnap.size, postsDoOutro.length);
+        const jaSegue=await getDoc(doc(db,"utilizadores",outroNome,"seguidores",nomeUsuario));
+        const jaBloqueado = estaBloqueado(outroNome);
+        document.getElementById("outroAcoes").innerHTML=`<button class="${jaSegue.exists()?"btn-seguindo":"btn-seguir"}" onclick="seguir('${outroNome}',this)">${jaSegue.exists()?"✅ A seguir":"➕ Seguir"}</button><button class="btn-mensagem" onclick="abrirDM('${outroNome}')">✉️ Mensagem</button><button class="btn-danger" onclick="toggleBloqueio('${outroNome}')">${jaBloqueado?"✅ Desbloquear":"🚫 Bloquear"}</button><button class="btn-danger" onclick="denunciarUtilizador('${outroNome}')">🚩 Denunciar</button>`;
+        const div=document.getElementById("postsOutro"); div.innerHTML="";
+        if(!postsDoOutro.length){div.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem posts.</p>";}
+        else{postsDoOutro.forEach(d=>{div.appendChild(criarPostCard(d));carregarComentarios(d.id);});}
+      } catch(e){}
+    }
+
+    window.verUtilizadores = async function() {
+      escondertodas(); document.getElementById("utilizadoresDiv").style.display="block";
+      const lista=document.getElementById("listaUtilizadores");
+      lista.innerHTML="<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
+      try {
+        await carregarVerificados();
+        const snap=await getDocs(collection(db,"utilizadores")); lista.innerHTML="";
+        snap.forEach(d=>{
+          const u=d.data(); if(u.nome===nomeUsuario)return; if(estaBloqueado(u.nome))return;
+          const div=document.createElement("div"); div.className="utilizador-card";
+          div.innerHTML=`<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio||BIO_PADRAO}</div></div></div><div class="utilizador-acoes"><button class="btn-mensagem" onclick="abrirDM('${u.nome}')">✉️</button><button class="btn-seguir" onclick="seguir('${u.nome}',this)">➕ Seguir</button></div>`;
+          lista.appendChild(div);
+        });
+        if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum utilizador ainda!</p>";
+      } catch(e){}
+    }
+
     function escondertodas() {
       chatAberto=false;
       document.getElementById("musicaIframe").src="";
       document.getElementById("outraMusicaIframe").src="";
-      ["feedDiv","chatDiv","utilizadoresDiv","gruposDiv","grupoDetalheDiv","mensagensListaDiv","dmConversaDiv","perfilOutroDiv","perfil","temaDiv","onlineDiv","rankingDiv"].forEach(id=>document.getElementById(id).style.display="none");
+      ["feedDiv","chatDiv","utilizadoresDiv","gruposDiv","grupoDetalheDiv","mensagensListaDiv","dmConversaDiv","perfilOutroDiv","perfil","temaDiv","onlineDiv","rankingDiv","estatisticasDiv"].forEach(id=>document.getElementById(id).style.display="none");
     }
 
     window.seguir = async function(autorPost, botao) {
@@ -959,90 +1535,7 @@
         localStorage.setItem(chave, opcaoIdx);
         carregarPosts();
       } catch(e){}
-    }
-
-    window.toggleAnonimo = function() {
-      modoAnonimo = !modoAnonimo;
-      const btn = document.getElementById("btnAnonimo");
-      btn.style.background = modoAnonimo ? "var(--cor2)" : "#2a2f42";
-      btn.textContent = modoAnonimo ? "🎭 Anónimo (ativo)" : "🎭 Anónimo";
-    }
-
-    window.toggleSondagem = function() {
-      const box = document.getElementById("sondagemBox");
-      const btn = document.getElementById("btnSondagem");
-      const visivel = box.style.display === "block";
-      box.style.display = visivel ? "none" : "block";
-      btn.style.background = visivel ? "#2a2f42" : "var(--cor1)";
-    }
-
-    function isGuardado(postId) {
-      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
-      return guardados.includes(postId);
-    }
-
-    window.toggleGuardar = function(postId, botao) {
-      let guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
-      if (guardados.includes(postId)) {
-        guardados = guardados.filter(id => id !== postId);
-        botao.textContent = "🔖 Guardar";
-        botao.classList.remove("ativo");
-      } else {
-        guardados.push(postId);
-        botao.textContent = "🔖 Guardado";
-        botao.classList.add("ativo");
-      }
-      localStorage.setItem("guardados_"+nomeUsuario, JSON.stringify(guardados));
-    }
-
-    function carregarPostsGuardados() {
-      const lista = document.getElementById("listaGuardados");
-      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
-      if (!guardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Nenhum post guardado ainda.</p>"; return; }
-      lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Carregando...</p>";
-      const postsGuardados = todosPosts.filter(p => guardados.includes(p.id));
-      lista.innerHTML = "";
-      if (!postsGuardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Posts guardados não encontrados no feed.</p>"; return; }
-      postsGuardados.forEach(d => {
-        const div = document.createElement("div");
-        div.className = "post-card";
-        div.style.marginTop = "10px";
-        div.innerHTML = `<strong class="nome-clicavel" onclick="${nomeClick(d.data.autor)}">${d.data.autor}</strong>${badgeFor(d.data.autor)} · <span style="color:#6b7280;font-size:12px;">${d.data.hora}</span><p style="margin:8px 0;color:#c8cad8;font-size:13px;">${formatarTexto(d.data.texto)}</p><button onclick="toggleGuardar('${d.id}',this);this.closest('.post-card').remove();"
-    }
-
-    function calcularNivel(seguidores, posts) {
-      const total = seguidores + posts;
-      if (total >= 50) return "👑 Lenda";
-      if (total >= 20) return "💎 Pro";
-      if (total >= 10) return "🔥 Popular";
-      if (total >= 5)  return "⭐ Ativo";
-      return "🌱 Iniciante";
-    }
-
-    async function carregarEstatisticas() {
-      try {
-        const userSnap=await getDoc(doc(db,"utilizadores",nomeUsuario));
-        const bio=(userSnap.exists()&&userSnap.data().bio)?userSnap.data().bio:BIO_PADRAO;
-        document.getElementById("bioTexto").innerHTML="<strong>Bio:</strong> "+bio;
-        mostrarMusicaPerfil(userSnap.exists()?userSnap.data().musica:"");
-        const segSnap=await getDocs(collection(db,"utilizadores",nomeUsuario,"seguidores"));
-        const segIndoSnap=await getDocs(collection(db,"utilizadores",nomeUsuario,"seguindo"));
-        const postsSnap=await getDocs(query(collection(db,"posts")));
-        const meusPosts=postsSnap.docs.filter(d=>d.data().autor===nomeUsuario);
-        document.getElementById("numSeguidores").textContent=segSnap.size;
-        document.getElementById("numSeguindo").textContent=segIndoSnap.size;
-        document.getElementById("numPosts").textContent=meusPosts.length;
-        document.getElementById("nivelDiv").textContent="Nível: " + calcularNivel(segSnap.size, meusPosts.length);
-        const verificado=segSnap.size>=THRESHOLD_VERIFICACAO;
-        await setDoc(doc(db,"utilizadores",nomeUsuario),{verificado},{merge:true});
-        verificados[nomeUsuario]=verificado;
-        document.getElementById("nomePerfilTexto").innerHTML="<strong>Nome:</strong> "+nomeUsuario+badgeFor(nomeUsuario);
-        const el=document.getElementById("statusVerificado");
-        if(verificado){el.innerHTML="✅ <strong>Conta verificada!</strong>";}
-        else{el.innerHTML=`🔒 Faltam ${THRESHOLD_VERIFICACAO-segSnap.size} seguidor(es) para verificação (${segSnap.size}/${THRESHOLD_VERIFICACAO})`;}
-      } catch(e){}
-  }
-function criarPostCard(d) {
+  }function criarPostCard(d) {
       const p=d.data; const div=document.createElement("div"); div.className="post-card";
       const ehMeuPost = p.autorReal === nomeUsuario || (!p.autorReal && p.autor === nomeUsuario);
       const nomeExibido = p.anonimo ? "🎭 Anónimo" + (ehMeuPost ? " (tu)" : "") : p.autor;
@@ -1054,6 +1547,7 @@ function criarPostCard(d) {
       const views = p.views || 0;
       registarVisualizacao(d.id);
       const sondagemHtml = criarSondagemHtml(d.id, p.sondagem, p.votos);
+      const denunciarBtn = ehMeuPost ? "" : `<button class="btn-danger" onclick="denunciarPost('${d.id}','${(p.autorReal||p.autor).replace(/'/g,"\\'")}')">🚩 Denunciar</button>`;
       div.innerHTML=`
         ${nomeClickHtml}${p.anonimo?"":badgeFor(p.autor)} · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
         ${seguirBtn}
@@ -1067,6 +1561,7 @@ function criarPostCard(d) {
         ${deletarBtn}
         <button class="btn-whatsapp" onclick="partilhar('${p.texto.replace(/'/g,"\\'")}')">📲 Partilhar</button>
         <button id="btn-guardar-${d.id}" class="btn-guardar" onclick="toggleGuardar('${d.id}',this)">${isGuardado(d.id)?"🔖 Guardado":"🔖 Guardar"}</button>
+        ${denunciarBtn}
         <div class="edit-box" id="edit-${d.id}">
           <textarea id="editInput-${d.id}">${p.texto}</textarea>
           <button onclick="guardarEdicao('${d.id}')">💾 Guardar</button>
@@ -1149,6 +1644,20 @@ function criarPostCard(d) {
           postData.votos={};
         }
         await addDoc(collection(db,"posts"),postData);
+        if (!modoAnonimo) {
+          const mencoes = extrairMencoes(texto);
+          for (const nomeMencionado of mencoes) {
+            if (nomeMencionado === nomeUsuario) continue;
+            try {
+              const userSnap = await getDoc(doc(db,"utilizadores",nomeMencionado));
+              if (userSnap.exists()) {
+                await addDoc(collection(db,"notificacoes"), {
+                  paraQuem: nomeMencionado, deQuem: nomeUsuario, tipo: "mencao", lida: false, data: serverTimestamp()
+                });
+              }
+            } catch(e){}
+          }
+        }
         caixa.value=""; imagemBase64="";
         document.getElementById("imgPreview").style.display="none";
         document.getElementById("inputImagem").value="";
