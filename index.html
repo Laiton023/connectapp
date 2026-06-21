@@ -141,6 +141,7 @@
     #storyViewer img { max-width: 100%; max-height: 80vh; border-radius: 10px; }
     #storyViewer .story-info { position: absolute; top: 20px; left: 20px; color: white; font-weight: 600; }
     #storyViewer .story-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 28px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; }
+    /* TEMAS */
     #temaDiv { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 24px; }
     body.claro #temaDiv { background: #ffffff; border-color: #dde1ed; }
     .temas-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
@@ -149,6 +150,7 @@
     .tema-btn.ativo { border-color: white; box-shadow: 0 0 0 3px rgba(255,255,255,0.3); }
     footer { text-align: center; padding: 20px; color: #6b7280; font-size: 13px; margin-top: 30px; }
     #status { text-align: center; color: #4ecb8d; font-size: 13px; max-width: 600px; margin: 8px auto; padding: 0 16px; }
+    #offlineBanner { display: none; text-align: center; background: #f0a500; color: #1a1a2e; font-size: 12px; padding: 8px 16px; font-weight: 600; }
     #loginTela { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0d0f14; display: flex; align-items: center; justify-content: center; z-index: 999; }
     body.claro #loginTela { background: #f0f2f5; }
     .login-box { background: #1e2230; border: 1px solid #2a2f42; border-radius: 20px; padding: 40px 30px; text-align: center; width: 90%; max-width: 400px; }
@@ -196,6 +198,7 @@
     <a href="#" onclick="sair()" style="color:var(--cor2);">Sair</a>
     <button id="modoBtn" onclick="toggleModo()">🌙 Escuro</button>
   </nav>
+  <div id="offlineBanner"></div>
   <div id="status"></div>
   <div id="storiesBar">
     <div class="stories-container" id="storiesContainer">
@@ -217,7 +220,17 @@
     <input type="text" id="pesquisaBox" placeholder="🔍 Pesquisar posts..." oninput="pesquisar()">
     <textarea id="caixaTexto" placeholder="O que você está pensando? Usa #hashtags!"></textarea>
     <br>
-    <label<br>
+    <label class="img-label" for="inputImagem">🖼️ Adicionar imagem</label>
+    <input type="file" id="inputImagem" accept="image/*" style="display:none" onchange="previewImagem(event)">
+    <img id="imgPreview" class="img-preview">
+    <div id="sondagemBox" style="display:none;margin-top:10px;background:#161920;border-radius:10px;padding:12px;">
+      <p style="font-size:13px;font-weight:600;margin-bottom:8px;">📊 Sondagem</p>
+      <input type="text" id="op1" placeholder="Opção 1..." style="width:100%;margin-bottom:6px;">
+      <input type="text" id="op2" placeholder="Opção 2..." style="width:100%;margin-bottom:6px;">
+      <input type="text" id="op3" placeholder="Opção 3 (opcional)..." style="width:100%;margin-bottom:6px;">
+      <input type="text" id="op4" placeholder="Opção 4 (opcional)..." style="width:100%;margin-bottom:6px;">
+    </div>
+    <br>
     <button onclick="publicar()">Publicar</button>
     <button onclick="toggleSondagem()" id="btnSondagem" style="background:#2a2f42;">📊 Sondagem</button>
     <button onclick="toggleAnonimo()" id="btnAnonimo" style="background:#2a2f42;">🎭 Anónimo</button>
@@ -436,7 +449,9 @@
       escondertodas();
       document.getElementById("temaDiv").style.display = "block";
       renderTemas();
-    }window.verRanking = async function() {
+    }
+
+    window.verRanking = async function() {
       escondertodas();
       document.getElementById("rankingDiv").style.display = "block";
       const lista = document.getElementById("listaRanking");
@@ -580,9 +595,10 @@
       carregarPosts();
     }
 
+    function getBloqueados2() { return getBloqueados(); }
+
     function badgeFor(nome) { return verificados[nome] ? ' <span class="badge-verificado" title="Conta verificada">✅</span>' : ''; }
     function nomeClick(nome) { return nome === nomeUsuario ? "verPerfil()" : `verPerfilOutro('${nome}')`; }
-
     function formatarTexto(texto) {
       let t = (texto||"").replace(/#(\w+)/g,'<span class="hashtag" onclick="filtrarHashtag(\'$1\')">#$1</span>');
       t = t.replace(/@([a-zA-Z0-9_]+)/g, '<span class="mencao" onclick="abrirMencao(\'$1\')">@$1</span>');
@@ -602,7 +618,9 @@
       const box = document.getElementById("pesquisaBox");
       box.value = "#" + tag; pesquisar();
       mostrarFeed(); box.scrollIntoView({behavior:"smooth"});
-    }function calcularTrending() {
+    }
+
+    function calcularTrending() {
       const c = {};
       todosPosts.forEach(d => {
         const m = (d.data.texto||"").match(/#(\w+)/g)||[];
@@ -820,155 +838,54 @@
         if(verificado){el.innerHTML="✅ <strong>Conta verificada!</strong>";}
         else{el.innerHTML=`🔒 Faltam ${THRESHOLD_VERIFICACAO-segSnap.size} seguidor(es) para verificação (${segSnap.size}/${THRESHOLD_VERIFICACAO})`;}
       } catch(e){}
-    }window.exportarDados = async function() {
-      setStatus("⏳ A preparar os teus dados...");
+    }
+
+    window.verPerfilOutro = async function(outroNome) {
+      if(outroNome===nomeUsuario){verPerfil();return;}
+      escondertodas(); document.getElementById("perfilOutroDiv").style.display="block";
+      document.getElementById("outroAvatar").textContent=outroNome[0].toUpperCase();
+      document.getElementById("outroNomeTitulo").textContent=outroNome;
+      document.getElementById("outroBioTexto").textContent="Carregando...";
+      document.getElementById("outroAcoes").innerHTML="";
+      document.getElementById("postsOutro").innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
       try {
-        const userSnap = await getDoc(doc(db,"utilizadores",nomeUsuario));
-        const dadosUser = userSnap.exists() ? userSnap.data() : {};
-
-        const segSnap = await getDocs(collection(db,"utilizadores",nomeUsuario,"seguidores"));
-        const seguidores = segSnap.docs.map(d => d.id);
-
-        const segIndoSnap = await getDocs(collection(db,"utilizadores",nomeUsuario,"seguindo"));
-        const aSeguir = segIndoSnap.docs.map(d => d.id);
-
-        const postsSnap = await getDocs(collection(db,"posts"));
-        const meusPosts = [];
-        postsSnap.forEach(d => {
-          const p = d.data();
-          if ((p.autorReal === nomeUsuario) || (!p.autorReal && p.autor === nomeUsuario)) {
-            meusPosts.push({
-              texto: p.texto, hora: p.hora, anonimo: !!p.anonimo,
-              reacoes: p.reacoes || {}, views: p.views || 0
-            });
-          }
-        });
-
-        const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
-        const bloqueados = JSON.parse(localStorage.getItem("bloqueados_"+nomeUsuario)||"[]");
-
-        const dadosExportados = {
-          nome: nomeUsuario,
-          bio: dadosUser.bio || BIO_PADRAO,
-          musica: dadosUser.musica || "",
-          verificado: !!dadosUser.verificado,
-          totalSeguidores: seguidores.length,
-          seguidores: seguidores,
-          totalASeguir: aSeguir.length,
-          aSeguir: aSeguir,
-          totalPosts: meusPosts.length,
-          posts: meusPosts,
-          postsGuardadosIds: guardados,
-          utilizadoresBloqueados: bloqueados,
-          exportadoEm: new Date().toLocaleString("pt-PT")
-        };
-
-        const blob = new Blob([JSON.stringify(dadosExportados, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "connectapp_dados_" + nomeUsuario + ".json";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        setStatus("✅ Dados exportados com sucesso!");
-      } catch(e) { setStatus("❌ Erro ao exportar dados."); }
-    }
-
-    window.denunciarPost = async function(postId, autorPost) {
-      const motivos = ["Spam", "Conteúdo ofensivo", "Discurso de odio", "Assédio", "Outro"];
-      const escolha = prompt("Porque queres denunciar este post?\n\n1 - Spam\n2 - Conteúdo ofensivo\n3 - Discurso de ódio\n4 - Assédio\n5 - Outro\n\nDigite o número:");
-      if (!escolha) return;
-      const idx = parseInt(escolha) - 1;
-      const motivo = motivos[idx] || "Não especificado";
-      try {
-        await addDoc(collection(db,"denuncias"), {
-          postId, autorPost, denunciante: nomeUsuario, motivo, data: serverTimestamp(), resolvido: false
-        });
-        setStatus("🚩 Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.");
-      } catch(e) { setStatus("❌ Erro ao enviar denúncia."); }
-    }
-
-    window.denunciarUtilizador = async function(nome) {
-      const motivos = ["Spam", "Conta falsa", "Assédio", "Conteúdo inadequado", "Outro"];
-      const escolha = prompt("Porque queres denunciar "+nome+"?\n\n1 - Spam\n2 - Conta falsa\n3 - Assédio\n4 - Conteúdo inadequado\n5 - Outro\n\nDigite o número:");
-      if (!escolha) return;
-      const idx = parseInt(escolha) - 1;
-      const motivo = motivos[idx] || "Não especificado";
-      try {
-        await addDoc(collection(db,"denuncias"), {
-          autorPost: nome, denunciante: nomeUsuario, motivo, tipo: "utilizador", data: serverTimestamp(), resolvido: false
-        });
-        setStatus("🚩 Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.");
-      } catch(e) { setStatus("❌ Erro ao enviar denúncia."); }
-    }
-
-    window.toggleAnonimo = function() {
-      modoAnonimo = !modoAnonimo;
-      const btn = document.getElementById("btnAnonimo");
-      btn.style.background = modoAnonimo ? "var(--cor2)" : "#2a2f42";
-      btn.textContent = modoAnonimo ? "🎭 Anónimo (ativo)" : "🎭 Anónimo";
-    }
-
-    window.toggleSondagem = function() {
-      const box = document.getElementById("sondagemBox");
-      const btn = document.getElementById("btnSondagem");
-      const visivel = box.style.display === "block";
-      box.style.display = visivel ? "none" : "block";
-      btn.style.background = visivel ? "#2a2f42" : "var(--cor1)";
-    }
-
-    function isGuardado(postId) {
-      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
-      return guardados.includes(postId);
-    }
-
-    window.toggleGuardar = function(postId, botao) {
-      let guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
-      if (guardados.includes(postId)) {
-        guardados = guardados.filter(id => id !== postId);
-        botao.textContent = "🔖 Guardar";
-        botao.classList.remove("ativo");
-      } else {
-        guardados.push(postId);
-        botao.textContent = "🔖 Guardado";
-        botao.classList.add("ativo");
-      }
-      localStorage.setItem("guardados_"+nomeUsuario, JSON.stringify(guardados));
-    }
-
-    function carregarPostsGuardados() {
-      const lista = document.getElementById("listaGuardados");
-      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
-      if (!guardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Nenhum post guardado ainda.</p>"; return; }
-      lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Carregando...</p>";
-      const postsGuardados = todosPosts.filter(p => guardados.includes(p.id));
-      lista.innerHTML = "";
-      if (!postsGuardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Posts guardados não encontrados no feed.</p>"; return; }
-      postsGuardados.forEach(d => {
-        const div = document.createElement("div");
-        div.className = "post-card";
-        div.style.marginTop = "10px";
-        div.innerHTML = `<strong class="nome-clicavel" onclick="${nomeClick(d.data.autor)}">${d.data.autor}</strong>${badgeFor(d.data.autor)} · <span style="color:#6b7280;font-size:12px;">${d.data.hora}</span><p style="margin:8px 0;color:#c8cad8;font-size:13px;">${formatarTexto(d.data.texto)}</p><button onclick="toggleGuardar('${d.id}',this);this.closest('.post-card').remove();" style="background:#f56b6b;font-size:12px;padding:6px 12px;">🗑️ Remover</button>`;
-        lista.appendChild(div);
-      });
-    }
-
-    const viewsRegistadas = new Set();
-    async function registarVisualizacao(postId) {
-      if (viewsRegistadas.has(postId)) return;
-      viewsRegistadas.add(postId);
-      try {
-        await updateDoc(doc(db,"posts",postId),{views: increment(1)});
-        const el = document.getElementById("views-"+postId);
-        if (el) el.textContent = parseInt(el.textContent||"0") + 1;
+        await carregarVerificados();
+        document.getElementById("outroNomeTitulo").innerHTML=outroNome+badgeFor(outroNome);
+        const userSnap=await getDoc(doc(db,"utilizadores",outroNome));
+        document.getElementById("outroBioTexto").textContent=(userSnap.exists()&&userSnap.data().bio)?userSnap.data().bio:BIO_PADRAO;
+        mostrarMusicaOutro(userSnap.exists()?userSnap.data().musica:"");
+        const segSnap=await getDocs(collection(db,"utilizadores",outroNome,"seguidores"));
+        const segIndoSnap=await getDocs(collection(db,"utilizadores",outroNome,"seguindo"));
+        document.getElementById("outroNumSeguidores").textContent=segSnap.size;
+        document.getElementById("outroNumSeguindo").textContent=segIndoSnap.size;
+        const postsSnap=await getDocs(query(collection(db,"posts"),orderBy("data","desc")));
+        const postsDoOutro=[]; postsSnap.forEach(d=>{if(d.data().autor===outroNome)postsDoOutro.push({id:d.id,data:d.data()});});
+        document.getElementById("outroNumPosts").textContent=postsDoOutro.length;
+        document.getElementById("outroNivelDiv").textContent="Nível: " + calcularNivel(segSnap.size, postsDoOutro.length);
+        const jaSegue=await getDoc(doc(db,"utilizadores",outroNome,"seguidores",nomeUsuario));
+        const jaBloqueado = estaBloqueado(outroNome);
+        document.getElementById("outroAcoes").innerHTML=`<button class="${jaSegue.exists()?"btn-seguindo":"btn-seguir"}" onclick="seguir('${outroNome}',this)">${jaSegue.exists()?"✅ A seguir":"➕ Seguir"}</button><button class="btn-mensagem" onclick="abrirDM('${outroNome}')">✉️ Mensagem</button><button class="btn-danger" onclick="toggleBloqueio('${outroNome}')">${jaBloqueado?"✅ Desbloquear":"🚫 Bloquear"}</button><button class="btn-danger" onclick="denunciarUtilizador('${outroNome}')">🚩 Denunciar</button>`;
+        const div=document.getElementById("postsOutro"); div.innerHTML="";
+        if(!postsDoOutro.length){div.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem posts.</p>";}
+        else{postsDoOutro.forEach(d=>{div.appendChild(criarPostCard(d));carregarComentarios(d.id);});}
       } catch(e){}
     }
 
-    function gerarCodigoConvite() {
-      return Math.random().toString(36).substring(2,8).toUpperCase();
+    window.verUtilizadores = async function() {
+      escondertodas(); document.getElementById("utilizadoresDiv").style.display="block";
+      const lista=document.getElementById("listaUtilizadores");
+      lista.innerHTML="<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
+      try {
+        await carregarVerificados();
+        const snap=await getDocs(collection(db,"utilizadores")); lista.innerHTML="";
+        snap.forEach(d=>{
+          const u=d.data(); if(u.nome===nomeUsuario)return; if(estaBloqueado(u.nome))return;
+          const div=document.createElement("div"); div.className="utilizador-card";
+          div.innerHTML=`<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio||BIO_PADRAO}</div></div></div><div class="utilizador-acoes"><button class="btn-mensagem" onclick="abrirDM('${u.nome}')">✉️</button><button class="btn-seguir" onclick="seguir('${u.nome}',this)">➕ Seguir</button></div>`;
+          lista.appendChild(div);
+        });
+        if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum utilizador ainda!</p>";
+      } catch(e){}
     }
 
     window.verGrupos = async function() {
@@ -991,6 +908,10 @@
         }
         if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum grupo ainda!</p>";
       } catch(e){lista.innerHTML="<p style='color:#f56b6b;'>Erro ao carregar.</p>";}
+    }
+
+    function gerarCodigoConvite() {
+      return Math.random().toString(36).substring(2,8).toUpperCase();
     }
 
     window.criarGrupo = async function() {
@@ -1062,249 +983,9 @@
           carregarPostsGrupo(grupoId);
         }
       } catch(e){}
-  }window.exportarDados = async function() {
-      setStatus("⏳ A preparar os teus dados...");
-      try {
-        const userSnap = await getDoc(doc(db,"utilizadores",nomeUsuario));
-        const dadosUser = userSnap.exists() ? userSnap.data() : {};
-
-        const segSnap = await getDocs(collection(db,"utilizadores",nomeUsuario,"seguidores"));
-        const seguidores = segSnap.docs.map(d => d.id);
-
-        const segIndoSnap = await getDocs(collection(db,"utilizadores",nomeUsuario,"seguindo"));
-        const aSeguir = segIndoSnap.docs.map(d => d.id);
-
-        const postsSnap = await getDocs(collection(db,"posts"));
-        const meusPosts = [];
-        postsSnap.forEach(d => {
-          const p = d.data();
-          if ((p.autorReal === nomeUsuario) || (!p.autorReal && p.autor === nomeUsuario)) {
-            meusPosts.push({
-              texto: p.texto, hora: p.hora, anonimo: !!p.anonimo,
-              reacoes: p.reacoes || {}, views: p.views || 0
-            });
-          }
-        });
-
-        const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
-        const bloqueados = JSON.parse(localStorage.getItem("bloqueados_"+nomeUsuario)||"[]");
-
-        const dadosExportados = {
-          nome: nomeUsuario,
-          bio: dadosUser.bio || BIO_PADRAO,
-          musica: dadosUser.musica || "",
-          verificado: !!dadosUser.verificado,
-          totalSeguidores: seguidores.length,
-          seguidores: seguidores,
-          totalASeguir: aSeguir.length,
-          aSeguir: aSeguir,
-          totalPosts: meusPosts.length,
-          posts: meusPosts,
-          postsGuardadosIds: guardados,
-          utilizadoresBloqueados: bloqueados,
-          exportadoEm: new Date().toLocaleString("pt-PT")
-        };
-
-        const blob = new Blob([JSON.stringify(dadosExportados, null, 2)], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "connectapp_dados_" + nomeUsuario + ".json";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        setStatus("✅ Dados exportados com sucesso!");
-      } catch(e) { setStatus("❌ Erro ao exportar dados."); }
     }
 
-    window.denunciarPost = async function(postId, autorPost) {
-      const motivos = ["Spam", "Conteúdo ofensivo", "Discurso de odio", "Assédio", "Outro"];
-      const escolha = prompt("Porque queres denunciar este post?\n\n1 - Spam\n2 - Conteúdo ofensivo\n3 - Discurso de ódio\n4 - Assédio\n5 - Outro\n\nDigite o número:");
-      if (!escolha) return;
-      const idx = parseInt(escolha) - 1;
-      const motivo = motivos[idx] || "Não especificado";
-      try {
-        await addDoc(collection(db,"denuncias"), {
-          postId, autorPost, denunciante: nomeUsuario, motivo, data: serverTimestamp(), resolvido: false
-        });
-        setStatus("🚩 Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.");
-      } catch(e) { setStatus("❌ Erro ao enviar denúncia."); }
-    }
-
-    window.denunciarUtilizador = async function(nome) {
-      const motivos = ["Spam", "Conta falsa", "Assédio", "Conteúdo inadequado", "Outro"];
-      const escolha = prompt("Porque queres denunciar "+nome+"?\n\n1 - Spam\n2 - Conta falsa\n3 - Assédio\n4 - Conteúdo inadequado\n5 - Outro\n\nDigite o número:");
-      if (!escolha) return;
-      const idx = parseInt(escolha) - 1;
-      const motivo = motivos[idx] || "Não especificado";
-      try {
-        await addDoc(collection(db,"denuncias"), {
-          autorPost: nome, denunciante: nomeUsuario, motivo, tipo: "utilizador", data: serverTimestamp(), resolvido: false
-        });
-        setStatus("🚩 Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.");
-      } catch(e) { setStatus("❌ Erro ao enviar denúncia."); }
-    }
-
-    window.toggleAnonimo = function() {
-      modoAnonimo = !modoAnonimo;
-      const btn = document.getElementById("btnAnonimo");
-      btn.style.background = modoAnonimo ? "var(--cor2)" : "#2a2f42";
-      btn.textContent = modoAnonimo ? "🎭 Anónimo (ativo)" : "🎭 Anónimo";
-    }
-
-    window.toggleSondagem = function() {
-      const box = document.getElementById("sondagemBox");
-      const btn = document.getElementById("btnSondagem");
-      const visivel = box.style.display === "block";
-      box.style.display = visivel ? "none" : "block";
-      btn.style.background = visivel ? "#2a2f42" : "var(--cor1)";
-    }
-
-    function isGuardado(postId) {
-      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
-      return guardados.includes(postId);
-    }
-
-    window.toggleGuardar = function(postId, botao) {
-      let guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
-      if (guardados.includes(postId)) {
-        guardados = guardados.filter(id => id !== postId);
-        botao.textContent = "🔖 Guardar";
-        botao.classList.remove("ativo");
-      } else {
-        guardados.push(postId);
-        botao.textContent = "🔖 Guardado";
-        botao.classList.add("ativo");
-      }
-      localStorage.setItem("guardados_"+nomeUsuario, JSON.stringify(guardados));
-    }
-
-    function carregarPostsGuardados() {
-      const lista = document.getElementById("listaGuardados");
-      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
-      if (!guardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Nenhum post guardado ainda.</p>"; return; }
-      lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Carregando...</p>";
-      const postsGuardados = todosPosts.filter(p => guardados.includes(p.id));
-      lista.innerHTML = "";
-      if (!postsGuardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Posts guardados não encontrados no feed.</p>"; return; }
-      postsGuardados.forEach(d => {
-        const div = document.createElement("div");
-        div.className = "post-card";
-        div.style.marginTop = "10px";
-        div.innerHTML = `<strong class="nome-clicavel" onclick="${nomeClick(d.data.autor)}">${d.data.autor}</strong>${badgeFor(d.data.autor)} · <span style="color:#6b7280;font-size:12px;">${d.data.hora}</span><p style="margin:8px 0;color:#c8cad8;font-size:13px;">${formatarTexto(d.data.texto)}</p><button onclick="toggleGuardar('${d.id}',this);this.closest('.post-card').remove();" style="background:#f56b6b;font-size:12px;padding:6px 12px;">🗑️ Remover</button>`;
-        lista.appendChild(div);
-      });
-    }
-
-    const viewsRegistadas = new Set();
-    async function registarVisualizacao(postId) {
-      if (viewsRegistadas.has(postId)) return;
-      viewsRegistadas.add(postId);
-      try {
-        await updateDoc(doc(db,"posts",postId),{views: increment(1)});
-        const el = document.getElementById("views-"+postId);
-        if (el) el.textContent = parseInt(el.textContent||"0") + 1;
-      } catch(e){}
-    }
-
-    function gerarCodigoConvite() {
-      return Math.random().toString(36).substring(2,8).toUpperCase();
-    }
-
-    window.verGrupos = async function() {
-      escondertodas(); document.getElementById("gruposDiv").style.display="block";
-      const lista=document.getElementById("listaGrupos");
-      lista.innerHTML="<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
-      try {
-        const snap=await getDocs(query(collection(db,"grupos"),orderBy("data","desc")));
-        lista.innerHTML="";
-        for(const d of snap.docs){
-          const g=d.data(); const mSnap=await getDocs(collection(db,"grupos",d.id,"membros"));
-          if (g.privado) {
-            const souMembro = await getDoc(doc(db,"grupos",d.id,"membros",nomeUsuario));
-            if (!souMembro.exists()) continue;
-          }
-          const div=document.createElement("div"); div.className="grupo-card";
-          const cadeado = g.privado ? "🔒 " : "";
-          div.innerHTML=`<div class="grupo-icone">🏘️</div><h3>${cadeado}${g.nome}</h3><p>${g.descricao||"Sem descrição"} · ${mSnap.size} membro(s)</p><button onclick="abrirGrupo('${d.id}')">Abrir grupo</button>`;
-          lista.appendChild(div);
-        }
-        if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum grupo ainda!</p>";
-      } catch(e){lista.innerHTML="<p style='color:#f56b6b;'>Erro ao carregar.</p>";}
-    }
-
-    window.criarGrupo = async function() {
-      const nome=document.getElementById("nomeGrupoInput").value.trim();
-      const desc=document.getElementById("descGrupoInput").value.trim();
-      const privado=document.getElementById("grupoPrivadoInput").checked;
-      if(!nome){alert("Escreve um nome!");return;}
-      try {
-        const codigo = privado ? gerarCodigoConvite() : null;
-        const dadosGrupo = {nome,descricao:desc,criador:nomeUsuario,privado,data:serverTimestamp()};
-        if (codigo) dadosGrupo.codigoConvite = codigo;
-        const ref=await addDoc(collection(db,"grupos"),dadosGrupo);
-        await setDoc(doc(db,"grupos",ref.id,"membros",nomeUsuario),{nome:nomeUsuario});
-        document.getElementById("nomeGrupoInput").value=""; document.getElementById("descGrupoInput").value="";
-        document.getElementById("grupoPrivadoInput").checked=false;
-        if (codigo) {
-          setStatus("✅ Grupo privado criado! Código: "+codigo);
-          alert("Grupo privado criado!\n\nCódigo de convite: "+codigo+"\n\nPartilha este código com quem quiseres convidar.");
-        } else {
-          setStatus("✅ Grupo criado!");
-        }
-        verGrupos();
-      } catch(e){setStatus("❌ Erro.");}
-    }
-
-    window.entrarComCodigo = async function() {
-      const codigo = document.getElementById("codigoConviteInput").value.trim().toUpperCase();
-      if (!codigo) { alert("Cola um código de convite!"); return; }
-      try {
-        const snap = await getDocs(query(collection(db,"grupos"), where("codigoConvite","==",codigo)));
-        if (snap.empty) { setStatus("❌ Código inválido."); return; }
-        const grupoDoc = snap.docs[0];
-        await setDoc(doc(db,"grupos",grupoDoc.id,"membros",nomeUsuario),{nome:nomeUsuario});
-        document.getElementById("codigoConviteInput").value="";
-        setStatus("✅ Entraste no grupo!");
-        abrirGrupo(grupoDoc.id);
-      } catch(e){setStatus("❌ Erro ao entrar.");}
-    }
-
-    window.abrirGrupo = async function(grupoId) {
-      escondertodas(); document.getElementById("grupoDetalheDiv").style.display="block"; grupoAtualId=grupoId;
-      try {
-        const gSnap=await getDoc(doc(db,"grupos",grupoId)); const g=gSnap.data();
-        const cadeado = g.privado ? "🔒 " : "";
-        document.getElementById("grupoNomeTitulo").textContent="🏘️ "+cadeado+g.nome;
-        document.getElementById("grupoDescTexto").textContent=g.descricao||"Sem descrição";
-        const mSnap=await getDocs(collection(db,"grupos",grupoId,"membros"));
-        document.getElementById("grupoMembrosCount").textContent=mSnap.size;
-        const souMembro=await getDoc(doc(db,"grupos",grupoId,"membros",nomeUsuario));
-        const btn=document.getElementById("btnEntrarGrupo"); const pb=document.getElementById("grupoPostBox");
-        let convitebtn = document.getElementById("btnConviteGrupo");
-        if (convitebtn) convitebtn.remove();
-        if(souMembro.exists()){
-          btn.textContent="✅ Sair do grupo";btn.className="btn-seguindo";pb.style.display="block";
-          if (g.privado && g.criador===nomeUsuario && g.codigoConvite) {
-            const novoBtn = document.createElement("button");
-            novoBtn.id = "btnConviteGrupo";
-            novoBtn.textContent = "🔑 Ver código de convite";
-            novoBtn.onclick = () => alert("Código de convite: "+g.codigoConvite+"\n\nPartilha este código com quem quiseres convidar para o grupo.");
-            btn.parentNode.insertBefore(novoBtn, btn.nextSibling);
-          }
-          carregarPostsGrupo(grupoId);
-        } else if (g.privado) {
-          btn.style.display="none"; pb.style.display="none";
-          document.getElementById("postsGrupo").innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>🔒 Este grupo é privado. Precisas de um código de convite para entrar.</p>";
-        } else {
-          btn.style.display="inline-block";
-          btn.textContent="➕ Entrar no grupo";btn.className="btn-seguir";pb.style.display="none";
-          carregarPostsGrupo(grupoId);
-        }
-      } catch(e){}
-  }window.toggleMembroGrupo = async function() {
+    window.toggleMembroGrupo = async function() {
       if(!grupoAtualId)return;
       try {
         const ref=doc(db,"grupos",grupoAtualId,"membros",nomeUsuario);
@@ -1394,54 +1075,6 @@
       } catch(e){}
     }
 
-    window.verPerfilOutro = async function(outroNome) {
-      if(outroNome===nomeUsuario){verPerfil();return;}
-      escondertodas(); document.getElementById("perfilOutroDiv").style.display="block";
-      document.getElementById("outroAvatar").textContent=outroNome[0].toUpperCase();
-      document.getElementById("outroNomeTitulo").textContent=outroNome;
-      document.getElementById("outroBioTexto").textContent="Carregando...";
-      document.getElementById("outroAcoes").innerHTML="";
-      document.getElementById("postsOutro").innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
-      try {
-        await carregarVerificados();
-        document.getElementById("outroNomeTitulo").innerHTML=outroNome+badgeFor(outroNome);
-        const userSnap=await getDoc(doc(db,"utilizadores",outroNome));
-        document.getElementById("outroBioTexto").textContent=(userSnap.exists()&&userSnap.data().bio)?userSnap.data().bio:BIO_PADRAO;
-        mostrarMusicaOutro(userSnap.exists()?userSnap.data().musica:"");
-        const segSnap=await getDocs(collection(db,"utilizadores",outroNome,"seguidores"));
-        const segIndoSnap=await getDocs(collection(db,"utilizadores",outroNome,"seguindo"));
-        document.getElementById("outroNumSeguidores").textContent=segSnap.size;
-        document.getElementById("outroNumSeguindo").textContent=segIndoSnap.size;
-        const postsSnap=await getDocs(query(collection(db,"posts"),orderBy("data","desc")));
-        const postsDoOutro=[]; postsSnap.forEach(d=>{if(d.data().autor===outroNome)postsDoOutro.push({id:d.id,data:d.data()});});
-        document.getElementById("outroNumPosts").textContent=postsDoOutro.length;
-        document.getElementById("outroNivelDiv").textContent="Nível: " + calcularNivel(segSnap.size, postsDoOutro.length);
-        const jaSegue=await getDoc(doc(db,"utilizadores",outroNome,"seguidores",nomeUsuario));
-        const jaBloqueado = estaBloqueado(outroNome);
-        document.getElementById("outroAcoes").innerHTML=`<button class="${jaSegue.exists()?"btn-seguindo":"btn-seguir"}" onclick="seguir('${outroNome}',this)">${jaSegue.exists()?"✅ A seguir":"➕ Seguir"}</button><button class="btn-mensagem" onclick="abrirDM('${outroNome}')">✉️ Mensagem</button><button class="btn-danger" onclick="toggleBloqueio('${outroNome}')">${jaBloqueado?"✅ Desbloquear":"🚫 Bloquear"}</button><button class="btn-danger" onclick="denunciarUtilizador('${outroNome}')">🚩 Denunciar</button>`;
-        const div=document.getElementById("postsOutro"); div.innerHTML="";
-        if(!postsDoOutro.length){div.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem posts.</p>";}
-        else{postsDoOutro.forEach(d=>{div.appendChild(criarPostCard(d));carregarComentarios(d.id);});}
-      } catch(e){}
-    }
-
-    window.verUtilizadores = async function() {
-      escondertodas(); document.getElementById("utilizadoresDiv").style.display="block";
-      const lista=document.getElementById("listaUtilizadores");
-      lista.innerHTML="<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
-      try {
-        await carregarVerificados();
-        const snap=await getDocs(collection(db,"utilizadores")); lista.innerHTML="";
-        snap.forEach(d=>{
-          const u=d.data(); if(u.nome===nomeUsuario)return; if(estaBloqueado(u.nome))return;
-          const div=document.createElement("div"); div.className="utilizador-card";
-          div.innerHTML=`<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio||BIO_PADRAO}</div></div></div><div class="utilizador-acoes"><button class="btn-mensagem" onclick="abrirDM('${u.nome}')">✉️</button><button class="btn-seguir" onclick="seguir('${u.nome}',this)">➕ Seguir</button></div>`;
-          lista.appendChild(div);
-        });
-        if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum utilizador ainda!</p>";
-      } catch(e){}
-    }
-
     function escondertodas() {
       chatAberto=false;
       document.getElementById("musicaIframe").src="";
@@ -1509,6 +1142,106 @@
       return h+`</div>`;
     }
 
+    window.exportarDados = async function() {
+      setStatus("⏳ A preparar os teus dados...");
+      try {
+        const userSnap = await getDoc(doc(db,"utilizadores",nomeUsuario));
+        const dadosUser = userSnap.exists() ? userSnap.data() : {};
+
+        const segSnap = await getDocs(collection(db,"utilizadores",nomeUsuario,"seguidores"));
+        const seguidores = segSnap.docs.map(d => d.id);
+
+        const segIndoSnap = await getDocs(collection(db,"utilizadores",nomeUsuario,"seguindo"));
+        const aSeguir = segIndoSnap.docs.map(d => d.id);
+
+        const postsSnap = await getDocs(collection(db,"posts"));
+        const meusPosts = [];
+        postsSnap.forEach(d => {
+          const p = d.data();
+          if ((p.autorReal === nomeUsuario) || (!p.autorReal && p.autor === nomeUsuario)) {
+            meusPosts.push({
+              texto: p.texto, hora: p.hora, anonimo: !!p.anonimo,
+              reacoes: p.reacoes || {}, views: p.views || 0
+            });
+          }
+        });
+
+        const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+        const bloqueados = JSON.parse(localStorage.getItem("bloqueados_"+nomeUsuario)||"[]");
+
+        const dadosExportados = {
+          nome: nomeUsuario,
+          bio: dadosUser.bio || BIO_PADRAO,
+          musica: dadosUser.musica || "",
+          verificado: !!dadosUser.verificado,
+          totalSeguidores: seguidores.length,
+          seguidores: seguidores,
+          totalASeguir: aSeguir.length,
+          aSeguir: aSeguir,
+          totalPosts: meusPosts.length,
+          posts: meusPosts,
+          postsGuardadosIds: guardados,
+          utilizadoresBloqueados: bloqueados,
+          exportadoEm: new Date().toLocaleString("pt-PT")
+        };
+
+        const blob = new Blob([JSON.stringify(dadosExportados, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "connectapp_dados_" + nomeUsuario + ".json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        setStatus("✅ Dados exportados com sucesso!");
+      } catch(e) { setStatus("❌ Erro ao exportar dados."); }
+    }
+
+    window.denunciarPost = async function(postId, autorPost) {
+      const motivos = ["Spam", "Conteúdo ofensivo", "Discurso de odio", "Assédio", "Outro"];
+      const escolha = prompt("Porque queres denunciar este post?\n\n1 - Spam\n2 - Conteúdo ofensivo\n3 - Discurso de ódio\n4 - Assédio\n5 - Outro\n\nDigite o número:");
+      if (!escolha) return;
+      const idx = parseInt(escolha) - 1;
+      const motivo = motivos[idx] || "Não especificado";
+      try {
+        await addDoc(collection(db,"denuncias"), {
+          postId, autorPost, denunciante: nomeUsuario, motivo, data: serverTimestamp(), resolvido: false
+        });
+        setStatus("🚩 Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.");
+      } catch(e) { setStatus("❌ Erro ao enviar denúncia."); }
+    }
+
+    window.denunciarUtilizador = async function(nome) {
+      const motivos = ["Spam", "Conta falsa", "Assédio", "Conteúdo inadequado", "Outro"];
+      const escolha = prompt("Porque queres denunciar "+nome+"?\n\n1 - Spam\n2 - Conta falsa\n3 - Assédio\n4 - Conteúdo inadequado\n5 - Outro\n\nDigite o número:");
+      if (!escolha) return;
+      const idx = parseInt(escolha) - 1;
+      const motivo = motivos[idx] || "Não especificado";
+      try {
+        await addDoc(collection(db,"denuncias"), {
+          autorPost: nome, denunciante: nomeUsuario, motivo, tipo: "utilizador", data: serverTimestamp(), resolvido: false
+        });
+        setStatus("🚩 Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.");
+      } catch(e) { setStatus("❌ Erro ao enviar denúncia."); }
+    }
+
+    window.toggleAnonimo = function() {
+      modoAnonimo = !modoAnonimo;
+      const btn = document.getElementById("btnAnonimo");
+      btn.style.background = modoAnonimo ? "var(--cor2)" : "#2a2f42";
+      btn.textContent = modoAnonimo ? "🎭 Anónimo (ativo)" : "🎭 Anónimo";
+    }
+
+    window.toggleSondagem = function() {
+      const box = document.getElementById("sondagemBox");
+      const btn = document.getElementById("btnSondagem");
+      const visivel = box.style.display === "block";
+      box.style.display = visivel ? "none" : "block";
+      btn.style.background = visivel ? "#2a2f42" : "var(--cor1)";
+    }
+
     function criarSondagemHtml(postId, sondagem, votos) {
       if (!sondagem || !sondagem.opcoes || !sondagem.opcoes.length) return "";
       const total = Object.values(votos||{}).reduce((a,b)=>a+b,0);
@@ -1535,7 +1268,56 @@
         localStorage.setItem(chave, opcaoIdx);
         carregarPosts();
       } catch(e){}
-  }function criarPostCard(d) {
+    }
+
+    function isGuardado(postId) {
+      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+      return guardados.includes(postId);
+    }
+
+    window.toggleGuardar = function(postId, botao) {
+      let guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+      if (guardados.includes(postId)) {
+        guardados = guardados.filter(id => id !== postId);
+        botao.textContent = "🔖 Guardar";
+        botao.classList.remove("ativo");
+      } else {
+        guardados.push(postId);
+        botao.textContent = "🔖 Guardado";
+        botao.classList.add("ativo");
+      }
+      localStorage.setItem("guardados_"+nomeUsuario, JSON.stringify(guardados));
+    }
+
+    function carregarPostsGuardados() {
+      const lista = document.getElementById("listaGuardados");
+      const guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
+      if (!guardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Nenhum post guardado ainda.</p>"; return; }
+      lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Carregando...</p>";
+      const postsGuardados = todosPosts.filter(p => guardados.includes(p.id));
+      lista.innerHTML = "";
+      if (!postsGuardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Posts guardados não encontrados no feed.</p>"; return; }
+      postsGuardados.forEach(d => {
+        const div = document.createElement("div");
+        div.className = "post-card";
+        div.style.marginTop = "10px";
+        div.innerHTML = `<strong class="nome-clicavel" onclick="${nomeClick(d.data.autor)}">${d.data.autor}</strong>${badgeFor(d.data.autor)} · <span style="color:#6b7280;font-size:12px;">${d.data.hora}</span><p style="margin:8px 0;color:#c8cad8;font-size:13px;">${formatarTexto(d.data.texto)}</p><button onclick="toggleGuardar('${d.id}',this);this.closest('.post-card').remove();" style="background:#f56b6b;font-size:12px;padding:6px 12px;">🗑️ Remover</button>`;
+        lista.appendChild(div);
+      });
+    }
+
+    const viewsRegistadas = new Set();
+    async function registarVisualizacao(postId) {
+      if (viewsRegistadas.has(postId)) return;
+      viewsRegistadas.add(postId);
+      try {
+        await updateDoc(doc(db,"posts",postId),{views: increment(1)});
+        const el = document.getElementById("views-"+postId);
+        if (el) el.textContent = parseInt(el.textContent||"0") + 1;
+      } catch(e){}
+    }
+
+    function criarPostCard(d) {
       const p=d.data; const div=document.createElement("div"); div.className="post-card";
       const ehMeuPost = p.autorReal === nomeUsuario || (!p.autorReal && p.autor === nomeUsuario);
       const nomeExibido = p.anonimo ? "🎭 Anónimo" + (ehMeuPost ? " (tu)" : "") : p.autor;
@@ -1575,8 +1357,50 @@
       return div;
     }
 
+    function guardarPostsCache(lista) {
+      try {
+        const cache = lista.map(p => ({
+          id: p.id,
+          data: {
+            texto: p.data.texto, autor: p.data.autor, autorReal: p.data.autorReal,
+            anonimo: !!p.data.anonimo, hora: p.data.hora, imagem: p.data.imagem || null,
+            reacoes: p.data.reacoes || {}, views: p.data.views || 0,
+            sondagem: p.data.sondagem || null, votos: p.data.votos || {}
+          }
+        }));
+        localStorage.setItem("cache_posts", JSON.stringify(cache));
+        localStorage.setItem("cache_posts_data", new Date().toLocaleString("pt-PT"));
+      } catch(e){}
+    }
+
+    function carregarPostsCache() {
+      try {
+        const raw = localStorage.getItem("cache_posts");
+        return raw ? JSON.parse(raw) : [];
+      } catch(e){ return []; }
+    }
+
+    function mostrarBannerOffline(mostrar) {
+      const banner = document.getElementById("offlineBanner");
+      if (!banner) return;
+      banner.style.display = mostrar ? "block" : "none";
+      if (mostrar) {
+        const dataCache = localStorage.getItem("cache_posts_data");
+        banner.textContent = "📡 Sem internet — a mostrar posts guardados" + (dataCache ? " (de " + dataCache + ")" : "");
+      }
+    }
+
+    window.addEventListener("online", () => { mostrarBannerOffline(false); carregarPosts(); });
+    window.addEventListener("offline", () => { mostrarBannerOffline(true); });
+
     async function carregarPosts() {
       const postsDiv=document.getElementById("posts");
+      if (!navigator.onLine) {
+        todosPosts = carregarPostsCache();
+        mostrarBannerOffline(true);
+        renderTrending(); renderPosts(todosPosts);
+        return;
+      }
       postsDiv.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
       try {
         await carregarVerificados();
@@ -1585,8 +1409,19 @@
         snap.forEach(d=>{todosPosts.push({id:d.id,data:d.data()});});
         const bloqueados = getBloqueados();
         if (bloqueados.length) todosPosts = todosPosts.filter(p => !bloqueados.includes(p.data.autor));
+        guardarPostsCache(todosPosts);
+        mostrarBannerOffline(false);
         renderTrending(); renderPosts(todosPosts);
-      } catch(e){postsDiv.innerHTML="<p style='color:#f56b6b;'>Erro ao carregar.</p>";}
+      } catch(e){
+        const cache = carregarPostsCache();
+        if (cache.length) {
+          todosPosts = cache;
+          mostrarBannerOffline(true);
+          renderTrending(); renderPosts(todosPosts);
+        } else {
+          postsDiv.innerHTML="<p style='color:#f56b6b;'>Erro ao carregar.</p>";
+        }
+      }
     }
 
     function renderPosts(lista) {
@@ -1627,6 +1462,7 @@
     window.publicar = async function() {
       const caixa=document.getElementById("caixaTexto"); const texto=caixa.value.trim();
       if(!texto&&!imagemBase64){alert("Escreva algo ou escolha uma imagem!");return;}
+      if(!navigator.onLine){alert("📡 Estás offline! Liga-te à internet para publicar.");return;}
       try {
         const hora=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
         const ri={}; EMOJIS_REACAO.forEach(e=>ri[e]=0);
