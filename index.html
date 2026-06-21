@@ -222,6 +222,7 @@
     <br>
     <label class="img-label" for="inputImagem">🖼️ Adicionar imagem</label>
     <input type="file" id="inputImagem" accept="image/*" style="display:none" onchange="previewImagem(event)">
+    <button id="btnVoz" onclick="toggleVoz()" style="background:#2a2f42;">🎤 Falar</button>
     <img id="imgPreview" class="img-preview">
     <div id="sondagemBox" style="display:none;margin-top:10px;background:#161920;border-radius:10px;padding:12px;">
       <p style="font-size:13px;font-weight:600;margin-bottom:8px;">📊 Sondagem</p>
@@ -352,6 +353,11 @@
     <div class="notificacoes-box">
       <h3>🔖 Posts Guardados</h3>
       <div id="listaGuardados"></div>
+    </div>
+    <div class="notificacoes-box">
+      <h3>🎁 Convida Amigos</h3>
+      <p style="font-size:12px;color:#6b7280;margin-bottom:8px;">Já convidaste <strong id="numConvidados">0</strong> amigo(s) para o ConnectApp!</p>
+      <button class="btn-whatsapp" onclick="partilharConvite()">📲 Partilhar Convite</button>
     </div>
     <div class="notificacoes-box">
       <h3>📥 Os Meus Dados</h3>
@@ -648,6 +654,60 @@
       } catch(e){}
     }
 
+    let reconhecimentoVoz = null;
+    let vozAtiva = false;
+
+    function criarReconhecimentoVoz() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) return null;
+      const rec = new SpeechRecognition();
+      rec.lang = "pt-PT";
+      rec.continuous = false;
+      rec.interimResults = false;
+      return rec;
+    }
+
+    window.toggleVoz = function() {
+      const btn = document.getElementById("btnVoz");
+      if (vozAtiva) {
+        if (reconhecimentoVoz) reconhecimentoVoz.stop();
+        return;
+      }
+      reconhecimentoVoz = criarReconhecimentoVoz();
+      if (!reconhecimentoVoz) {
+        alert("😕 O teu navegador não suporta comandos de voz. Tenta usar o Chrome.");
+        return;
+      }
+      vozAtiva = true;
+      btn.textContent = "🔴 A ouvir...";
+      btn.style.background = "var(--cor2)";
+
+      reconhecimentoVoz.onresult = function(event) {
+        const texto = event.results[0][0].transcript;
+        const caixa = document.getElementById("caixaTexto");
+        caixa.value = caixa.value ? (caixa.value + " " + texto) : texto;
+        setStatus("🎤 Texto adicionado por voz!");
+      };
+
+      reconhecimentoVoz.onerror = function(event) {
+        if (event.error === "not-allowed" || event.error === "permission-denied") {
+          setStatus("❌ Permissão de microfone negada.");
+        } else if (event.error === "no-speech") {
+          setStatus("😕 Não ouvi nada. Tenta novamente.");
+        } else {
+          setStatus("❌ Erro ao reconhecer voz.");
+        }
+      };
+
+      reconhecimentoVoz.onend = function() {
+        vozAtiva = false;
+        btn.textContent = "🎤 Falar";
+        btn.style.background = "#2a2f42";
+      };
+
+      try { reconhecimentoVoz.start(); } catch(e) { vozAtiva = false; btn.textContent = "🎤 Falar"; btn.style.background = "#2a2f42"; }
+    }
+
     window.previewImagem = function(e) {
       const f=e.target.files[0]; if(!f)return;
       const r=new FileReader(); r.onload=x=>{imagemBase64=x.target.result; const p=document.getElementById("imgPreview"); p.src=imagemBase64; p.style.display="block";}; r.readAsDataURL(f);
@@ -693,7 +753,24 @@
     async function registarUtilizador() {
       try {
         const ref=doc(db,"utilizadores",nomeUsuario); const snap=await getDoc(ref);
-        if(!snap.exists()) await setDoc(ref,{nome:nomeUsuario,bio:BIO_PADRAO});
+        if(!snap.exists()) {
+          const dadosNovo = {nome:nomeUsuario,bio:BIO_PADRAO};
+          const params = new URLSearchParams(window.location.search);
+          const convidadoPor = params.get("ref");
+          if (convidadoPor && convidadoPor !== nomeUsuario) {
+            dadosNovo.convidadoPor = convidadoPor;
+            try {
+              const refSnap = await getDoc(doc(db,"utilizadores",convidadoPor));
+              if (refSnap.exists()) {
+                await updateDoc(doc(db,"utilizadores",convidadoPor), { convidados: increment(1) });
+                await addDoc(collection(db,"notificacoes"), {
+                  paraQuem: convidadoPor, deQuem: nomeUsuario, tipo: "convite", lida: false, data: serverTimestamp()
+                });
+              }
+            } catch(e){}
+          }
+          await setDoc(ref, dadosNovo);
+        }
         else await setDoc(ref,{nome:nomeUsuario},{merge:true});
       } catch(e){}
     }
@@ -735,6 +812,8 @@
           const n=d.data(); const div=document.createElement("div"); div.className="notif-item";
           const texto = n.tipo === "mencao"
             ? `<strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} mencionou-te num post! 📢`
+            : n.tipo === "convite"
+            ? `<strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} juntou-se ao ConnectApp através do teu convite! 🎁`
             : `<strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} começou a seguir-te! 🎉`;
           div.innerHTML=`<div class="notif-avatar">${n.deQuem[0].toUpperCase()}</div><div>${texto}</div>`;
           lista.appendChild(div); if(!n.lida) updateDoc(doc(db,"notificacoes",d.id),{lida:true});
@@ -822,6 +901,7 @@
         const bio=(userSnap.exists()&&userSnap.data().bio)?userSnap.data().bio:BIO_PADRAO;
         document.getElementById("bioTexto").innerHTML="<strong>Bio:</strong> "+bio;
         mostrarMusicaPerfil(userSnap.exists()?userSnap.data().musica:"");
+        document.getElementById("numConvidados").textContent = (userSnap.exists() && userSnap.data().convidados) || 0;
         const segSnap=await getDocs(collection(db,"utilizadores",nomeUsuario,"seguidores"));
         const segIndoSnap=await getDocs(collection(db,"utilizadores",nomeUsuario,"seguindo"));
         const postsSnap=await getDocs(query(collection(db,"posts")));
@@ -1516,6 +1596,12 @@
     }
 
     window.partilhar=function(texto){window.open("https://wa.me/?text="+encodeURIComponent(texto+"\n\n🌐 Via ConnectApp: https://laiton023.github.io/connectapp"),"_blank");}
+
+    window.partilharConvite = function() {
+      const link = "https://laiton023.github.io/connectapp?ref=" + encodeURIComponent(nomeUsuario);
+      const texto = "🌐 Junta-te a mim no ConnectApp! Uma rede social onde podes partilhar posts, fazer stories, conversar e muito mais!\n\n" + link;
+      window.open("https://wa.me/?text=" + encodeURIComponent(texto), "_blank");
+    }
 
     window.verPerfil=function(){escondertodas();document.getElementById("perfil").style.display="block";carregarEstatisticas();carregarNotificacoes();carregarPostsGuardados();}
     window.mostrarFeed=function(){escondertodas();document.getElementById("feedDiv").style.display="block";}
