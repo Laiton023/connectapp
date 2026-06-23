@@ -4,6 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ConnectApp</title>
+  <meta name="description" content="ConnectApp — a tua rede social feita por Laiton 🚀">
+  <meta name="theme-color" content="#5b6ef5">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ConnectApp">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="https://via.placeholder.com/192x192/5b6ef5/ffffff?text=CA">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <style>
     :root { --cor1: #5b6ef5; --cor2: #f56b6b; }
@@ -151,6 +159,8 @@
     footer { text-align: center; padding: 20px; color: #6b7280; font-size: 13px; margin-top: 30px; }
     #status { text-align: center; color: #4ecb8d; font-size: 13px; max-width: 600px; margin: 8px auto; padding: 0 16px; }
     #offlineBanner { display: none; text-align: center; background: #f0a500; color: #1a1a2e; font-size: 12px; padding: 8px 16px; font-weight: 600; }
+    #modoLeituraDiv { display: none; background: linear-gradient(135deg, var(--cor1), var(--cor2)); color: white; text-align: center; padding: 14px 16px; font-size: 13px; }
+    #modoLeituraDiv button { background: white; color: var(--cor1); margin: 8px 4px 0; padding: 8px 18px; font-size: 13px; }
     #loginTela { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0d0f14; display: flex; align-items: center; justify-content: center; z-index: 999; }
     body.claro #loginTela { background: #f0f2f5; }
     .login-box { background: #1e2230; border: 1px solid #2a2f42; border-radius: 20px; padding: 40px 30px; text-align: center; width: 90%; max-width: 400px; }
@@ -197,8 +207,14 @@
     <a href="#" onclick="verEstatisticas()">📊 Estatísticas</a>
     <a href="#" onclick="sair()" style="color:var(--cor2);">Sair</a>
     <button id="modoBtn" onclick="toggleModo()">🌙 Escuro</button>
+    <button id="btnInstalarApp" onclick="instalarApp()" style="display:none;background:var(--cor2);">📲 Instalar App</button>
   </nav>
   <div id="offlineBanner"></div>
+  <div id="modoLeituraDiv" style="display:none;">
+    👀 Estás a ver o ConnectApp como visitante — entra para publicar, comentar e interagir!
+    <br>
+    <button onclick="document.getElementById('loginTela').style.display='flex'">Entrar / Registar</button>
+  </div>
   <div id="status"></div>
   <div id="storiesBar">
     <div class="stories-container" id="storiesContainer">
@@ -748,6 +764,62 @@
       document.getElementById("bemVindo").textContent="Bem-vindo, "+nomeUsuario+"!";
       document.getElementById("nomePerfilTexto").innerHTML="<strong>Nome:</strong> "+nomeUsuario;
       carregarPosts(); registarOnline(); monitorarChat(); registarUtilizador(); carregarStories(); monitorarNotificacoes(); monitorarDMs();
+    } else {
+      // Modo só leitura para visitantes
+      document.getElementById("loginTela").style.display="none";
+      document.getElementById("bemVindo").textContent="Visitante 👀";
+      document.getElementById("modoLeituraDiv").style.display="block";
+      carregarPostsSoLeitura();
+    }
+
+    async function carregarPostsSoLeitura() {
+      // Esconde elementos de interação para visitantes
+      document.getElementById("storiesBar").style.display = "none";
+      const feedDiv = document.getElementById("feedDiv");
+      feedDiv.style.display = "block";
+      const postsDiv = document.getElementById("posts");
+      postsDiv.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando posts...</p>";
+
+      // Esconde caixa de publicar
+      document.getElementById("caixaTexto").style.display = "none";
+      document.getElementById("btnVoz").style.display = "none";
+      document.querySelectorAll(".img-label").forEach(el => el.style.display = "none");
+      document.querySelectorAll("button[onclick='publicar()']").forEach(el => el.style.display = "none");
+      document.getElementById("sondagemBox").style.display = "none";
+      document.querySelectorAll("#btnSondagem,#btnAnonimo").forEach(el => { if(el) el.style.display = "none"; });
+      document.getElementById("pesquisaBox").style.display = "none";
+      document.getElementById("trendingBar").style.display = "none";
+
+      // Esconde nav links que requerem login
+      document.querySelectorAll("nav a").forEach(a => {
+        if (!a.textContent.includes("Feed")) a.style.display = "none";
+      });
+      document.getElementById("modoBtn").style.display = "none";
+
+      try {
+        await carregarVerificados();
+        const q = query(collection(db,"posts"), orderBy("data","desc"), limit(20));
+        const snap = await getDocs(q);
+        postsDiv.innerHTML = "";
+        if (snap.empty) { postsDiv.innerHTML = "<p style='color:#6b7280;text-align:center;'>Ainda sem posts.</p>"; return; }
+        snap.forEach(d => {
+          const p = d.data();
+          if (p.anonimo) return;
+          const div = document.createElement("div");
+          div.className = "post-card";
+          const imgHtml = p.imagem ? `<img src="${p.imagem}" class="post-img">` : "";
+          const totalReacoes = Object.values(p.reacoes||{}).reduce((a,b)=>a+b,0);
+          div.innerHTML = `
+            <strong>${p.autor}</strong>${badgeFor(p.autor)} · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
+            <p style="margin:10px 0;color:#c8cad8;">${formatarTexto(p.texto)}</p>
+            ${imgHtml}
+            <div style="font-size:12px;color:#6b7280;margin-top:8px;">👁️ ${p.views||0} visualizações · ❤️ ${totalReacoes} reações</div>
+            <div style="margin-top:10px;background:rgba(255,255,255,0.05);border-radius:8px;padding:10px;text-align:center;font-size:13px;color:#6b7280;">
+              <a href="#" onclick="document.getElementById('loginTela').style.display='flex'" style="color:var(--cor1);font-weight:600;">Entra para comentar e reagir →</a>
+            </div>`;
+          postsDiv.appendChild(div);
+        });
+      } catch(e) { postsDiv.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
     }
 
     async function registarUtilizador() {
@@ -1635,6 +1707,32 @@
 
     document.getElementById("inputMsg").addEventListener("keypress",e=>{if(e.key==="Enter")window.enviarMsg();});
     document.getElementById("inputDM").addEventListener("keypress",e=>{if(e.key==="Enter")window.enviarDM();});
+
+    // PWA install prompt
+    let deferredPrompt = null;
+    window.addEventListener("beforeinstallprompt", e => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById("btnInstalarApp").style.display = "block";
+    });
+
+    window.instalarApp = function() {
+      if (!deferredPrompt) {
+        alert("Para instalar:\n📱 Android: Menu do Chrome (⋮) → 'Adicionar ao ecrã inicial'\n🍎 iPhone: Safari → Partilhar → 'Adicionar ao ecrã de início'");
+        return;
+      }
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(result => {
+        if (result.outcome === "accepted") setStatus("✅ ConnectApp instalado!");
+        deferredPrompt = null;
+        document.getElementById("btnInstalarApp").style.display = "none";
+      });
+    }
+
+    // Register service worker for offline support
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js").catch(() => {});
+    }
   </script>
 </body>
 </html>
