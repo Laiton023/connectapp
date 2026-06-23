@@ -1,0 +1,22 @@
+{
+  "name": "ConnectApp",
+  "short_name": "ConnectApp",
+  "description": "A tua rede social feita por Laiton 🚀",
+  "start_url": "/connectapp/",
+  "display": "standalone",
+  "background_color": "#0d0f14",
+  "theme_color": "#5b6ef5",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192x192/5b6ef5/ffffff?text=CA",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://via.placeholder.com/512x512/5b6ef5/ffffff?text=CA",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
