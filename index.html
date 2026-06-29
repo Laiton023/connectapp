@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ConnectApp</title>
-  <meta name="description" content="ConnectApp — a tua rede social feita por Laiton 🚀">
+  <meta name="description" content="ConnectApp â€” a tua rede social feita por Laiton ðŸš€">
   <meta name="theme-color" content="#5b6ef5">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -147,8 +147,13 @@
     .story-nome { font-size: 11px; color: #6b7280; text-align: center; max-width: 60px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     #storyViewer { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; justify-content: center; align-items: center; }
     #storyViewer img { max-width: 100%; max-height: 80vh; border-radius: 10px; }
-    #storyViewer .story-info { position: absolute; top: 20px; left: 20px; color: white; font-weight: 600; }
-    #storyViewer .story-close { position: absolute; top: 20px; right: 20px; color: white; font-size: 28px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; }
+    #storyViewer .story-info { position: absolute; top: 48px; left: 20px; color: white; font-weight: 600; }
+    #storyViewer .story-close { position: absolute; top: 48px; right: 20px; color: white; font-size: 28px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; }
+    #storyProgressBar { position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: rgba(255,255,255,0.3); }
+    #storyProgressFill { height: 100%; background: white; width: 0%; transition: none; }
+    #storyNavBtns { position: absolute; bottom: 30px; display: flex; gap: 12px; }
+    #storyNavBtns button { background: rgba(255,255,255,0.2); border: 1px solid white; color: white; padding: 8px 20px; font-size: 14px; border-radius: 20px; }
+    #storyContador { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); color: rgba(255,255,255,0.7); font-size: 12px; }
     /* TEMAS */
     #temaDiv { background: #1e2230; border: 1px solid #2a2f42; border-radius: 14px; padding: 24px; }
     body.claro #temaDiv { background: #ffffff; border-color: #dde1ed; }
@@ -187,31 +192,31 @@
 <body>
   <div id="loginTela">
     <div class="login-box">
-      <h2>🌐 ConnectApp</h2>
-      <p>Entre com seu nome para começar!</p>
+      <h2>ðŸŒ ConnectApp</h2>
+      <p>Entre com seu nome para comeÃ§ar!</p>
       <input type="text" id="inputNome" placeholder="Seu nome..." maxlength="20">
-      <button onclick="entrar()">Entrar 🚀</button>
+      <button onclick="entrar()">Entrar ðŸš€</button>
     </div>
   </div>
-  <header><h1>🌐 ConnectApp</h1><p id="bemVindo">Bem-vindo!</p></header>
-  <div id="onlineBar" onclick="verOnline()" style="cursor:pointer;">🟢 <span id="onlineCount">0</span> pessoa(s) online agora — toca para ver</div>
+  <header><h1>ðŸŒ ConnectApp</h1><p id="bemVindo">Bem-vindo!</p></header>
+  <div id="onlineBar" onclick="verOnline()" style="cursor:pointer;">ðŸŸ¢ <span id="onlineCount">0</span> pessoa(s) online agora â€” toca para ver</div>
   <nav>
     <a href="#" onclick="mostrarFeed()">Feed</a>
-    <a href="#" onclick="verUtilizadores()">👥 Users</a>
-    <a href="#" onclick="verGrupos()">🏘️ Grupos</a>
-    <a href="#" onclick="verMensagens()">✉️ Msgs<span class="notif-dot" id="dmNotif"></span></a>
+    <a href="#" onclick="verUtilizadores()">ðŸ‘¥ Users</a>
+    <a href="#" onclick="verGrupos()">ðŸ˜ï¸ Grupos</a>
+    <a href="#" onclick="verMensagens()">âœ‰ï¸ Msgs<span class="notif-dot" id="dmNotif"></span></a>
     <a href="#" onclick="verPerfil()">Perfil<span class="notif-dot" id="perfilNotif"></span></a>
-    <a href="#" onclick="verChat()">💬 Chat<span class="notif-dot" id="chatNotif"></span></a>
-    <a href="#" onclick="verTema()">🎨 Tema</a>
-    <a href="#" onclick="verRanking()">🏆 Ranking</a>
-    <a href="#" onclick="verEstatisticas()">📊 Estatísticas</a>
+    <a href="#" onclick="verChat()">ðŸ’¬ Chat<span class="notif-dot" id="chatNotif"></span></a>
+    <a href="#" onclick="verTema()">ðŸŽ¨ Tema</a>
+    <a href="#" onclick="verRanking()">ðŸ† Ranking</a>
+    <a href="#" onclick="verEstatisticas()">ðŸ“Š EstatÃ­sticas</a>
     <a href="#" onclick="sair()" style="color:var(--cor2);">Sair</a>
-    <button id="modoBtn" onclick="toggleModo()">🌙 Escuro</button>
-    <button id="btnInstalarApp" onclick="instalarApp()" style="display:none;background:var(--cor2);">📲 Instalar App</button>
+    <button id="modoBtn" onclick="toggleModo()">ðŸŒ™ Escuro</button>
+    <button id="btnInstalarApp" onclick="instalarApp()" style="display:none;background:var(--cor2);">ðŸ“² Instalar App</button>
   </nav>
   <div id="offlineBanner"></div>
   <div id="modoLeituraDiv" style="display:none;">
-    👀 Estás a ver o ConnectApp como visitante — entra para publicar, comentar e interagir!
+    ðŸ‘€ EstÃ¡s a ver o ConnectApp como visitante â€” entra para publicar, comentar e interagir!
     <br>
     <button onclick="document.getElementById('loginTela').style.display='flex'">Entrar / Registar</button>
   </div>
@@ -226,58 +231,69 @@
     <input type="file" id="inputStory" accept="image/*" style="display:none" onchange="publicarStory(event)">
   </div>
   <div id="storyViewer" style="display:none">
+    <div id="storyProgressBar"><div id="storyProgressFill"></div></div>
+    <div id="storyContador"></div>
     <div class="story-info" id="storyAutor"></div>
     <img id="storyImg" src="">
-    <button class="story-close" onclick="fecharStory()">✕</button>
+    <div id="storyNavBtns">
+      <button onclick="storyAnterior()">â¬… Anterior</button>
+      <button onclick="fecharStory()">âœ• Fechar</button>
+      <button onclick="storyProximo()">PrÃ³ximo âž¡</button>
+    </div>
+    <button class="story-close" onclick="fecharStory()">âœ•</button>
   </div>
   <main id="feedDiv">
-    <h2 style="margin-bottom:16px;">Feed</h2>
+    <h2 style="margin-bottom:12px;">Feed</h2>
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <button id="btnFeedTodos" onclick="mudarFeed('todos')" style="flex:1;margin:0;padding:8px;">ðŸŒ Todos</button>
+      <button id="btnFeedSeguindo" onclick="mudarFeed('seguindo')" style="flex:1;margin:0;padding:8px;background:#2a2f42;">ðŸ‘¥ A seguir</button>
+    </div>
     <div id="trendingBar" style="display:none;"></div>
-    <input type="text" id="pesquisaBox" placeholder="🔍 Pesquisar posts..." oninput="pesquisar()">
-    <textarea id="caixaTexto" placeholder="O que você está pensando? Usa #hashtags!"></textarea>
+    <input type="text" id="pesquisaBox" placeholder="ðŸ” Pesquisar posts..." oninput="pesquisar()">
+    <textarea id="caixaTexto" placeholder="O que vocÃª estÃ¡ pensando? Usa #hashtags!"></textarea>
     <br>
-    <label class="img-label" for="inputImagem">🖼️ Adicionar imagem</label>
+    <label class="img-label" for="inputImagem">ðŸ–¼ï¸ Adicionar imagem</label>
     <input type="file" id="inputImagem" accept="image/*" style="display:none" onchange="previewImagem(event)">
-    <button id="btnVoz" onclick="toggleVoz()" style="background:#2a2f42;">🎤 Falar</button>
+    <button id="btnVoz" onclick="toggleVoz()" style="background:#2a2f42;">ðŸŽ¤ Falar</button>
     <img id="imgPreview" class="img-preview">
     <div id="sondagemBox" style="display:none;margin-top:10px;background:#161920;border-radius:10px;padding:12px;">
-      <p style="font-size:13px;font-weight:600;margin-bottom:8px;">📊 Sondagem</p>
-      <input type="text" id="op1" placeholder="Opção 1..." style="width:100%;margin-bottom:6px;">
-      <input type="text" id="op2" placeholder="Opção 2..." style="width:100%;margin-bottom:6px;">
-      <input type="text" id="op3" placeholder="Opção 3 (opcional)..." style="width:100%;margin-bottom:6px;">
-      <input type="text" id="op4" placeholder="Opção 4 (opcional)..." style="width:100%;margin-bottom:6px;">
+      <p style="font-size:13px;font-weight:600;margin-bottom:8px;">ðŸ“Š Sondagem</p>
+      <input type="text" id="op1" placeholder="OpÃ§Ã£o 1..." style="width:100%;margin-bottom:6px;">
+      <input type="text" id="op2" placeholder="OpÃ§Ã£o 2..." style="width:100%;margin-bottom:6px;">
+      <input type="text" id="op3" placeholder="OpÃ§Ã£o 3 (opcional)..." style="width:100%;margin-bottom:6px;">
+      <input type="text" id="op4" placeholder="OpÃ§Ã£o 4 (opcional)..." style="width:100%;margin-bottom:6px;">
     </div>
     <br>
     <button onclick="publicar()">Publicar</button>
-    <button onclick="toggleSondagem()" id="btnSondagem" style="background:#2a2f42;">📊 Sondagem</button>
-    <button onclick="toggleAnonimo()" id="btnAnonimo" style="background:#2a2f42;">🎭 Anónimo</button>
+    <button onclick="toggleSondagem()" id="btnSondagem" style="background:#2a2f42;">ðŸ“Š Sondagem</button>
+    <button onclick="toggleAnonimo()" id="btnAnonimo" style="background:#2a2f42;">ðŸŽ­ AnÃ³nimo</button>
     <div id="posts"></div>
   </main>
   <div id="utilizadoresDiv" style="display:none">
-    <h2 style="margin-bottom:16px;">👥 Utilizadores</h2>
+    <h2 style="margin-bottom:16px;">ðŸ‘¥ Utilizadores</h2>
     <div id="listaUtilizadores"></div>
   </div>
   <div id="gruposDiv" style="display:none">
-    <h2 style="margin-bottom:16px;">🏘️ Grupos</h2>
+    <h2 style="margin-bottom:16px;">ðŸ˜ï¸ Grupos</h2>
     <input type="text" id="nomeGrupoInput" placeholder="Nome do grupo...">
-    <textarea id="descGrupoInput" placeholder="Descrição..." style="height:60px;"></textarea>
+    <textarea id="descGrupoInput" placeholder="DescriÃ§Ã£o..." style="height:60px;"></textarea>
     <label style="font-size:13px;color:#6b7280;display:flex;align-items:center;gap:6px;margin-bottom:8px;">
-      <input type="checkbox" id="grupoPrivadoInput" style="width:auto;"> 🔒 Grupo privado (só por convite)
+      <input type="checkbox" id="grupoPrivadoInput" style="width:auto;"> ðŸ”’ Grupo privado (sÃ³ por convite)
     </label>
-    <button onclick="criarGrupo()">➕ Criar Grupo</button>
+    <button onclick="criarGrupo()">âž• Criar Grupo</button>
     <div style="margin-top:16px;border-top:1px solid #2a2f42;padding-top:12px;">
-      <p style="font-size:13px;color:#6b7280;margin-bottom:8px;">Tens um código de convite?</p>
-      <input type="text" id="codigoConviteInput" placeholder="Cola o código de convite...">
-      <button onclick="entrarComCodigo()">🔑 Entrar com código</button>
+      <p style="font-size:13px;color:#6b7280;margin-bottom:8px;">Tens um cÃ³digo de convite?</p>
+      <input type="text" id="codigoConviteInput" placeholder="Cola o cÃ³digo de convite...">
+      <button onclick="entrarComCodigo()">ðŸ”‘ Entrar com cÃ³digo</button>
     </div>
     <div id="listaGrupos"></div>
   </div>
   <div id="grupoDetalheDiv" style="display:none">
-    <button onclick="verGrupos()" style="background:#6b7280;">⬅ Voltar</button>
+    <button onclick="verGrupos()" style="background:#6b7280;">â¬… Voltar</button>
     <h2 id="grupoNomeTitulo" style="margin:12px 0 4px;"></h2>
     <p id="grupoDescTexto" style="color:#6b7280;font-size:13px;margin-bottom:8px;"></p>
     <p style="font-size:13px;color:#6b7280;margin-bottom:8px;"><span id="grupoMembrosCount">0</span> membro(s)</p>
-    <button id="btnEntrarGrupo" class="btn-seguir" onclick="toggleMembroGrupo()">➕ Entrar no grupo</button>
+    <button id="btnEntrarGrupo" class="btn-seguir" onclick="toggleMembroGrupo()">âž• Entrar no grupo</button>
     <div id="grupoPostBox" style="display:none;margin-top:12px;">
       <textarea id="caixaTextoGrupo" placeholder="Escreva algo para o grupo..."></textarea>
       <button onclick="publicarNoGrupo()">Publicar no grupo</button>
@@ -285,11 +301,11 @@
     <div id="postsGrupo"></div>
   </div>
   <div id="mensagensListaDiv" style="display:none">
-    <h2 style="margin-bottom:16px;">✉️ Mensagens</h2>
+    <h2 style="margin-bottom:16px;">âœ‰ï¸ Mensagens</h2>
     <div id="listaDMs"></div>
   </div>
   <div id="dmConversaDiv" style="display:none">
-    <button onclick="verMensagens()" style="background:#6b7280;">⬅ Voltar</button>
+    <button onclick="verMensagens()" style="background:#6b7280;">â¬… Voltar</button>
     <h2 id="dmNomeTitulo" style="margin:12px 0;"></h2>
     <div id="dmMensagens"></div>
     <div class="chat-input-box">
@@ -298,25 +314,25 @@
     </div>
   </div>
   <div id="temaDiv" style="display:none">
-    <h2>🎨 Escolhe o teu Tema</h2>
+    <h2>ðŸŽ¨ Escolhe o teu Tema</h2>
     <p style="color:#6b7280;font-size:13px;margin-top:8px;">Toca num tema para personalizar o ConnectApp!</p>
     <div class="temas-grid" id="temasGrid"></div>
   </div>
   <div id="onlineDiv" style="display:none">
-    <h2 style="margin-bottom:16px;">🟢 Utilizadores Online</h2>
+    <h2 style="margin-bottom:16px;">ðŸŸ¢ Utilizadores Online</h2>
     <div id="listaOnline"></div>
   </div>
   <div id="rankingDiv" style="display:none">
-    <h2 style="margin-bottom:16px;">🏆 Ranking de Popularidade</h2>
+    <h2 style="margin-bottom:16px;">ðŸ† Ranking de Popularidade</h2>
     <p style="color:#6b7280;font-size:13px;margin-bottom:8px;">Baseado em seguidores + posts</p>
     <div id="listaRanking"></div>
   </div>
   <div id="estatisticasDiv" style="display:none">
-    <h2 style="margin-bottom:16px;">📊 As Minhas Estatísticas</h2>
+    <h2 style="margin-bottom:16px;">ðŸ“Š As Minhas EstatÃ­sticas</h2>
     <div id="conteudoEstatisticas"></div>
   </div>
   <div id="perfilOutroDiv" style="display:none">
-    <button onclick="mostrarFeed()" style="background:#6b7280;">⬅ Voltar</button>
+    <button onclick="mostrarFeed()" style="background:#6b7280;">â¬… Voltar</button>
     <div style="margin-top:16px;">
       <div class="outro-avatar" id="outroAvatar">?</div>
       <h2 id="outroNomeTitulo"></h2>
@@ -336,20 +352,20 @@
     <div id="postsOutro"></div>
   </div>
   <div id="perfil" style="display:none">
-    <h2>👤 Meu Perfil</h2>
+    <h2>ðŸ‘¤ Meu Perfil</h2>
     <img id="fotoPerfil" src="https://via.placeholder.com/100" style="border-radius:50%; width:100px; height:100px; margin-top:16px;">
     <br><br>
     <input type="file" accept="image/*" onchange="trocarFoto(event)">
     <br><br>
     <p id="nomePerfilTexto"><strong>Nome:</strong> </p>
-    <p id="bioTexto"><strong>Bio:</strong> Utilizador do ConnectApp! 🚀</p>
-    <button class="btn-editar" onclick="toggleEditarBio()">✏️ Editar Perfil</button>
+    <p id="bioTexto"><strong>Bio:</strong> Utilizador do ConnectApp! ðŸš€</p>
+    <button class="btn-editar" onclick="toggleEditarBio()">âœï¸ Editar Perfil</button>
     <div id="editBioBox" style="display:none;margin-top:8px;text-align:left;">
-      <label style="font-size:13px;color:#6b7280;">Bio (máx 100 caracteres)</label>
+      <label style="font-size:13px;color:#6b7280;">Bio (mÃ¡x 100 caracteres)</label>
       <textarea id="bioInput" maxlength="100" placeholder="Escreve algo sobre ti..." style="height:60px;margin-top:4px;"></textarea>
-      <label style="font-size:13px;color:#6b7280;display:block;margin-top:8px;">🎵 Link de música (YouTube)</label>
+      <label style="font-size:13px;color:#6b7280;display:block;margin-top:8px;">ðŸŽµ Link de mÃºsica (YouTube)</label>
       <input type="text" id="musicaInput" placeholder="https://www.youtube.com/watch?v=..." style="width:100%;margin-top:4px;">
-      <button onclick="guardarBio()">💾 Guardar</button>
+      <button onclick="guardarBio()">ðŸ’¾ Guardar</button>
       <button onclick="toggleEditarBio()" style="background:#6b7280;">Cancelar</button>
     </div>
     <div id="musicaPerfilDiv" style="margin-top:10px;display:none;">
@@ -363,33 +379,33 @@
       <div class="perfil-stat"><strong id="numPosts">0</strong><span>Posts</span></div>
     </div>
     <div class="notificacoes-box">
-      <h3>🔔 Notificações</h3>
+      <h3>ðŸ”” NotificaÃ§Ãµes</h3>
       <div id="listaNotificacoes"></div>
     </div>
     <div class="notificacoes-box">
-      <h3>🔖 Posts Guardados</h3>
+      <h3>ðŸ”– Posts Guardados</h3>
       <div id="listaGuardados"></div>
     </div>
     <div class="notificacoes-box">
-      <h3>🎁 Convida Amigos</h3>
-      <p style="font-size:12px;color:#6b7280;margin-bottom:8px;">Já convidaste <strong id="numConvidados">0</strong> amigo(s) para o ConnectApp!</p>
-      <button class="btn-whatsapp" onclick="partilharConvite()">📲 Partilhar Convite</button>
+      <h3>ðŸŽ Convida Amigos</h3>
+      <p style="font-size:12px;color:#6b7280;margin-bottom:8px;">JÃ¡ convidaste <strong id="numConvidados">0</strong> amigo(s) para o ConnectApp!</p>
+      <button class="btn-whatsapp" onclick="partilharConvite()">ðŸ“² Partilhar Convite</button>
     </div>
     <div class="notificacoes-box">
-      <h3>📥 Os Meus Dados</h3>
-      <p style="font-size:12px;color:#6b7280;margin-bottom:8px;">Descarrega uma cópia de todos os teus dados (posts, seguidores, bio, etc.)</p>
-      <button onclick="exportarDados()">📥 Exportar Dados</button>
+      <h3>ðŸ“¥ Os Meus Dados</h3>
+      <p style="font-size:12px;color:#6b7280;margin-bottom:8px;">Descarrega uma cÃ³pia de todos os teus dados (posts, seguidores, bio, etc.)</p>
+      <button onclick="exportarDados()">ðŸ“¥ Exportar Dados</button>
     </div>
   </div>
   <div id="chatDiv" style="display:none; max-width:600px; margin:24px auto; padding:20px 16px;">
-    <h2>💬 Chat em Tempo Real</h2>
+    <h2>ðŸ’¬ Chat em Tempo Real</h2>
     <div id="mensagens"></div>
     <div class="chat-input-box">
       <input id="inputMsg" type="text" placeholder="Digite uma mensagem...">
       <button onclick="enviarMsg()">Enviar</button>
     </div>
   </div>
-  <footer><p>Feito por Laiton 🚀</p></footer>
+  <footer><p>Feito por Laiton ðŸš€</p></footer>
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
     import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, orderBy, query, serverTimestamp, onSnapshot, setDoc, getDoc, updateDoc, increment, where, limit } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore.js";
@@ -415,9 +431,9 @@
     let dmOutroUsuario = null;
     let dmUnsubscribe = null;
     let modoAnonimo = false;
-    const EMOJIS_REACAO = ["👍","❤️","😂","😮","😢","🔥"];
+    const EMOJIS_REACAO = ["ðŸ‘","â¤ï¸","ðŸ˜‚","ðŸ˜®","ðŸ˜¢","ðŸ”¥"];
     const THRESHOLD_VERIFICACAO = 5;
-    const BIO_PADRAO = "Utilizador do ConnectApp! 🚀";
+    const BIO_PADRAO = "Utilizador do ConnectApp! ðŸš€";
 
     const TEMAS = [
       { nome: "Roxo/Rosa", cor1: "#5b6ef5", cor2: "#f56b6b" },
@@ -458,12 +474,12 @@
     const temaGuardado = parseInt(localStorage.getItem("temaIdx") || "0");
     aplicarTema(temaGuardado);
 
-    if (modoClaro) { document.body.classList.add("claro"); document.getElementById("modoBtn").textContent = "☀️ Claro"; }
+    if (modoClaro) { document.body.classList.add("claro"); document.getElementById("modoBtn").textContent = "â˜€ï¸ Claro"; }
 
     window.toggleModo = function() {
       modoClaro = !modoClaro;
       document.body.classList.toggle("claro");
-      document.getElementById("modoBtn").textContent = modoClaro ? "☀️ Claro" : "🌙 Escuro";
+      document.getElementById("modoBtn").textContent = modoClaro ? "â˜€ï¸ Claro" : "ðŸŒ™ Escuro";
       localStorage.setItem("modoClaro", modoClaro);
     }
 
@@ -495,12 +511,12 @@
         ranking.sort((a,b) => b.pontos - a.pontos);
 
         lista.innerHTML = "";
-        const medalhas = ["🥇","🥈","🥉"];
+        const medalhas = ["ðŸ¥‡","ðŸ¥ˆ","ðŸ¥‰"];
         ranking.slice(0, 20).forEach((u, i) => {
           const div = document.createElement("div");
           div.className = "ranking-item" + (i < 3 ? " top"+(i+1) : "");
           const pos = i < 3 ? medalhas[i] : (i+1);
-          div.innerHTML = `<div class="ranking-pos">${pos}</div><div class="utilizador-avatar nome-clicavel" onclick="${nomeClick(u.nome)}">${u.nome[0].toUpperCase()}</div><div class="utilizador-nome nome-clicavel" onclick="${nomeClick(u.nome)}">${u.nome}${u.nome===nomeUsuario?" (tu)":""}${badgeFor(u.nome)}</div><div class="ranking-pontos">${u.pontos} pts</div>`;
+          div.innerHTML = `<div class="ranking-pos">${pos}</div><div class="utilizador-avatar nome-clicavel" onclick="${nomeClick(u.nome)}" style="background:${corAvatar(u.nome)}">${u.nome[0].toUpperCase()}</div><div class="utilizador-nome nome-clicavel" onclick="${nomeClick(u.nome)}">${u.nome}${u.nome===nomeUsuario?" (tu)":""}${badgeFor(u.nome)}</div><div class="ranking-pontos">${u.pontos} pts</div>`;
           lista.appendChild(div);
         });
         if (!ranking.length) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem utilizadores no ranking.</p>";
@@ -541,33 +557,33 @@
 
         let html = `
           <div class="estat-card">
-            <h3>📈 Resumo</h3>
+            <h3>ðŸ“ˆ Resumo</h3>
             <div class="estat-resumo">
               <div><strong>${meusPosts.length}</strong><span>Posts</span></div>
-              <div><strong>${totalViews}</strong><span>Visualizações</span></div>
-              <div><strong>${totalReacoes}</strong><span>Reações</span></div>
+              <div><strong>${totalViews}</strong><span>VisualizaÃ§Ãµes</span></div>
+              <div><strong>${totalReacoes}</strong><span>ReaÃ§Ãµes</span></div>
               <div><strong>${segSnap.size}</strong><span>Seguidores</span></div>
             </div>
           </div>
           <div class="estat-card">
-            <h3>😀 Distribuição de Reações</h3>`;
+            <h3>ðŸ˜€ DistribuiÃ§Ã£o de ReaÃ§Ãµes</h3>`;
         EMOJIS_REACAO.forEach(em => {
           const val = somaReacoes[em];
           const pct = Math.round((val/maxReacao)*100);
           html += `<div class="barra-row"><div class="barra-label">${em}</div><div class="barra-track"><div class="barra-fill" style="width:${pct}%"><span>${val}</span></div></div></div>`;
         });
-        html += `</div><div class="estat-card"><h3>🔥 Posts Mais Vistos</h3>`;
+        html += `</div><div class="estat-card"><h3>ðŸ”¥ Posts Mais Vistos</h3>`;
         if (!topPosts.length) {
-          html += `<p style="color:#6b7280;font-size:13px;">Ainda não tens posts.</p>`;
+          html += `<p style="color:#6b7280;font-size:13px;">Ainda nÃ£o tens posts.</p>`;
         } else {
           topPosts.forEach(p => {
             const textoCurto = (p.texto||"").substring(0,60) + ((p.texto||"").length > 60 ? "..." : "");
-            html += `<div class="top-post-item">${textoCurto || "(post com imagem)"}<div class="top-post-info">👁️ ${p.views||0} visualizações · ${p.hora}</div></div>`;
+            html += `<div class="top-post-item">${textoCurto || "(post com imagem)"}<div class="top-post-info">ðŸ‘ï¸ ${p.views||0} visualizaÃ§Ãµes Â· ${p.hora}</div></div>`;
           });
         }
         html += `</div>`;
         div.innerHTML = html;
-      } catch(e) { div.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar estatísticas.</p>"; }
+      } catch(e) { div.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar estatÃ­sticas.</p>"; }
     }
 
     window.verOnline = async function() {
@@ -586,10 +602,10 @@
           nomesVistos.add(u.nome);
           const div = document.createElement("div"); div.className = "utilizador-card";
           const isMe = u.nome === nomeUsuario;
-          div.innerHTML = `<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="${nomeClick(u.nome)}" style="position:relative;">${u.nome[0].toUpperCase()}<span style="position:absolute;bottom:-2px;right:-2px;width:12px;height:12px;background:#4ecb8d;border-radius:50%;border:2px solid #1e2230;"></span></div><div><div class="utilizador-nome nome-clicavel" onclick="${nomeClick(u.nome)}">${u.nome}${isMe?" (tu)":""}${badgeFor(u.nome)}</div><div class="utilizador-bio" style="color:#4ecb8d;">🟢 Online agora</div></div></div>`;
+          div.innerHTML = `<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="${nomeClick(u.nome)}" style="position:relative;background:${corAvatar(u.nome)}">${u.nome[0].toUpperCase()}<span style="position:absolute;bottom:-2px;right:-2px;width:12px;height:12px;background:#4ecb8d;border-radius:50%;border:2px solid #1e2230;"></span></div><div><div class="utilizador-nome nome-clicavel" onclick="${nomeClick(u.nome)}">${u.nome}${isMe?" (tu)":""}${badgeFor(u.nome)}</div><div class="utilizador-bio" style="color:#4ecb8d;">ðŸŸ¢ Online agora</div></div></div>`;
           lista.appendChild(div);
         });
-        if (!lista.children.length) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ninguém online agora.</p>";
+        if (!lista.children.length) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>NinguÃ©m online agora.</p>";
       } catch(e) { lista.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
     }
 
@@ -606,11 +622,11 @@
       if (bloqueados.includes(outroNome)) {
         if (!confirm("Desbloquear "+outroNome+"?")) return;
         bloqueados = bloqueados.filter(n => n !== outroNome);
-        setStatus("✅ "+outroNome+" desbloqueado.");
+        setStatus("âœ… "+outroNome+" desbloqueado.");
       } else {
         if (!confirm("Bloquear "+outroNome+"? Os posts e mensagens desta pessoa deixam de aparecer para ti.")) return;
         bloqueados.push(outroNome);
-        setStatus("🚫 "+outroNome+" bloqueado.");
+        setStatus("ðŸš« "+outroNome+" bloqueado.");
       }
       localStorage.setItem("bloqueados_"+nomeUsuario, JSON.stringify(bloqueados));
       verPerfilOutro(outroNome);
@@ -619,7 +635,26 @@
 
     function getBloqueados2() { return getBloqueados(); }
 
-    function badgeFor(nome) { return verificados[nome] ? ' <span class="badge-verificado" title="Conta verificada">✅</span>' : ''; }
+    function badgeFor(nome) { return verificados[nome] ? ' <span class="badge-verificado" title="Conta verificada">âœ…</span>' : ''; }
+
+    function corAvatar(nome) {
+      const cores = [
+        ["#5b6ef5","#a78bfa"], ["#f56b6b","#fbbf24"], ["#10b981","#3b82f6"],
+        ["#f97316","#ec4899"], ["#7c3aed","#f59e0b"], ["#db2777","#7c3aed"],
+        ["#16a34a","#ca8a04"], ["#dc2626","#991b1b"], ["#0ea5e9","#6366f1"],
+        ["#14b8a6","#8b5cf6"], ["#f43f5e","#fb923c"], ["#84cc16","#22d3ee"]
+      ];
+      let hash = 0;
+      for (let i = 0; i < (nome||"").length; i++) hash += nome.charCodeAt(i);
+      const par = cores[hash % cores.length];
+      return `linear-gradient(135deg, ${par[0]}, ${par[1]})`;
+    }
+
+    function avatarHtml(nome, tamanho, extra="") {
+      const letra = (nome||"?")[0].toUpperCase();
+      const bg = corAvatar(nome);
+      return `<div style="width:${tamanho}px;height:${tamanho}px;border-radius:50%;background:${bg};display:flex;align-items:center;justify-content:center;font-weight:700;font-size:${Math.round(tamanho*0.4)}px;color:white;flex-shrink:0;${extra}">${letra}</div>`;
+    }
     function nomeClick(nome) { return nome === nomeUsuario ? "verPerfil()" : `verPerfilOutro('${nome}')`; }
     function formatarTexto(texto) {
       let t = (texto||"").replace(/#(\w+)/g,'<span class="hashtag" onclick="filtrarHashtag(\'$1\')">#$1</span>');
@@ -657,7 +692,7 @@
       const div = document.getElementById("trendingBar");
       if (!t.length) { div.style.display="none"; return; }
       div.style.display="block";
-      div.innerHTML = "<div class='trending-titulo'>🔥 Trending</div><div class='trending-tags'>" +
+      div.innerHTML = "<div class='trending-titulo'>ðŸ”¥ Trending</div><div class='trending-tags'>" +
         t.map(([tag,n])=>`<button class="hashtag-chip" onclick="filtrarHashtag('${tag}')">#${tag} <small>${n}</small></button>`).join("") + "</div>";
     }
 
@@ -691,37 +726,37 @@
       }
       reconhecimentoVoz = criarReconhecimentoVoz();
       if (!reconhecimentoVoz) {
-        alert("😕 O teu navegador não suporta comandos de voz. Tenta usar o Chrome.");
+        alert("ðŸ˜• O teu navegador nÃ£o suporta comandos de voz. Tenta usar o Chrome.");
         return;
       }
       vozAtiva = true;
-      btn.textContent = "🔴 A ouvir...";
+      btn.textContent = "ðŸ”´ A ouvir...";
       btn.style.background = "var(--cor2)";
 
       reconhecimentoVoz.onresult = function(event) {
         const texto = event.results[0][0].transcript;
         const caixa = document.getElementById("caixaTexto");
         caixa.value = caixa.value ? (caixa.value + " " + texto) : texto;
-        setStatus("🎤 Texto adicionado por voz!");
+        setStatus("ðŸŽ¤ Texto adicionado por voz!");
       };
 
       reconhecimentoVoz.onerror = function(event) {
         if (event.error === "not-allowed" || event.error === "permission-denied") {
-          setStatus("❌ Permissão de microfone negada.");
+          setStatus("âŒ PermissÃ£o de microfone negada.");
         } else if (event.error === "no-speech") {
-          setStatus("😕 Não ouvi nada. Tenta novamente.");
+          setStatus("ðŸ˜• NÃ£o ouvi nada. Tenta novamente.");
         } else {
-          setStatus("❌ Erro ao reconhecer voz.");
+          setStatus("âŒ Erro ao reconhecer voz.");
         }
       };
 
       reconhecimentoVoz.onend = function() {
         vozAtiva = false;
-        btn.textContent = "🎤 Falar";
+        btn.textContent = "ðŸŽ¤ Falar";
         btn.style.background = "#2a2f42";
       };
 
-      try { reconhecimentoVoz.start(); } catch(e) { vozAtiva = false; btn.textContent = "🎤 Falar"; btn.style.background = "#2a2f42"; }
+      try { reconhecimentoVoz.start(); } catch(e) { vozAtiva = false; btn.textContent = "ðŸŽ¤ Falar"; btn.style.background = "#2a2f42"; }
     }
 
     window.previewImagem = function(e) {
@@ -734,8 +769,8 @@
       const r=new FileReader(); r.onload=async x=>{
         try { const exp=new Date(); exp.setHours(exp.getHours()+24);
           await addDoc(collection(db,"stories"),{imagem:x.target.result,autor:nomeUsuario,expira:exp.getTime(),data:serverTimestamp()});
-          setStatus("✅ Story publicado!"); carregarStories();
-        } catch(e){setStatus("❌ Erro.");}
+          setStatus("âœ… Story publicado!"); carregarStories();
+        } catch(e){setStatus("âŒ Erro.");}
       }; r.readAsDataURL(f);
     }
 
@@ -743,11 +778,13 @@
       const container=document.getElementById("storiesContainer");
       const addBtn=container.querySelector(".story-item");
       container.innerHTML=""; container.appendChild(addBtn);
+      storiesLista = [];
       try {
         const agora=new Date().getTime();
         const snap=await getDocs(collection(db,"stories"));
         snap.forEach(d=>{
           const s=d.data(); if(s.expira<agora){deleteDoc(doc(db,"stories",d.id));return;}
+          storiesLista.push({imagem: s.imagem, autor: s.autor});
           const item=document.createElement("div"); item.className="story-item";
           item.onclick=()=>verStory(s.imagem,s.autor);
           item.innerHTML=`<div class="story-avatar"><img src="${s.imagem}"></div><span class="story-nome">${s.autor}</span>`;
@@ -756,8 +793,54 @@
       } catch(e){}
     }
 
-    window.verStory=function(imagem,autor){document.getElementById("storyImg").src=imagem;document.getElementById("storyAutor").textContent=autor;document.getElementById("storyViewer").style.display="flex";}
-    window.fecharStory=function(){document.getElementById("storyViewer").style.display="none";}
+    function mostrarStory(idx) {
+      if (idx < 0 || idx >= storiesLista.length) { fecharStory(); return; }
+      storyAtualIdx = idx;
+      const s = storiesLista[idx];
+      document.getElementById("storyImg").src = s.imagem;
+      document.getElementById("storyAutor").textContent = s.autor;
+      document.getElementById("storyContador").textContent = (idx+1) + " / " + storiesLista.length;
+
+      // Reset e iniciar barra de progresso
+      clearTimeout(storyTimer);
+      clearInterval(storyProgressTimer);
+      const fill = document.getElementById("storyProgressFill");
+      fill.style.width = "0%";
+      fill.style.transition = "none";
+
+      let inicio = Date.now();
+      storyProgressTimer = setInterval(() => {
+        const elapsed = Date.now() - inicio;
+        const pct = Math.min(100, (elapsed / STORY_DURACAO) * 100);
+        fill.style.width = pct + "%";
+        if (pct >= 100) clearInterval(storyProgressTimer);
+      }, 50);
+
+      storyTimer = setTimeout(() => storyProximo(), STORY_DURACAO);
+    }
+
+    window.storyProximo = function() {
+      clearTimeout(storyTimer); clearInterval(storyProgressTimer);
+      mostrarStory(storyAtualIdx + 1);
+    }
+
+    window.storyAnterior = function() {
+      clearTimeout(storyTimer); clearInterval(storyProgressTimer);
+      mostrarStory(storyAtualIdx - 1);
+    }
+
+    window.verStory = function(imagem, autor) {
+      document.getElementById("storyViewer").style.display = "flex";
+      // Encontrar o Ã­ndice deste story na lista
+      const idx = storiesLista.findIndex(s => s.imagem === imagem && s.autor === autor);
+      mostrarStory(idx >= 0 ? idx : 0);
+    }
+
+    window.fecharStory = function() {
+      clearTimeout(storyTimer); clearInterval(storyProgressTimer);
+      document.getElementById("storyViewer").style.display = "none";
+      document.getElementById("storyProgressFill").style.width = "0%";
+    }
 
     if (nomeUsuario) {
       document.getElementById("loginTela").style.display="none";
@@ -765,15 +848,15 @@
       document.getElementById("nomePerfilTexto").innerHTML="<strong>Nome:</strong> "+nomeUsuario;
       carregarPosts(); registarOnline(); monitorarChat(); registarUtilizador(); carregarStories(); monitorarNotificacoes(); monitorarDMs();
     } else {
-      // Modo só leitura para visitantes
+      // Modo sÃ³ leitura para visitantes
       document.getElementById("loginTela").style.display="none";
-      document.getElementById("bemVindo").textContent="Visitante 👀";
+      document.getElementById("bemVindo").textContent="Visitante ðŸ‘€";
       document.getElementById("modoLeituraDiv").style.display="block";
       carregarPostsSoLeitura();
     }
 
     async function carregarPostsSoLeitura() {
-      // Esconde elementos de interação para visitantes
+      // Esconde elementos de interaÃ§Ã£o para visitantes
       document.getElementById("storiesBar").style.display = "none";
       const feedDiv = document.getElementById("feedDiv");
       feedDiv.style.display = "block";
@@ -810,12 +893,12 @@
           const imgHtml = p.imagem ? `<img src="${p.imagem}" class="post-img">` : "";
           const totalReacoes = Object.values(p.reacoes||{}).reduce((a,b)=>a+b,0);
           div.innerHTML = `
-            <strong>${p.autor}</strong>${badgeFor(p.autor)} · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
+            <strong>${p.autor}</strong>${badgeFor(p.autor)} Â· <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
             <p style="margin:10px 0;color:#c8cad8;">${formatarTexto(p.texto)}</p>
             ${imgHtml}
-            <div style="font-size:12px;color:#6b7280;margin-top:8px;">👁️ ${p.views||0} visualizações · ❤️ ${totalReacoes} reações</div>
+            <div style="font-size:12px;color:#6b7280;margin-top:8px;">ðŸ‘ï¸ ${p.views||0} visualizaÃ§Ãµes Â· â¤ï¸ ${totalReacoes} reaÃ§Ãµes</div>
             <div style="margin-top:10px;background:rgba(255,255,255,0.05);border-radius:8px;padding:10px;text-align:center;font-size:13px;color:#6b7280;">
-              <a href="#" onclick="document.getElementById('loginTela').style.display='flex'" style="color:var(--cor1);font-weight:600;">Entra para comentar e reagir →</a>
+              <a href="#" onclick="document.getElementById('loginTela').style.display='flex'" style="color:var(--cor1);font-weight:600;">Entra para comentar e reagir â†’</a>
             </div>`;
           postsDiv.appendChild(div);
         });
@@ -883,14 +966,14 @@
         snap.forEach(d=>{
           const n=d.data(); const div=document.createElement("div"); div.className="notif-item";
           const texto = n.tipo === "mencao"
-            ? `<strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} mencionou-te num post! 📢`
+            ? `<strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} mencionou-te num post! ðŸ“¢`
             : n.tipo === "convite"
-            ? `<strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} juntou-se ao ConnectApp através do teu convite! 🎁`
-            : `<strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} começou a seguir-te! 🎉`;
-          div.innerHTML=`<div class="notif-avatar">${n.deQuem[0].toUpperCase()}</div><div>${texto}</div>`;
+            ? `<strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} juntou-se ao ConnectApp atravÃ©s do teu convite! ðŸŽ`
+            : `<strong>${n.deQuem}</strong>${badgeFor(n.deQuem)} comeÃ§ou a seguir-te! ðŸŽ‰`;
+          div.innerHTML=`<div class="notif-avatar" style="background:${corAvatar(n.deQuem)}">${n.deQuem[0].toUpperCase()}</div><div>${texto}</div>`;
           lista.appendChild(div); if(!n.lida) updateDoc(doc(db,"notificacoes",d.id),{lida:true});
         });
-        if(snap.empty) lista.innerHTML="<p style='color:#6b7280;font-size:13px;'>Sem notificações ainda.</p>";
+        if(snap.empty) lista.innerHTML="<p style='color:#6b7280;font-size:13px;'>Sem notificaÃ§Ãµes ainda.</p>";
         document.getElementById("perfilNotif").style.display="none";
       } catch(e){}
     }
@@ -931,8 +1014,8 @@
         document.getElementById("bioTexto").innerHTML="<strong>Bio:</strong> "+novaBio;
         document.getElementById("editBioBox").style.display="none";
         mostrarMusicaPerfil(musica);
-        setStatus("✅ Perfil atualizado!");
-      } catch(e){setStatus("❌ Erro.");}
+        setStatus("âœ… Perfil atualizado!");
+      } catch(e){setStatus("âŒ Erro.");}
     }
 
     function youtubeEmbedUrl(url) {
@@ -960,11 +1043,11 @@
 
     function calcularNivel(seguidores, posts) {
       const total = seguidores + posts;
-      if (total >= 50) return "👑 Lenda";
-      if (total >= 20) return "💎 Pro";
-      if (total >= 10) return "🔥 Popular";
-      if (total >= 5)  return "⭐ Ativo";
-      return "🌱 Iniciante";
+      if (total >= 50) return "ðŸ‘‘ Lenda";
+      if (total >= 20) return "ðŸ’Ž Pro";
+      if (total >= 10) return "ðŸ”¥ Popular";
+      if (total >= 5)  return "â­ Ativo";
+      return "ðŸŒ± Iniciante";
     }
 
     async function carregarEstatisticas() {
@@ -981,14 +1064,14 @@
         document.getElementById("numSeguidores").textContent=segSnap.size;
         document.getElementById("numSeguindo").textContent=segIndoSnap.size;
         document.getElementById("numPosts").textContent=meusPosts.length;
-        document.getElementById("nivelDiv").textContent="Nível: " + calcularNivel(segSnap.size, meusPosts.length);
+        document.getElementById("nivelDiv").textContent="NÃ­vel: " + calcularNivel(segSnap.size, meusPosts.length);
         const verificado=segSnap.size>=THRESHOLD_VERIFICACAO;
         await setDoc(doc(db,"utilizadores",nomeUsuario),{verificado},{merge:true});
         verificados[nomeUsuario]=verificado;
         document.getElementById("nomePerfilTexto").innerHTML="<strong>Nome:</strong> "+nomeUsuario+badgeFor(nomeUsuario);
         const el=document.getElementById("statusVerificado");
-        if(verificado){el.innerHTML="✅ <strong>Conta verificada!</strong>";}
-        else{el.innerHTML=`🔒 Faltam ${THRESHOLD_VERIFICACAO-segSnap.size} seguidor(es) para verificação (${segSnap.size}/${THRESHOLD_VERIFICACAO})`;}
+        if(verificado){el.innerHTML="âœ… <strong>Conta verificada!</strong>";}
+        else{el.innerHTML=`ðŸ”’ Faltam ${THRESHOLD_VERIFICACAO-segSnap.size} seguidor(es) para verificaÃ§Ã£o (${segSnap.size}/${THRESHOLD_VERIFICACAO})`;}
       } catch(e){}
     }
 
@@ -996,6 +1079,7 @@
       if(outroNome===nomeUsuario){verPerfil();return;}
       escondertodas(); document.getElementById("perfilOutroDiv").style.display="block";
       document.getElementById("outroAvatar").textContent=outroNome[0].toUpperCase();
+      document.getElementById("outroAvatar").style.background=corAvatar(outroNome);
       document.getElementById("outroNomeTitulo").textContent=outroNome;
       document.getElementById("outroBioTexto").textContent="Carregando...";
       document.getElementById("outroAcoes").innerHTML="";
@@ -1013,10 +1097,10 @@
         const postsSnap=await getDocs(query(collection(db,"posts"),orderBy("data","desc")));
         const postsDoOutro=[]; postsSnap.forEach(d=>{if(d.data().autor===outroNome)postsDoOutro.push({id:d.id,data:d.data()});});
         document.getElementById("outroNumPosts").textContent=postsDoOutro.length;
-        document.getElementById("outroNivelDiv").textContent="Nível: " + calcularNivel(segSnap.size, postsDoOutro.length);
+        document.getElementById("outroNivelDiv").textContent="NÃ­vel: " + calcularNivel(segSnap.size, postsDoOutro.length);
         const jaSegue=await getDoc(doc(db,"utilizadores",outroNome,"seguidores",nomeUsuario));
         const jaBloqueado = estaBloqueado(outroNome);
-        document.getElementById("outroAcoes").innerHTML=`<button class="${jaSegue.exists()?"btn-seguindo":"btn-seguir"}" onclick="seguir('${outroNome}',this)">${jaSegue.exists()?"✅ A seguir":"➕ Seguir"}</button><button class="btn-mensagem" onclick="abrirDM('${outroNome}')">✉️ Mensagem</button><button class="btn-danger" onclick="toggleBloqueio('${outroNome}')">${jaBloqueado?"✅ Desbloquear":"🚫 Bloquear"}</button><button class="btn-danger" onclick="denunciarUtilizador('${outroNome}')">🚩 Denunciar</button>`;
+        document.getElementById("outroAcoes").innerHTML=`<button class="${jaSegue.exists()?"btn-seguindo":"btn-seguir"}" onclick="seguir('${outroNome}',this)">${jaSegue.exists()?"âœ… A seguir":"âž• Seguir"}</button><button class="btn-mensagem" onclick="abrirDM('${outroNome}')">âœ‰ï¸ Mensagem</button><button class="btn-danger" onclick="toggleBloqueio('${outroNome}')">${jaBloqueado?"âœ… Desbloquear":"ðŸš« Bloquear"}</button><button class="btn-danger" onclick="denunciarUtilizador('${outroNome}')">ðŸš© Denunciar</button>`;
         const div=document.getElementById("postsOutro"); div.innerHTML="";
         if(!postsDoOutro.length){div.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem posts.</p>";}
         else{postsDoOutro.forEach(d=>{div.appendChild(criarPostCard(d));carregarComentarios(d.id);});}
@@ -1033,7 +1117,7 @@
         snap.forEach(d=>{
           const u=d.data(); if(u.nome===nomeUsuario)return; if(estaBloqueado(u.nome))return;
           const div=document.createElement("div"); div.className="utilizador-card";
-          div.innerHTML=`<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio||BIO_PADRAO}</div></div></div><div class="utilizador-acoes"><button class="btn-mensagem" onclick="abrirDM('${u.nome}')">✉️</button><button class="btn-seguir" onclick="seguir('${u.nome}',this)">➕ Seguir</button></div>`;
+          div.innerHTML=`<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="verPerfilOutro('${u.nome}')" style="background:${corAvatar(u.nome)}">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio||BIO_PADRAO}</div></div></div><div class="utilizador-acoes"><button class="btn-mensagem" onclick="abrirDM('${u.nome}')">âœ‰ï¸</button><button class="btn-seguir" onclick="seguir('${u.nome}',this)">âž• Seguir</button></div>`;
           lista.appendChild(div);
         });
         if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum utilizador ainda!</p>";
@@ -1054,8 +1138,8 @@
             if (!souMembro.exists()) continue;
           }
           const div=document.createElement("div"); div.className="grupo-card";
-          const cadeado = g.privado ? "🔒 " : "";
-          div.innerHTML=`<div class="grupo-icone">🏘️</div><h3>${cadeado}${g.nome}</h3><p>${g.descricao||"Sem descrição"} · ${mSnap.size} membro(s)</p><button onclick="abrirGrupo('${d.id}')">Abrir grupo</button>`;
+          const cadeado = g.privado ? "ðŸ”’ " : "";
+          div.innerHTML=`<div class="grupo-icone">ðŸ˜ï¸</div><h3>${cadeado}${g.nome}</h3><p>${g.descricao||"Sem descriÃ§Ã£o"} Â· ${mSnap.size} membro(s)</p><button onclick="abrirGrupo('${d.id}')">Abrir grupo</button>`;
           lista.appendChild(div);
         }
         if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum grupo ainda!</p>";
@@ -1080,36 +1164,36 @@
         document.getElementById("nomeGrupoInput").value=""; document.getElementById("descGrupoInput").value="";
         document.getElementById("grupoPrivadoInput").checked=false;
         if (codigo) {
-          setStatus("✅ Grupo privado criado! Código: "+codigo);
-          alert("Grupo privado criado!\n\nCódigo de convite: "+codigo+"\n\nPartilha este código com quem quiseres convidar.");
+          setStatus("âœ… Grupo privado criado! CÃ³digo: "+codigo);
+          alert("Grupo privado criado!\n\nCÃ³digo de convite: "+codigo+"\n\nPartilha este cÃ³digo com quem quiseres convidar.");
         } else {
-          setStatus("✅ Grupo criado!");
+          setStatus("âœ… Grupo criado!");
         }
         verGrupos();
-      } catch(e){setStatus("❌ Erro.");}
+      } catch(e){setStatus("âŒ Erro.");}
     }
 
     window.entrarComCodigo = async function() {
       const codigo = document.getElementById("codigoConviteInput").value.trim().toUpperCase();
-      if (!codigo) { alert("Cola um código de convite!"); return; }
+      if (!codigo) { alert("Cola um cÃ³digo de convite!"); return; }
       try {
         const snap = await getDocs(query(collection(db,"grupos"), where("codigoConvite","==",codigo)));
-        if (snap.empty) { setStatus("❌ Código inválido."); return; }
+        if (snap.empty) { setStatus("âŒ CÃ³digo invÃ¡lido."); return; }
         const grupoDoc = snap.docs[0];
         await setDoc(doc(db,"grupos",grupoDoc.id,"membros",nomeUsuario),{nome:nomeUsuario});
         document.getElementById("codigoConviteInput").value="";
-        setStatus("✅ Entraste no grupo!");
+        setStatus("âœ… Entraste no grupo!");
         abrirGrupo(grupoDoc.id);
-      } catch(e){setStatus("❌ Erro ao entrar.");}
+      } catch(e){setStatus("âŒ Erro ao entrar.");}
     }
 
     window.abrirGrupo = async function(grupoId) {
       escondertodas(); document.getElementById("grupoDetalheDiv").style.display="block"; grupoAtualId=grupoId;
       try {
         const gSnap=await getDoc(doc(db,"grupos",grupoId)); const g=gSnap.data();
-        const cadeado = g.privado ? "🔒 " : "";
-        document.getElementById("grupoNomeTitulo").textContent="🏘️ "+cadeado+g.nome;
-        document.getElementById("grupoDescTexto").textContent=g.descricao||"Sem descrição";
+        const cadeado = g.privado ? "ðŸ”’ " : "";
+        document.getElementById("grupoNomeTitulo").textContent="ðŸ˜ï¸ "+cadeado+g.nome;
+        document.getElementById("grupoDescTexto").textContent=g.descricao||"Sem descriÃ§Ã£o";
         const mSnap=await getDocs(collection(db,"grupos",grupoId,"membros"));
         document.getElementById("grupoMembrosCount").textContent=mSnap.size;
         const souMembro=await getDoc(doc(db,"grupos",grupoId,"membros",nomeUsuario));
@@ -1117,21 +1201,21 @@
         let convitebtn = document.getElementById("btnConviteGrupo");
         if (convitebtn) convitebtn.remove();
         if(souMembro.exists()){
-          btn.textContent="✅ Sair do grupo";btn.className="btn-seguindo";pb.style.display="block";
+          btn.textContent="âœ… Sair do grupo";btn.className="btn-seguindo";pb.style.display="block";
           if (g.privado && g.criador===nomeUsuario && g.codigoConvite) {
             const novoBtn = document.createElement("button");
             novoBtn.id = "btnConviteGrupo";
-            novoBtn.textContent = "🔑 Ver código de convite";
-            novoBtn.onclick = () => alert("Código de convite: "+g.codigoConvite+"\n\nPartilha este código com quem quiseres convidar para o grupo.");
+            novoBtn.textContent = "ðŸ”‘ Ver cÃ³digo de convite";
+            novoBtn.onclick = () => alert("CÃ³digo de convite: "+g.codigoConvite+"\n\nPartilha este cÃ³digo com quem quiseres convidar para o grupo.");
             btn.parentNode.insertBefore(novoBtn, btn.nextSibling);
           }
           carregarPostsGrupo(grupoId);
         } else if (g.privado) {
           btn.style.display="none"; pb.style.display="none";
-          document.getElementById("postsGrupo").innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>🔒 Este grupo é privado. Precisas de um código de convite para entrar.</p>";
+          document.getElementById("postsGrupo").innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>ðŸ”’ Este grupo Ã© privado. Precisas de um cÃ³digo de convite para entrar.</p>";
         } else {
           btn.style.display="inline-block";
-          btn.textContent="➕ Entrar no grupo";btn.className="btn-seguir";pb.style.display="none";
+          btn.textContent="âž• Entrar no grupo";btn.className="btn-seguir";pb.style.display="none";
           carregarPostsGrupo(grupoId);
         }
       } catch(e){}
@@ -1169,7 +1253,7 @@
           item.innerHTML=`<strong class="nome-clicavel" onclick="${nomeClick(p.autor)}">${p.autor}</strong>${badgeFor(p.autor)}<div>${formatarTexto(p.texto)}</div><div class="pg-info">${p.hora}</div>`;
           div.appendChild(item);
         });
-        if(snap.empty) div.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem publicações.</p>";
+        if(snap.empty) div.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem publicaÃ§Ãµes.</p>";
       } catch(e){}
     }
 
@@ -1186,7 +1270,7 @@
         conversas.forEach(c=>{
           const outro=(c.participantes||[]).find(p=>p!==nomeUsuario); if(!outro)return;
           const div=document.createElement("div"); div.className="utilizador-card";
-          div.innerHTML=`<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="verPerfilOutro('${outro}')">${outro[0].toUpperCase()}</div><div><div class="utilizador-nome nome-clicavel" onclick="verPerfilOutro('${outro}')">${outro}${badgeFor(outro)}</div><div class="utilizador-bio">${(c.ultimaMsg||"").substring(0,40)}</div></div></div><button onclick="abrirDM('${outro}')">Abrir</button>`;
+          div.innerHTML=`<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="verPerfilOutro('${outro}')" style="background:${corAvatar(outro)}">${outro[0].toUpperCase()}</div><div><div class="utilizador-nome nome-clicavel" onclick="verPerfilOutro('${outro}')">${outro}${badgeFor(outro)}</div><div class="utilizador-bio">${(c.ultimaMsg||"").substring(0,40)}</div></div></div><button onclick="abrirDM('${outro}')">Abrir</button>`;
           lista.appendChild(div);
         });
         if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem conversas!</p>";
@@ -1196,7 +1280,7 @@
     window.abrirDM = async function(outroNome) {
       escondertodas(); document.getElementById("dmConversaDiv").style.display="block";
       dmOutroUsuario=outroNome; dmAtualId=dmId(nomeUsuario,outroNome);
-      document.getElementById("dmNomeTitulo").innerHTML="✉️ "+outroNome+badgeFor(outroNome);
+      document.getElementById("dmNomeTitulo").innerHTML="âœ‰ï¸ "+outroNome+badgeFor(outroNome);
       const mDiv=document.getElementById("dmMensagens");
       mDiv.innerHTML="<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
       try {
@@ -1212,7 +1296,7 @@
           div.className="msg-item "+(m.autor===nomeUsuario?"msg-minha":"msg-outro");
           div.textContent=m.texto; mDiv.appendChild(div);
         });
-        if(snap.empty) mDiv.innerHTML="<p style='color:#6b7280;text-align:center;'>Diz olá! 👋</p>";
+        if(snap.empty) mDiv.innerHTML="<p style='color:#6b7280;text-align:center;'>Diz olÃ¡! ðŸ‘‹</p>";
         mDiv.scrollTop=mDiv.scrollHeight;
       });
     }
@@ -1236,16 +1320,17 @@
 
     window.seguir = async function(autorPost, botao) {
       if(autorPost===nomeUsuario)return;
+      listaASeguir = []; // reset cache
       try {
         const jaSegue=await getDoc(doc(db,"utilizadores",autorPost,"seguidores",nomeUsuario));
         if(jaSegue.exists()){
           await deleteDoc(doc(db,"utilizadores",autorPost,"seguidores",nomeUsuario));
           await deleteDoc(doc(db,"utilizadores",nomeUsuario,"seguindo",autorPost));
-          botao.textContent="➕ Seguir"; botao.className="btn-seguir";
+          botao.textContent="âž• Seguir"; botao.className="btn-seguir";
         } else {
           await setDoc(doc(db,"utilizadores",autorPost,"seguidores",nomeUsuario),{nome:nomeUsuario});
           await setDoc(doc(db,"utilizadores",nomeUsuario,"seguindo",autorPost),{nome:autorPost});
-          botao.textContent="✅ A seguir"; botao.className="btn-seguindo";
+          botao.textContent="âœ… A seguir"; botao.className="btn-seguindo";
           await addDoc(collection(db,"notificacoes"),{paraQuem:autorPost,deQuem:nomeUsuario,tipo:"seguidor",lida:false,data:serverTimestamp()});
         }
         const segSnap=await getDocs(collection(db,"utilizadores",autorPost,"seguidores"));
@@ -1265,8 +1350,8 @@
         document.getElementById("edit-"+postId).style.display="none";
         const idx=todosPosts.findIndex(p=>p.id===postId);
         if(idx!==-1)todosPosts[idx].data.texto=novoTexto;
-        renderTrending(); setStatus("✅ Post editado!");
-      } catch(e){setStatus("❌ Erro.");}
+        renderTrending(); setStatus("âœ… Post editado!");
+      } catch(e){setStatus("âŒ Erro.");}
     }
 
     window.reagir = async function(postId,emoji) {
@@ -1295,7 +1380,7 @@
     }
 
     window.exportarDados = async function() {
-      setStatus("⏳ A preparar os teus dados...");
+      setStatus("â³ A preparar os teus dados...");
       try {
         const userSnap = await getDoc(doc(db,"utilizadores",nomeUsuario));
         const dadosUser = userSnap.exists() ? userSnap.data() : {};
@@ -1347,43 +1432,43 @@
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
 
-        setStatus("✅ Dados exportados com sucesso!");
-      } catch(e) { setStatus("❌ Erro ao exportar dados."); }
+        setStatus("âœ… Dados exportados com sucesso!");
+      } catch(e) { setStatus("âŒ Erro ao exportar dados."); }
     }
 
     window.denunciarPost = async function(postId, autorPost) {
-      const motivos = ["Spam", "Conteúdo ofensivo", "Discurso de odio", "Assédio", "Outro"];
-      const escolha = prompt("Porque queres denunciar este post?\n\n1 - Spam\n2 - Conteúdo ofensivo\n3 - Discurso de ódio\n4 - Assédio\n5 - Outro\n\nDigite o número:");
+      const motivos = ["Spam", "ConteÃºdo ofensivo", "Discurso de odio", "AssÃ©dio", "Outro"];
+      const escolha = prompt("Porque queres denunciar este post?\n\n1 - Spam\n2 - ConteÃºdo ofensivo\n3 - Discurso de Ã³dio\n4 - AssÃ©dio\n5 - Outro\n\nDigite o nÃºmero:");
       if (!escolha) return;
       const idx = parseInt(escolha) - 1;
-      const motivo = motivos[idx] || "Não especificado";
+      const motivo = motivos[idx] || "NÃ£o especificado";
       try {
         await addDoc(collection(db,"denuncias"), {
           postId, autorPost, denunciante: nomeUsuario, motivo, data: serverTimestamp(), resolvido: false
         });
-        setStatus("🚩 Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.");
-      } catch(e) { setStatus("❌ Erro ao enviar denúncia."); }
+        setStatus("ðŸš© DenÃºncia enviada. Obrigado por ajudar a manter a comunidade segura.");
+      } catch(e) { setStatus("âŒ Erro ao enviar denÃºncia."); }
     }
 
     window.denunciarUtilizador = async function(nome) {
-      const motivos = ["Spam", "Conta falsa", "Assédio", "Conteúdo inadequado", "Outro"];
-      const escolha = prompt("Porque queres denunciar "+nome+"?\n\n1 - Spam\n2 - Conta falsa\n3 - Assédio\n4 - Conteúdo inadequado\n5 - Outro\n\nDigite o número:");
+      const motivos = ["Spam", "Conta falsa", "AssÃ©dio", "ConteÃºdo inadequado", "Outro"];
+      const escolha = prompt("Porque queres denunciar "+nome+"?\n\n1 - Spam\n2 - Conta falsa\n3 - AssÃ©dio\n4 - ConteÃºdo inadequado\n5 - Outro\n\nDigite o nÃºmero:");
       if (!escolha) return;
       const idx = parseInt(escolha) - 1;
-      const motivo = motivos[idx] || "Não especificado";
+      const motivo = motivos[idx] || "NÃ£o especificado";
       try {
         await addDoc(collection(db,"denuncias"), {
           autorPost: nome, denunciante: nomeUsuario, motivo, tipo: "utilizador", data: serverTimestamp(), resolvido: false
         });
-        setStatus("🚩 Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.");
-      } catch(e) { setStatus("❌ Erro ao enviar denúncia."); }
+        setStatus("ðŸš© DenÃºncia enviada. Obrigado por ajudar a manter a comunidade segura.");
+      } catch(e) { setStatus("âŒ Erro ao enviar denÃºncia."); }
     }
 
     window.toggleAnonimo = function() {
       modoAnonimo = !modoAnonimo;
       const btn = document.getElementById("btnAnonimo");
       btn.style.background = modoAnonimo ? "var(--cor2)" : "#2a2f42";
-      btn.textContent = modoAnonimo ? "🎭 Anónimo (ativo)" : "🎭 Anónimo";
+      btn.textContent = modoAnonimo ? "ðŸŽ­ AnÃ³nimo (ativo)" : "ðŸŽ­ AnÃ³nimo";
     }
 
     window.toggleSondagem = function() {
@@ -1431,11 +1516,11 @@
       let guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
       if (guardados.includes(postId)) {
         guardados = guardados.filter(id => id !== postId);
-        botao.textContent = "🔖 Guardar";
+        botao.textContent = "ðŸ”– Guardar";
         botao.classList.remove("ativo");
       } else {
         guardados.push(postId);
-        botao.textContent = "🔖 Guardado";
+        botao.textContent = "ðŸ”– Guardado";
         botao.classList.add("ativo");
       }
       localStorage.setItem("guardados_"+nomeUsuario, JSON.stringify(guardados));
@@ -1448,12 +1533,12 @@
       lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Carregando...</p>";
       const postsGuardados = todosPosts.filter(p => guardados.includes(p.id));
       lista.innerHTML = "";
-      if (!postsGuardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Posts guardados não encontrados no feed.</p>"; return; }
+      if (!postsGuardados.length) { lista.innerHTML = "<p style='color:#6b7280;font-size:13px;'>Posts guardados nÃ£o encontrados no feed.</p>"; return; }
       postsGuardados.forEach(d => {
         const div = document.createElement("div");
         div.className = "post-card";
         div.style.marginTop = "10px";
-        div.innerHTML = `<strong class="nome-clicavel" onclick="${nomeClick(d.data.autor)}">${d.data.autor}</strong>${badgeFor(d.data.autor)} · <span style="color:#6b7280;font-size:12px;">${d.data.hora}</span><p style="margin:8px 0;color:#c8cad8;font-size:13px;">${formatarTexto(d.data.texto)}</p><button onclick="toggleGuardar('${d.id}',this);this.closest('.post-card').remove();" style="background:#f56b6b;font-size:12px;padding:6px 12px;">🗑️ Remover</button>`;
+        div.innerHTML = `<strong class="nome-clicavel" onclick="${nomeClick(d.data.autor)}">${d.data.autor}</strong>${badgeFor(d.data.autor)} Â· <span style="color:#6b7280;font-size:12px;">${d.data.hora}</span><p style="margin:8px 0;color:#c8cad8;font-size:13px;">${formatarTexto(d.data.texto)}</p><button onclick="toggleGuardar('${d.id}',this);this.closest('.post-card').remove();" style="background:#f56b6b;font-size:12px;padding:6px 12px;">ðŸ—‘ï¸ Remover</button>`;
         lista.appendChild(div);
       });
     }
@@ -1472,38 +1557,38 @@
     function criarPostCard(d) {
       const p=d.data; const div=document.createElement("div"); div.className="post-card";
       const ehMeuPost = p.autorReal === nomeUsuario || (!p.autorReal && p.autor === nomeUsuario);
-      const nomeExibido = p.anonimo ? "🎭 Anónimo" + (ehMeuPost ? " (tu)" : "") : p.autor;
+      const nomeExibido = p.anonimo ? "ðŸŽ­ AnÃ³nimo" + (ehMeuPost ? " (tu)" : "") : p.autor;
       const nomeClickHtml = p.anonimo ? `<strong>${nomeExibido}</strong>` : `<strong class="nome-clicavel" onclick="${nomeClick(p.autor)}">${nomeExibido}</strong>`;
       const imgHtml=p.imagem?`<img src="${p.imagem}" class="post-img">`:"";
-      const seguirBtn=(!p.anonimo && p.autor!==nomeUsuario)?`<button class="btn-seguir" onclick="seguir('${p.autor}',this)">➕ Seguir</button>`:"";
-      const editarBtn=ehMeuPost?`<button class="btn-editar" onclick="toggleEditar('${d.id}')">✏️ Editar</button>`:"";
-      const deletarBtn=ehMeuPost?`<button onclick="deletarPost('${d.id}',this)">🗑️ Deletar</button>`:"";
+      const seguirBtn=(!p.anonimo && p.autor!==nomeUsuario)?`<button class="btn-seguir" onclick="seguir('${p.autor}',this)">âž• Seguir</button>`:"";
+      const editarBtn=ehMeuPost?`<button class="btn-editar" onclick="toggleEditar('${d.id}')">âœï¸ Editar</button>`:"";
+      const deletarBtn=ehMeuPost?`<button onclick="deletarPost('${d.id}',this)">ðŸ—‘ï¸ Deletar</button>`:"";
       const views = p.views || 0;
       registarVisualizacao(d.id);
       const sondagemHtml = criarSondagemHtml(d.id, p.sondagem, p.votos);
-      const denunciarBtn = ehMeuPost ? "" : `<button class="btn-danger" onclick="denunciarPost('${d.id}','${(p.autorReal||p.autor).replace(/'/g,"\\'")}')">🚩 Denunciar</button>`;
+      const denunciarBtn = ehMeuPost ? "" : `<button class="btn-danger" onclick="denunciarPost('${d.id}','${(p.autorReal||p.autor).replace(/'/g,"\\'")}')">ðŸš© Denunciar</button>`;
       div.innerHTML=`
-        ${nomeClickHtml}${p.anonimo?"":badgeFor(p.autor)} · <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
+        ${nomeClickHtml}${p.anonimo?"":badgeFor(p.autor)} Â· <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
         ${seguirBtn}
         <p class="post-texto" id="texto-${d.id}" style="margin:10px 0;color:#c8cad8;">${formatarTexto(p.texto)}</p>
         ${imgHtml}
         ${sondagemHtml}
         ${criarReacoesBar(d.id,p.reacoes)}
-        <div style="font-size:12px;color:#6b7280;margin-bottom:4px;">👁️ <span id="views-${d.id}">${views}</span> visualizações</div>
-        <button onclick="toggleComentarios('${d.id}')">💬 Comentar</button>
+        <div style="font-size:12px;color:#6b7280;margin-bottom:4px;">ðŸ‘ï¸ <span id="views-${d.id}">${views}</span> visualizaÃ§Ãµes</div>
+        <button onclick="toggleComentarios('${d.id}')">ðŸ’¬ Comentar</button>
         ${editarBtn}
         ${deletarBtn}
-        <button class="btn-whatsapp" onclick="partilhar('${p.texto.replace(/'/g,"\\'")}')">📲 Partilhar</button>
-        <button id="btn-guardar-${d.id}" class="btn-guardar" onclick="toggleGuardar('${d.id}',this)">${isGuardado(d.id)?"🔖 Guardado":"🔖 Guardar"}</button>
+        <button class="btn-whatsapp" onclick="partilhar('${p.texto.replace(/'/g,"\\'")}')">ðŸ“² Partilhar</button>
+        <button id="btn-guardar-${d.id}" class="btn-guardar" onclick="toggleGuardar('${d.id}',this)">${isGuardado(d.id)?"ðŸ”– Guardado":"ðŸ”– Guardar"}</button>
         ${denunciarBtn}
         <div class="edit-box" id="edit-${d.id}">
           <textarea id="editInput-${d.id}">${p.texto}</textarea>
-          <button onclick="guardarEdicao('${d.id}')">💾 Guardar</button>
+          <button onclick="guardarEdicao('${d.id}')">ðŸ’¾ Guardar</button>
           <button onclick="toggleEditar('${d.id}')" style="background:#6b7280;">Cancelar</button>
         </div>
         <div class="comentarios-box" id="coms-${d.id}">
           <div id="lista-coms-${d.id}"></div>
-          <input class="comentario-input" id="input-com-${d.id}" placeholder="Escreva um comentário...">
+          <input class="comentario-input" id="input-com-${d.id}" placeholder="Escreva um comentÃ¡rio...">
           <button onclick="enviarComentario('${d.id}')">Enviar</button>
         </div>`;
       return div;
@@ -1538,7 +1623,7 @@
       banner.style.display = mostrar ? "block" : "none";
       if (mostrar) {
         const dataCache = localStorage.getItem("cache_posts_data");
-        banner.textContent = "📡 Sem internet — a mostrar posts guardados" + (dataCache ? " (de " + dataCache + ")" : "");
+        banner.textContent = "ðŸ“¡ Sem internet â€” a mostrar posts guardados" + (dataCache ? " (de " + dataCache + ")" : "");
       }
     }
 
@@ -1582,6 +1667,40 @@
       lista.forEach(d=>{postsDiv.appendChild(criarPostCard(d));carregarComentarios(d.id);});
     }
 
+    let modoFeed = "todos"; // "todos" ou "seguindo"
+    let listaASeguir = [];
+
+    window.mudarFeed = async function(modo) {
+      modoFeed = modo;
+      const btnTodos = document.getElementById("btnFeedTodos");
+      const btnSeguindo = document.getElementById("btnFeedSeguindo");
+      if (!btnTodos || !btnSeguindo) return;
+      if (modo === "todos") {
+        btnTodos.style.background = "var(--cor1)";
+        btnSeguindo.style.background = "#2a2f42";
+        renderPosts(todosPosts);
+      } else {
+        btnTodos.style.background = "#2a2f42";
+        btnSeguindo.style.background = "var(--cor1)";
+        if (!listaASeguir.length) {
+          try {
+            const snap = await getDocs(collection(db,"utilizadores",nomeUsuario,"seguindo"));
+            listaASeguir = snap.docs.map(d => d.id);
+          } catch(e){}
+        }
+        if (!listaASeguir.length) {
+          document.getElementById("posts").innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda nÃ£o segues ninguÃ©m. Vai a ðŸ‘¥ Users e segue algumas pessoas!</p>";
+          return;
+        }
+        const filtrados = todosPosts.filter(p => listaASeguir.includes(p.data.autor) || (p.data.autorReal && listaASeguir.includes(p.data.autorReal)));
+        if (!filtrados.length) {
+          document.getElementById("posts").innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>As pessoas que segues ainda nÃ£o publicaram nada.</p>";
+          return;
+        }
+        renderPosts(filtrados);
+      }
+    }
+
     window.pesquisar = function() {
       const t=document.getElementById("pesquisaBox").value.toLowerCase();
       if(!t){renderPosts(todosPosts);return;}
@@ -1614,7 +1733,7 @@
     window.publicar = async function() {
       const caixa=document.getElementById("caixaTexto"); const texto=caixa.value.trim();
       if(!texto&&!imagemBase64){alert("Escreva algo ou escolha uma imagem!");return;}
-      if(!navigator.onLine){alert("📡 Estás offline! Liga-te à internet para publicar.");return;}
+      if(!navigator.onLine){alert("ðŸ“¡ EstÃ¡s offline! Liga-te Ã  internet para publicar.");return;}
       try {
         const hora=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
         const ri={}; EMOJIS_REACAO.forEach(e=>ri[e]=0);
@@ -1657,21 +1776,21 @@
         document.getElementById("btnSondagem").style.background="#2a2f42";
         modoAnonimo=false;
         document.getElementById("btnAnonimo").style.background="#2a2f42";
-        document.getElementById("btnAnonimo").textContent="🎭 Anónimo";
-        setStatus(postData.anonimo?"✅ Post anónimo publicado!":"✅ Post publicado!"); carregarPosts();
-      } catch(e){setStatus("❌ Erro.");}
+        document.getElementById("btnAnonimo").textContent="ðŸŽ­ AnÃ³nimo";
+        setStatus(postData.anonimo?"âœ… Post anÃ³nimo publicado!":"âœ… Post publicado!"); carregarPosts();
+      } catch(e){setStatus("âŒ Erro.");}
     }
 
     window.deletarPost = async function(id,botao) {
-      try{await deleteDoc(doc(db,"posts",id));botao.parentElement.remove();setStatus("🗑️ Deletado!");}
-      catch(e){setStatus("❌ Erro.");}
+      try{await deleteDoc(doc(db,"posts",id));botao.parentElement.remove();setStatus("ðŸ—‘ï¸ Deletado!");}
+      catch(e){setStatus("âŒ Erro.");}
     }
 
-    window.partilhar=function(texto){window.open("https://wa.me/?text="+encodeURIComponent(texto+"\n\n🌐 Via ConnectApp: https://laiton023.github.io/connectapp"),"_blank");}
+    window.partilhar=function(texto){window.open("https://wa.me/?text="+encodeURIComponent(texto+"\n\nðŸŒ Via ConnectApp: https://laiton023.github.io/connectapp"),"_blank");}
 
     window.partilharConvite = function() {
       const link = "https://laiton023.github.io/connectapp?ref=" + encodeURIComponent(nomeUsuario);
-      const texto = "🌐 Junta-te a mim no ConnectApp! Uma rede social onde podes partilhar posts, fazer stories, conversar e muito mais!\n\n" + link;
+      const texto = "ðŸŒ Junta-te a mim no ConnectApp! Uma rede social onde podes partilhar posts, fazer stories, conversar e muito mais!\n\n" + link;
       window.open("https://wa.me/?text=" + encodeURIComponent(texto), "_blank");
     }
 
@@ -1718,12 +1837,12 @@
 
     window.instalarApp = function() {
       if (!deferredPrompt) {
-        alert("Para instalar:\n📱 Android: Menu do Chrome (⋮) → 'Adicionar ao ecrã inicial'\n🍎 iPhone: Safari → Partilhar → 'Adicionar ao ecrã de início'");
+        alert("Para instalar:\nðŸ“± Android: Menu do Chrome (â‹®) â†’ 'Adicionar ao ecrÃ£ inicial'\nðŸŽ iPhone: Safari â†’ Partilhar â†’ 'Adicionar ao ecrÃ£ de inÃ­cio'");
         return;
       }
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then(result => {
-        if (result.outcome === "accepted") setStatus("✅ ConnectApp instalado!");
+        if (result.outcome === "accepted") setStatus("âœ… ConnectApp instalado!");
         deferredPrompt = null;
         document.getElementById("btnInstalarApp").style.display = "none";
       });
