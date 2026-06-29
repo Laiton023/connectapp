@@ -271,6 +271,7 @@
   </main>
   <div id="utilizadoresDiv" style="display:none">
     <h2 style="margin-bottom:16px;">ðŸ‘¥ Utilizadores</h2>
+    <input type="text" id="pesquisaUtilizadores" placeholder="ðŸ” Pesquisar utilizador..." oninput="filtrarUtilizadores()" style="width:100%;margin-bottom:12px;">
     <div id="listaUtilizadores"></div>
   </div>
   <div id="gruposDiv" style="display:none">
@@ -1107,21 +1108,38 @@
       } catch(e){}
     }
 
+    let todosUtilizadores = [];
+
+    function renderUtilizadores(lista) {
+      const div = document.getElementById("listaUtilizadores");
+      div.innerHTML = "";
+      const filtro = (document.getElementById("pesquisaUtilizadores").value||"").toLowerCase();
+      const filtrados = filtro ? lista.filter(u => u.nome.toLowerCase().includes(filtro) || (u.bio||"").toLowerCase().includes(filtro)) : lista;
+      if (!filtrados.length) { div.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum utilizador encontrado.</p>"; return; }
+      filtrados.forEach(u => {
+        const card = document.createElement("div"); card.className = "utilizador-card";
+        card.innerHTML = `<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="verPerfilOutro('${u.nome}')" style="background:${corAvatar(u.nome)}">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio||BIO_PADRAO}</div></div></div><div class="utilizador-acoes"><button class="btn-mensagem" onclick="abrirDM('${u.nome}')">âœ‰ï¸</button><button class="btn-seguir" onclick="seguir('${u.nome}',this)">âž• Seguir</button></div>`;
+        div.appendChild(card);
+      });
+    }
+
+    window.filtrarUtilizadores = function() { renderUtilizadores(todosUtilizadores); }
+
     window.verUtilizadores = async function() {
       escondertodas(); document.getElementById("utilizadoresDiv").style.display="block";
+      document.getElementById("pesquisaUtilizadores").value = "";
       const lista=document.getElementById("listaUtilizadores");
       lista.innerHTML="<p style='color:#6b7280;text-align:center;'>Carregando...</p>";
       try {
         await carregarVerificados();
-        const snap=await getDocs(collection(db,"utilizadores")); lista.innerHTML="";
+        const snap=await getDocs(collection(db,"utilizadores"));
+        todosUtilizadores = [];
         snap.forEach(d=>{
           const u=d.data(); if(u.nome===nomeUsuario)return; if(estaBloqueado(u.nome))return;
-          const div=document.createElement("div"); div.className="utilizador-card";
-          div.innerHTML=`<div class="utilizador-info"><div class="utilizador-avatar nome-clicavel" onclick="verPerfilOutro('${u.nome}')" style="background:${corAvatar(u.nome)}">${u.nome[0].toUpperCase()}</div><div><div class="utilizador-nome nome-clicavel" onclick="verPerfilOutro('${u.nome}')">${u.nome}${badgeFor(u.nome)}</div><div class="utilizador-bio">${u.bio||BIO_PADRAO}</div></div></div><div class="utilizador-acoes"><button class="btn-mensagem" onclick="abrirDM('${u.nome}')">âœ‰ï¸</button><button class="btn-seguir" onclick="seguir('${u.nome}',this)">âž• Seguir</button></div>`;
-          lista.appendChild(div);
+          todosUtilizadores.push(u);
         });
-        if(!lista.children.length) lista.innerHTML="<p style='color:#6b7280;text-align:center;margin-top:16px;'>Nenhum utilizador ainda!</p>";
-      } catch(e){}
+        renderUtilizadores(todosUtilizadores);
+      } catch(e){ lista.innerHTML="<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
     }
 
     window.verGrupos = async function() {
@@ -1516,7 +1534,7 @@
       let guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
       if (guardados.includes(postId)) {
         guardados = guardados.filter(id => id !== postId);
-        botao.textContent = "ðŸ”– Guardar";
+        botao.textContent = – Guardar";
         botao.classList.remove("ativo");
       } else {
         guardados.push(postId);
