@@ -30,7 +30,7 @@
     .notif-dot { position: absolute; top: 2px; right: 2px; width: 10px; height: 10px; background: var(--cor2); border-radius: 50%; display: none; }
     #modoBtn { background: none; border: 1px solid #2a2f42; border-radius: 20px; padding: 6px 14px; color: #e8eaf2; font-family: 'Poppins', sans-serif; font-size: 13px; cursor: pointer; margin-top: 0; }
     body.claro #modoBtn { border-color: #c0c4d0; color: #1a1a2e; }
-    main, #perfil, #chatDiv, #utilizadoresDiv, #gruposDiv, #grupoDetalheDiv, #mensagensListaDiv, #dmConversaDiv, #perfilOutroDiv, #temaDiv, #onlineDiv, #rankingDiv, #estatisticasDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
+    main, #perfil, #chatDiv, #utilizadoresDiv, #gruposDiv, #grupoDetalheDiv, #mensagensListaDiv, #dmConversaDiv, #perfilOutroDiv, #temaDiv, #onlineDiv, #rankingDiv, #estatisticasDiv, #atividadeDiv { max-width: 600px; margin: 24px auto; padding: 0 16px; }
     textarea { width: 100%; background: #1e2230; color: #e8eaf2; border: 1px solid #2a2f42; border-radius: 12px; padding: 14px; font-family: 'Poppins', sans-serif; font-size: 14px; height: 90px; resize: none; outline: none; }
     body.claro textarea { background: #ffffff; color: #1a1a2e; border-color: #c0c4d0; }
     textarea:focus { border-color: var(--cor1); }
@@ -109,6 +109,19 @@
     #statusVerificado { margin-top: 6px; font-size: 13px; color: #6b7280; }
     .notificacoes-box { text-align: left; margin-top: 20px; border-top: 1px solid #2a2f42; padding-top: 16px; }
     .notificacoes-box h3 { font-size: 15px; margin-bottom: 10px; }
+    .conquistas-grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 8px; }
+    .atividade-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px 0; border-bottom: 1px solid #2a2f42; font-size: 13px; }
+    body.claro .atividade-item { border-bottom-color: #dde1ed; }
+    .atividade-icone { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; background: #2a2f42; }
+    .atividade-texto { flex: 1; }
+    .atividade-texto strong { display: block; margin-bottom: 2px; }
+    .atividade-hora { font-size: 11px; color: #6b7280; margin-top: 2px; }
+    .conquista-item { background: #1e2230; border: 1px solid #2a2f42; border-radius: 12px; padding: 10px 14px; text-align: center; font-size: 12px; min-width: 80px; }
+    body.claro .conquista-item { background: #f0f2f5; border-color: #dde1ed; }
+    .conquista-item.desbloqueada { border-color: var(--cor1); background: linear-gradient(135deg, rgba(91,110,245,0.15), rgba(245,107,107,0.15)); }
+    .conquista-item .trofeu { font-size: 24px; display: block; margin-bottom: 4px; }
+    .conquista-item .nome { font-weight: 600; font-size: 11px; }
+    .conquista-item.bloqueada { opacity: 0.4; filter: grayscale(1); }
     .notif-item { background: #0d0f14; border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; font-size: 13px; display: flex; align-items: center; gap: 10px; }
     body.claro .notif-item { background: #f0f2f5; color: #1a1a2e; }
     .notif-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--cor1), var(--cor2)); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: white; flex-shrink: 0; }
@@ -210,6 +223,7 @@
     <a href="#" onclick="verTema()">ðŸŽ¨ Tema</a>
     <a href="#" onclick="verRanking()">ðŸ† Ranking</a>
     <a href="#" onclick="verEstatisticas()">ðŸ“Š EstatÃ­sticas</a>
+    <a href="#" onclick="verAtividade()">ðŸ“‹ Atividade</a>
     <a href="#" onclick="sair()" style="color:var(--cor2);">Sair</a>
     <button id="modoBtn" onclick="toggleModo()">ðŸŒ™ Escuro</button>
     <button id="btnInstalarApp" onclick="instalarApp()" style="display:none;background:var(--cor2);">ðŸ“² Instalar App</button>
@@ -250,7 +264,8 @@
     </div>
     <div id="trendingBar" style="display:none;"></div>
     <input type="text" id="pesquisaBox" placeholder="ðŸ” Pesquisar posts..." oninput="pesquisar()">
-    <textarea id="caixaTexto" placeholder="O que vocÃª estÃ¡ pensando? Usa #hashtags!"></textarea>
+    <textarea id="caixaTexto" placeholder="O que vocÃª estÃ¡ pensando? Usa #hashtags!" maxlength="500" oninput="atualizarContador()"></textarea>
+    <div style="text-align:right;font-size:11px;margin-top:2px;"><span id="contadorChars" style="color:#6b7280;">0 / 500</span></div>
     <br>
     <label class="img-label" for="inputImagem">ðŸ–¼ï¸ Adicionar imagem</label>
     <input type="file" id="inputImagem" accept="image/*" style="display:none" onchange="previewImagem(event)">
@@ -267,6 +282,8 @@
     <button onclick="publicar()">Publicar</button>
     <button onclick="toggleSondagem()" id="btnSondagem" style="background:#2a2f42;">ðŸ“Š Sondagem</button>
     <button onclick="toggleAnonimo()" id="btnAnonimo" style="background:#2a2f42;">ðŸŽ­ AnÃ³nimo</button>
+    <button onclick="toggleLocalizacao()" id="btnLocalizacao" style="background:#2a2f42;">ðŸ“ LocalizaÃ§Ã£o</button>
+    <div id="localizacaoInfo" style="display:none;font-size:12px;color:#4ecb8d;margin-top:6px;">ðŸ“ <span id="localizacaoTexto"></span> <button onclick="removerLocalizacao()" style="background:none;border:none;color:#f56b6b;cursor:pointer;font-size:12px;padding:0;margin:0;">âœ•</button></div>
     <div id="posts"></div>
   </main>
   <div id="utilizadoresDiv" style="display:none">
@@ -332,6 +349,10 @@
     <h2 style="margin-bottom:16px;">ðŸ“Š As Minhas EstatÃ­sticas</h2>
     <div id="conteudoEstatisticas"></div>
   </div>
+  <div id="atividadeDiv" style="display:none">
+    <h2 style="margin-bottom:16px;">ðŸ“‹ HistÃ³rico de Atividade</h2>
+    <div id="listaAtividade"></div>
+  </div>
   <div id="perfilOutroDiv" style="display:none">
     <button onclick="mostrarFeed()" style="background:#6b7280;">â¬… Voltar</button>
     <div style="margin-top:16px;">
@@ -374,6 +395,7 @@
     </div>
     <div id="statusVerificado"></div>
     <div id="nivelDiv" style="margin-top:6px;font-size:14px;"></div>
+    <div id="conquistasDiv" style="margin-top:10px;"></div>
     <div class="perfil-stats">
       <div class="perfil-stat"><strong id="numSeguidores">0</strong><span>Seguidores</span></div>
       <div class="perfil-stat"><strong id="numSeguindo">0</strong><span>A seguir</span></div>
@@ -423,7 +445,7 @@
     let nomeUsuario = localStorage.getItem("nomeUsuario") || "";
     let sessionId = Math.random().toString(36).substr(2, 9);
     let chatAberto = false;
-    let modoClaro = localStorage.getItem("modoClaro") === "true";
+    let modoClaro = false; // serÃ¡ definido pela funÃ§Ã£o aplicarModo abaixo
     let todosPosts = [];
     let imagemBase64 = "";
     let grupoAtualId = null;
@@ -432,6 +454,7 @@
     let dmOutroUsuario = null;
     let dmUnsubscribe = null;
     let modoAnonimo = false;
+    let localizacaoAtual = null;
     const EMOJIS_REACAO = ["ðŸ‘","â¤ï¸","ðŸ˜‚","ðŸ˜®","ðŸ˜¢","ðŸ”¥"];
     const THRESHOLD_VERIFICACAO = 5;
     const BIO_PADRAO = "Utilizador do ConnectApp! ðŸš€";
@@ -475,13 +498,36 @@
     const temaGuardado = parseInt(localStorage.getItem("temaIdx") || "0");
     aplicarTema(temaGuardado);
 
-    if (modoClaro) { document.body.classList.add("claro"); document.getElementById("modoBtn").textContent = "â˜€ï¸ Claro"; }
+    // Modo noturno automÃ¡tico
+    function deveSerEscuro() {
+      const hora = new Date().getHours();
+      return hora >= 20 || hora < 7;
+    }
+
+    const modoManual = localStorage.getItem("modoManual") === "true";
+    modoClaro = modoManual
+      ? localStorage.getItem("modoClaro") === "true"
+      : !deveSerEscuro();
+
+    function aplicarModo(claro) {
+      modoClaro = claro;
+      if (claro) { document.body.classList.add("claro"); document.getElementById("modoBtn").textContent = "â˜€ï¸ Claro"; }
+      else { document.body.classList.remove("claro"); document.getElementById("modoBtn").textContent = "ðŸŒ™ Escuro"; }
+    }
+
+    aplicarModo(modoClaro);
+
+    // Verificar a cada minuto se deve mudar automaticamente
+    setInterval(() => {
+      if (!modoManual) aplicarModo(!deveSerEscuro());
+    }, 60000);
 
     window.toggleModo = function() {
       modoClaro = !modoClaro;
-      document.body.classList.toggle("claro");
-      document.getElementById("modoBtn").textContent = modoClaro ? "â˜€ï¸ Claro" : "ðŸŒ™ Escuro";
+      aplicarModo(modoClaro);
       localStorage.setItem("modoClaro", modoClaro);
+      localStorage.setItem("modoManual", "true"); // marca que o utilizador escolheu manualmente
+      setStatus(modoClaro ? "â˜€ï¸ Modo claro ativado" : "ðŸŒ™ Modo escuro ativado");
     }
 
     window.verTema = function() {
@@ -521,6 +567,56 @@
           lista.appendChild(div);
         });
         if (!ranking.length) lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem utilizadores no ranking.</p>";
+      } catch(e) { lista.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
+    }
+
+    window.verAtividade = async function() {
+      escondertodas();
+      document.getElementById("atividadeDiv").style.display = "block";
+      const lista = document.getElementById("listaAtividade");
+      lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Carregando...</p>";
+      try {
+        const atividades = [];
+
+        // Posts publicados
+        const postsSnap = await getDocs(query(collection(db,"posts"), orderBy("data","desc"), limit(50)));
+        postsSnap.forEach(d => {
+          const p = d.data();
+          if ((p.autorReal === nomeUsuario) || (!p.autorReal && p.autor === nomeUsuario)) {
+            atividades.push({
+              icone: p.anonimo ? "ðŸŽ­" : (p.repostadoPor ? "ðŸ”" : "ðŸ“"),
+              texto: p.anonimo ? "Publicaste um post anÃ³nimo" : (p.repostadoPor ? `Repostaste um post de ${p.autor}` : `Publicaste: "${(p.texto||"").substring(0,50)}${(p.texto||"").length>50?"...":""}"` ),
+              hora: p.hora || "",
+              ts: p.data?.toMillis?.() || 0
+            });
+          }
+        });
+
+        // Seguidores ganhos
+        const notifSnap = await getDocs(query(collection(db,"notificacoes"), where("paraQuem","==",nomeUsuario), orderBy("data","desc"), limit(30)));
+        notifSnap.forEach(d => {
+          const n = d.data();
+          if (n.tipo === "seguidor") atividades.push({ icone: "ðŸ‘¥", texto: `${n.deQuem} comeÃ§ou a seguir-te`, hora: "", ts: n.data?.toMillis?.() || 0 });
+          if (n.tipo === "mencao") atividades.push({ icone: "ðŸ“¢", texto: `${n.deQuem} mencionou-te num post`, hora: "", ts: n.data?.toMillis?.() || 0 });
+          if (n.tipo === "convite") atividades.push({ icone: "ðŸŽ", texto: `${n.deQuem} juntou-se pelo teu convite`, hora: "", ts: n.data?.toMillis?.() || 0 });
+        });
+
+        // Ordenar por timestamp
+        atividades.sort((a,b) => b.ts - a.ts);
+
+        lista.innerHTML = "";
+        if (!atividades.length) {
+          lista.innerHTML = "<p style='color:#6b7280;text-align:center;margin-top:16px;'>Ainda sem atividade registada.</p>";
+          return;
+        }
+
+        atividades.slice(0, 30).forEach(a => {
+          const dataFormatada = a.ts ? new Date(a.ts).toLocaleString("pt-PT", {day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"}) : a.hora;
+          const div = document.createElement("div");
+          div.className = "atividade-item";
+          div.innerHTML = `<div class="atividade-icone">${a.icone}</div><div class="atividade-texto"><strong>${a.texto}</strong><div class="atividade-hora">ðŸ• ${dataFormatada}</div></div>`;
+          lista.appendChild(div);
+        });
       } catch(e) { lista.innerHTML = "<p style='color:#f56b6b;'>Erro ao carregar.</p>"; }
     }
 
@@ -1051,6 +1147,32 @@
       return "ðŸŒ± Iniciante";
     }
 
+    const CONQUISTAS = [
+      { id: "primeiro_post", trofeu: "ðŸ“", nome: "Primeiro Post", desc: "Publicaste o teu primeiro post!", check: (s) => s.posts >= 1 },
+      { id: "dez_posts", trofeu: "âœï¸", nome: "Escritor", desc: "10 posts publicados!", check: (s) => s.posts >= 10 },
+      { id: "primeiro_seguidor", trofeu: "ðŸ‘‹", nome: "Popular", desc: "Tens o teu primeiro seguidor!", check: (s) => s.seguidores >= 1 },
+      { id: "cinco_seguidores", trofeu: "â­", nome: "Estrela", desc: "5 seguidores conquistados!", check: (s) => s.seguidores >= 5 },
+      { id: "vinte_seguidores", trofeu: "ðŸŒŸ", nome: "Influencer", desc: "20 seguidores! IncrÃ­vel!", check: (s) => s.seguidores >= 20 },
+      { id: "verificado", trofeu: "âœ…", nome: "Verificado", desc: "Conta verificada!", check: (s) => s.verificado },
+      { id: "convite", trofeu: "ðŸŽ", nome: "AnfitriÃ£o", desc: "Convidaste alguÃ©m!", check: (s) => s.convidados >= 1 },
+      { id: "nivel_pro", trofeu: "ðŸ’Ž", nome: "NÃ­vel Pro", desc: "Chegaste ao nÃ­vel Pro!", check: (s) => (s.seguidores + s.posts) >= 20 },
+      { id: "lenda", trofeu: "ðŸ‘‘", nome: "Lenda", desc: "50+ pontos â€” Ã©s uma lenda!", check: (s) => (s.seguidores + s.posts) >= 50 },
+    ];
+
+    function calcularConquistas(stats) {
+      return CONQUISTAS.map(c => ({ ...c, desbloqueada: c.check(stats) }));
+    }
+
+    function mostrarConquistas(stats) {
+      const div = document.getElementById("conquistasDiv");
+      if (!div) return;
+      const lista = calcularConquistas(stats);
+      const desbloqueadas = lista.filter(c => c.desbloqueada).length;
+      div.innerHTML = `<p style="font-size:13px;color:#6b7280;margin-bottom:6px;">ðŸ† Conquistas: <strong style="color:var(--cor1)">${desbloqueadas}/${lista.length}</strong></p><div class="conquistas-grid">` +
+        lista.map(c => `<div class="conquista-item ${c.desbloqueada ? "desbloqueada" : "bloqueada"}" title="${c.desc}"><span class="trofeu">${c.trofeu}</span><span class="nome">${c.nome}</span></div>`).join("") +
+        `</div>`;
+    }
+
     async function carregarEstatisticas() {
       try {
         const userSnap=await getDoc(doc(db,"utilizadores",nomeUsuario));
@@ -1073,7 +1195,8 @@
         const el=document.getElementById("statusVerificado");
         if(verificado){el.innerHTML="âœ… <strong>Conta verificada!</strong>";}
         else{el.innerHTML=`ðŸ”’ Faltam ${THRESHOLD_VERIFICACAO-segSnap.size} seguidor(es) para verificaÃ§Ã£o (${segSnap.size}/${THRESHOLD_VERIFICACAO})`;}
-      } catch(e){}
+        const convidados = (userSnap.exists() && userSnap.data().convidados) || 0;
+        mostrarConquistas({ posts: meusPosts.length, seguidores: segSnap.size, verificado, convidados });      } catch(e){}
     }
 
     window.verPerfilOutro = async function(outroNome) {
@@ -1333,7 +1456,7 @@
       chatAberto=false;
       document.getElementById("musicaIframe").src="";
       document.getElementById("outraMusicaIframe").src="";
-      ["feedDiv","chatDiv","utilizadoresDiv","gruposDiv","grupoDetalheDiv","mensagensListaDiv","dmConversaDiv","perfilOutroDiv","perfil","temaDiv","onlineDiv","rankingDiv","estatisticasDiv"].forEach(id=>document.getElementById(id).style.display="none");
+      ["feedDiv","chatDiv","utilizadoresDiv","gruposDiv","grupoDetalheDiv","mensagensListaDiv","dmConversaDiv","perfilOutroDiv","perfil","temaDiv","onlineDiv","rankingDiv","estatisticasDiv","atividadeDiv"].forEach(id=>document.getElementById(id).style.display="none");
     }
 
     window.seguir = async function(autorPost, botao) {
@@ -1482,6 +1605,102 @@
       } catch(e) { setStatus("âŒ Erro ao enviar denÃºncia."); }
     }
 
+    function jaRepostou(postId) {
+      const repostados = JSON.parse(localStorage.getItem("repostados_"+nomeUsuario)||"[]");
+      return repostados.includes(postId);
+    }
+
+    window.toggleFixar = async function(postId) {
+      const post = todosPosts.find(p => p.id === postId);
+      if (!post) return;
+      const novoEstado = !post.data.fixado;
+      try {
+        await updateDoc(doc(db,"posts",postId), {fixado: novoEstado});
+        setStatus(novoEstado ? "ðŸ“Œ Post fixado no topo!" : "Post desfixado.");
+        carregarPosts();
+      } catch(e) { setStatus("âŒ Erro."); }
+    }
+
+    window.repostar = async function(postId) {
+      if (jaRepostou(postId)) { setStatus("JÃ¡ repostaste este post!"); return; }
+      const post = todosPosts.find(p => p.id === postId);
+      if (!post) return;
+      try {
+        const hora = new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+        const ri = {}; EMOJIS_REACAO.forEach(e=>ri[e]=0);
+        await addDoc(collection(db,"posts"), {
+          texto: post.data.texto,
+          autor: post.data.autor,
+          autorReal: post.data.autorReal || post.data.autor,
+          repostadoPor: nomeUsuario,
+          hora, data: serverTimestamp(),
+          reacoes: ri, views: 0,
+          imagem: post.data.imagem || null,
+        });
+        const repostados = JSON.parse(localStorage.getItem("repostados_"+nomeUsuario)||"[]");
+        repostados.push(postId);
+        localStorage.setItem("repostados_"+nomeUsuario, JSON.stringify(repostados));
+        const btn = document.getElementById("btn-repost-"+postId);
+        if (btn) { btn.textContent = "ðŸ” Repostado"; btn.style.background = "var(--cor1)"; }
+        setStatus("ðŸ” Post repostado no teu feed!");
+        carregarPosts();
+      } catch(e) { setStatus("âŒ Erro ao repostar."); }
+    }
+
+    window.atualizarContador = function() {
+      const caixa = document.getElementById("caixaTexto");
+      const contador = document.getElementById("contadorChars");
+      if (!caixa || !contador) return;
+      const len = caixa.value.length;
+      contador.textContent = len + " / 500";
+      if (len >= 480) contador.style.color = "#f56b6b";
+      else if (len >= 400) contador.style.color = "#f0a500";
+      else contador.style.color = "#6b7280";
+    }
+
+    window.toggleLocalizacao = function() {
+      if (localizacaoAtual) { removerLocalizacao(); return; }
+      const btn = document.getElementById("btnLocalizacao");
+      btn.textContent = "ðŸ“ A obter...";
+      btn.style.background = "#2a2f42";
+      if (!navigator.geolocation) {
+        alert("O teu navegador nÃ£o suporta localizaÃ§Ã£o.");
+        btn.textContent = "ðŸ“ LocalizaÃ§Ã£o";
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        async pos => {
+          const lat = pos.coords.latitude.toFixed(4);
+          const lng = pos.coords.longitude.toFixed(4);
+          let nomeLocal = `${lat}, ${lng}`;
+          try {
+            const resp = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json`);
+            const data = await resp.json();
+            nomeLocal = data.address?.city || data.address?.town || data.address?.village || data.address?.county || nomeLocal;
+            if (data.address?.country) nomeLocal += ", " + data.address.country;
+          } catch(e){}
+          localizacaoAtual = { lat, lng, nome: nomeLocal };
+          document.getElementById("localizacaoTexto").textContent = nomeLocal;
+          document.getElementById("localizacaoInfo").style.display = "block";
+          btn.textContent = "ðŸ“ " + nomeLocal;
+          btn.style.background = "var(--cor1)";
+        },
+        err => {
+          btn.textContent = "ðŸ“ LocalizaÃ§Ã£o";
+          if (err.code === 1) setStatus("âŒ PermissÃ£o de localizaÃ§Ã£o negada.");
+          else setStatus("âŒ NÃ£o foi possÃ­vel obter a localizaÃ§Ã£o.");
+        }
+      );
+    }
+
+    window.removerLocalizacao = function() {
+      localizacaoAtual = null;
+      document.getElementById("localizacaoInfo").style.display = "none";
+      document.getElementById("localizacaoTexto").textContent = "";
+      const btn = document.getElementById("btnLocalizacao");
+      if (btn) { btn.textContent = "ðŸ“ LocalizaÃ§Ã£o"; btn.style.background = "#2a2f42"; }
+    }
+
     window.toggleAnonimo = function() {
       modoAnonimo = !modoAnonimo;
       const btn = document.getElementById("btnAnonimo");
@@ -1534,7 +1753,7 @@
       let guardados = JSON.parse(localStorage.getItem("guardados_"+nomeUsuario)||"[]");
       if (guardados.includes(postId)) {
         guardados = guardados.filter(id => id !== postId);
-        botao.textContent = – Guardar";
+        botao.textContent = "ðŸ”– Guardar";
         botao.classList.remove("ativo");
       } else {
         guardados.push(postId);
@@ -1575,20 +1794,27 @@
     function criarPostCard(d) {
       const p=d.data; const div=document.createElement("div"); div.className="post-card";
       const ehMeuPost = p.autorReal === nomeUsuario || (!p.autorReal && p.autor === nomeUsuario);
+      const repostadoPor = p.repostadoPor ? `<div style="font-size:11px;color:#6b7280;margin-bottom:6px;">ðŸ” Repostado por <strong>${p.repostadoPor}</strong></div>` : "";
       const nomeExibido = p.anonimo ? "ðŸŽ­ AnÃ³nimo" + (ehMeuPost ? " (tu)" : "") : p.autor;
       const nomeClickHtml = p.anonimo ? `<strong>${nomeExibido}</strong>` : `<strong class="nome-clicavel" onclick="${nomeClick(p.autor)}">${nomeExibido}</strong>`;
       const imgHtml=p.imagem?`<img src="${p.imagem}" class="post-img">`:"";
       const seguirBtn=(!p.anonimo && p.autor!==nomeUsuario)?`<button class="btn-seguir" onclick="seguir('${p.autor}',this)">âž• Seguir</button>`:"";
       const editarBtn=ehMeuPost?`<button class="btn-editar" onclick="toggleEditar('${d.id}')">âœï¸ Editar</button>`:"";
       const deletarBtn=ehMeuPost?`<button onclick="deletarPost('${d.id}',this)">ðŸ—‘ï¸ Deletar</button>`:"";
+      const fixarBtn=ehMeuPost?`<button onclick="toggleFixar('${d.id}')" style="background:${p.fixado?'#f0a500':'#2a2f42'};">${p.fixado?'ðŸ“Œ Fixado':'ðŸ“Œ Fixar'}</button>`:"";
+      const localizacaoHtml = p.localizacao ? `<div style="font-size:11px;color:#4ecb8d;margin:4px 0;">ðŸ“ ${p.localizacao.nome}</div>` : "";
+      const fixadoBanner = p.fixado ? `<div style="font-size:11px;color:#f0a500;margin-bottom:6px;font-weight:600;">ðŸ“Œ Post fixado</div>` : "";
       const views = p.views || 0;
       registarVisualizacao(d.id);
       const sondagemHtml = criarSondagemHtml(d.id, p.sondagem, p.votos);
       const denunciarBtn = ehMeuPost ? "" : `<button class="btn-danger" onclick="denunciarPost('${d.id}','${(p.autorReal||p.autor).replace(/'/g,"\\'")}')">ðŸš© Denunciar</button>`;
       div.innerHTML=`
+        ${fixadoBanner}
+        ${repostadoPor}
         ${nomeClickHtml}${p.anonimo?"":badgeFor(p.autor)} Â· <span style="color:#6b7280;font-size:12px;">${p.hora}</span>
         ${seguirBtn}
         <p class="post-texto" id="texto-${d.id}" style="margin:10px 0;color:#c8cad8;">${formatarTexto(p.texto)}</p>
+        ${localizacaoHtml}
         ${imgHtml}
         ${sondagemHtml}
         ${criarReacoesBar(d.id,p.reacoes)}
@@ -1596,8 +1822,10 @@
         <button onclick="toggleComentarios('${d.id}')">ðŸ’¬ Comentar</button>
         ${editarBtn}
         ${deletarBtn}
+        ${fixarBtn}
         <button class="btn-whatsapp" onclick="partilhar('${p.texto.replace(/'/g,"\\'")}')">ðŸ“² Partilhar</button>
         <button id="btn-guardar-${d.id}" class="btn-guardar" onclick="toggleGuardar('${d.id}',this)">${isGuardado(d.id)?"ðŸ”– Guardado":"ðŸ”– Guardar"}</button>
+        ${!ehMeuPost ? `<button class="btn-repost" id="btn-repost-${d.id}" onclick="repostar('${d.id}')" style="background:#2a2f42;">${jaRepostou(d.id)?"ðŸ” Repostado":"ðŸ” Repost"}</button>` : ""}
         ${denunciarBtn}
         <div class="edit-box" id="edit-${d.id}">
           <textarea id="editInput-${d.id}">${p.texto}</textarea>
@@ -1665,7 +1893,8 @@
         const bloqueados = getBloqueados();
         if (bloqueados.length) todosPosts = todosPosts.filter(p => !bloqueados.includes(p.data.autor));
         guardarPostsCache(todosPosts);
-        mostrarBannerOffline(false);
+        // Posts fixados primeiro
+        todosPosts.sort((a,b) => (b.data.fixado?1:0) - (a.data.fixado?1:0));
         renderTrending(); renderPosts(todosPosts);
       } catch(e){
         const cache = carregarPostsCache();
@@ -1732,10 +1961,72 @@
         const snap=await getDocs(q); lista.innerHTML="";
         snap.forEach(d=>{
           const c=d.data(); const div=document.createElement("div"); div.className="comentario-item";
-          div.innerHTML=`<strong class="nome-clicavel" onclick="${nomeClick(c.autor)}">${c.autor}</strong>${badgeFor(c.autor)}: ${c.texto}`;
+          const ehMeu = c.autor === nomeUsuario;
+          const editBtn = ehMeu ? `<button onclick="toggleEditarCom('${postId}','${d.id}')" style="background:none;border:none;color:var(--cor1);font-size:11px;cursor:pointer;padding:0;margin:0 0 0 6px;">âœï¸</button>` : "";
+          const deleteBtn = ehMeu ? `<button onclick="apagarComentario('${postId}','${d.id}')" style="background:none;border:none;color:#f56b6b;font-size:11px;cursor:pointer;padding:0;margin:0 0 0 4px;">ðŸ—‘ï¸</button>` : "";
+          const reacoesCom = c.reacoes || {};
+          const meuEmojiCom = localStorage.getItem("reacao_com_"+d.id) || "";
+          const EMOJIS_COM = ["ðŸ‘","â¤ï¸","ðŸ˜‚","ðŸ˜®","ðŸ˜¢"];
+          const reacoesHtml = `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:6px;">` +
+            EMOJIS_COM.map(em => {
+              const count = reacoesCom[em] || 0;
+              const ativo = meuEmojiCom === em ? `background:var(--cor1);color:white;` : `background:#0d0f14;color:#e8eaf2;`;
+              return `<button onclick="reagirCom('${postId}','${d.id}','${em}')" style="${ativo}border:1px solid #2a2f42;border-radius:12px;padding:2px 8px;font-size:11px;cursor:pointer;margin:0;" id="btn-com-${d.id}-${em}">${em}${count>0?" "+count:""}</button>`;
+            }).join("") + `</div>`;
+          div.innerHTML=`
+            <strong class="nome-clicavel" onclick="${nomeClick(c.autor)}">${c.autor}</strong>${badgeFor(c.autor)}: <span id="com-texto-${d.id}">${c.texto}</span>${editBtn}${deleteBtn}
+            ${reacoesHtml}
+            <div id="com-edit-${d.id}" style="display:none;margin-top:6px;">
+              <input type="text" id="com-input-${d.id}" value="${c.texto.replace(/"/g,'&quot;')}" style="width:75%;font-size:12px;padding:6px;">
+              <button onclick="guardarCom('${postId}','${d.id}')" style="font-size:12px;padding:6px 10px;margin:0 0 0 4px;">ðŸ’¾</button>
+              <button onclick="toggleEditarCom('${postId}','${d.id}')" style="font-size:12px;padding:6px 10px;margin:0 0 0 2px;background:#6b7280;">âœ•</button>
+            </div>`;
           lista.appendChild(div);
         });
       } catch(e){}
+    }
+
+    window.reagirCom = async function(postId, comId, emoji) {
+      const chave = "reacao_com_"+comId;
+      const anterior = localStorage.getItem(chave);
+      try {
+        const ref = doc(db,"posts",postId,"comentarios",comId);
+        if (anterior === emoji) {
+          await updateDoc(ref, {["reacoes."+emoji]: increment(-1)});
+          localStorage.removeItem(chave);
+        } else {
+          if (anterior) await updateDoc(ref, {["reacoes."+anterior]: increment(-1)});
+          await updateDoc(ref, {["reacoes."+emoji]: increment(1)});
+          localStorage.setItem(chave, emoji);
+        }
+        carregarComentarios(postId);
+      } catch(e){}
+    }
+
+    window.toggleEditarCom = function(postId, comId) {
+      const box = document.getElementById("com-edit-"+comId);
+      box.style.display = box.style.display === "block" ? "none" : "block";
+      if (box.style.display === "block") document.getElementById("com-input-"+comId).focus();
+    }
+
+    window.guardarCom = async function(postId, comId) {
+      const novoTexto = document.getElementById("com-input-"+comId).value.trim();
+      if (!novoTexto) return;
+      try {
+        await updateDoc(doc(db,"posts",postId,"comentarios",comId), {texto: novoTexto});
+        document.getElementById("com-texto-"+comId).textContent = novoTexto;
+        document.getElementById("com-edit-"+comId).style.display = "none";
+        setStatus("âœ… ComentÃ¡rio editado!");
+      } catch(e) { setStatus("âŒ Erro ao editar."); }
+    }
+
+    window.apagarComentario = async function(postId, comId) {
+      if (!confirm("Apagar este comentÃ¡rio?")) return;
+      try {
+        await deleteDoc(doc(db,"posts",postId,"comentarios",comId));
+        carregarComentarios(postId);
+        setStatus("ðŸ—‘ï¸ ComentÃ¡rio apagado!");
+      } catch(e) { setStatus("âŒ Erro ao apagar."); }
     }
 
     window.toggleComentarios=function(postId){const b=document.getElementById("coms-"+postId);b.style.display=b.style.display==="block"?"none":"block";}
@@ -1756,6 +2047,7 @@
         const hora=new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
         const ri={}; EMOJIS_REACAO.forEach(e=>ri[e]=0);
         const postData={texto:texto||"",autor:nomeUsuario,autorReal:nomeUsuario,anonimo:modoAnonimo,hora,data:serverTimestamp(),reacoes:ri,views:0};
+        if (localizacaoAtual) postData.localizacao = localizacaoAtual;
         if(imagemBase64)postData.imagem=imagemBase64;
         const op1=document.getElementById("op1").value.trim();
         const op2=document.getElementById("op2").value.trim();
@@ -1795,6 +2087,7 @@
         modoAnonimo=false;
         document.getElementById("btnAnonimo").style.background="#2a2f42";
         document.getElementById("btnAnonimo").textContent="ðŸŽ­ AnÃ³nimo";
+        removerLocalizacao();
         setStatus(postData.anonimo?"âœ… Post anÃ³nimo publicado!":"âœ… Post publicado!"); carregarPosts();
       } catch(e){setStatus("âŒ Erro.");}
     }
